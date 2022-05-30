@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.ubiqube.etsi.mano.repository.ManoResource;
+import com.ubiqube.etsi.mano.repository.VirtualFileSystem;
 import com.ubiqube.etsi.mano.service.pkg.PackageDescriptor;
 import com.ubiqube.etsi.mano.service.pkg.PkgUtils;
 import com.ubiqube.parser.tosca.csar.CsarParser;
@@ -46,14 +49,14 @@ public class AppMecRegistryHandler implements PackageDescriptor<AppToscaProvider
 	private static final Logger LOG = LoggerFactory.getLogger(AppMecRegistryHandler.class);
 
 	@Override
-	public boolean isProcessable(final InputStream data) {
+	public boolean isProcessable(final ManoResource data) {
 		final ObjectMapper mapper = getMapper();
-		try {
-			if (data.read() != 'P' || data.read() != 'K') {
+		try (InputStream is = data.getInputStream()) {
+			if (is.read() != 'P' || is.read() != 'K') {
 				LOG.debug("Not a Zip File.");
 				return false;
 			}
-			final File filename = PkgUtils.fetchData(data);
+			final File filename = PkgUtils.fetchData(data.getInputStream());
 			final CsarParser cp = new CsarParserImpl(filename);
 			final String ep = cp.getEntryDefinition();
 
@@ -90,7 +93,7 @@ public class AppMecRegistryHandler implements PackageDescriptor<AppToscaProvider
 	}
 
 	@Override
-	public AppToscaProvider getNewReaderInstance(final InputStream data) {
+	public AppToscaProvider getNewReaderInstance(final InputStream data, final UUID id) {
 		return new AppToscaProvider(data);
 	}
 
@@ -101,6 +104,12 @@ public class AppMecRegistryHandler implements PackageDescriptor<AppToscaProvider
 		mapper.registerModule(module);
 
 		return mapper;
+	}
+
+	@Override
+	public VirtualFileSystem getFileSystem(final ManoResource res) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

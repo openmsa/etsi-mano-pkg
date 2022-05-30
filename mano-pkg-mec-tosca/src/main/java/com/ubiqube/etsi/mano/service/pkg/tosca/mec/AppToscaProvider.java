@@ -60,7 +60,7 @@ public class AppToscaProvider extends AbstractPackageReader implements AppPackag
 	private static final Logger LOG = LoggerFactory.getLogger(AppToscaProvider.class);
 
 	public AppToscaProvider(final InputStream data) {
-		super(data);
+		super(data, null, null);
 	}
 
 	@Override
