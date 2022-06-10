@@ -44,6 +44,9 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
+import com.ubiqube.etsi.mano.dao.mano.vnfm.CnfImage;
+import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
+import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
 import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
@@ -51,12 +54,15 @@ import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
+import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.ParseException;
 
 import ma.glasnost.orika.MapperFactory;
+import tosca.artifacts.nfv.HelmChart;
 import tosca.artifacts.nfv.SwImage;
 import tosca.datatypes.nfv.L3ProtocolData;
 import tosca.datatypes.nfv.VirtualLinkProtocolData;
+import tosca.nodes.nfv.Mciop;
 import tosca.nodes.nfv.VNF;
 import tosca.nodes.nfv.VduCp;
 import tosca.nodes.nfv.VnfVirtualLink;
@@ -332,4 +338,29 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		return getSetOf(tosca.nodes.nfv.VirtualCp.class, VirtualCp.class, parameters);
 	}
 
+	@Override
+	public Set<McIops> getMciops(final Map<String, String> userDefinedData) {
+		final Set<Mciop> mciops = getSetOf(Mciop.class, userDefinedData);
+		return mciops.stream().map(ToscaVnfPackageReader::map).collect(Collectors.toSet());
+	}
+
+	private static McIops map(final Mciop m) {
+		final McIops ret = new McIops();
+		ret.setAssociatedVdu(m.getAssociatedVduReq().stream().collect(Collectors.toSet()));
+		ret.setToscaName(m.getInternalName());
+		if (m.getArtifacts().size() != 1) {
+			throw new GenericException("Size of artifact is incorrect, must be 1 but was " + m.getArtifacts().size());
+		}
+		final Entry<String, Artifact> arte = m.getArtifacts().entrySet().iterator().next();
+		final Object obj = arte.getValue();
+		if (!(obj instanceof final HelmChart av)) {
+			throw new GenericException("Unknown class type " + obj);
+		}
+		final CnfImage image = new CnfImage();
+		image.setToscaName(arte.getKey());
+		image.setType(av.getType());
+		image.setUrl(av.getFile());
+		ret.setImage(image);
+		return ret;
+	}
 }

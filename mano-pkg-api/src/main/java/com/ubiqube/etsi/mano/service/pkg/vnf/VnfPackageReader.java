@@ -33,6 +33,7 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
+import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.InstantiationLevels;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
@@ -99,4 +100,6 @@ public interface VnfPackageReader extends Closeable {
 	Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(Map<String, String> parameters);
 
 	Set<VirtualCp> getVirtualCp(Map<String, String> parameters);
+
+	Set<McIops> getMciops(Map<String, String> userDefinedData);
 }
