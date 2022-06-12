@@ -17,6 +17,7 @@
 package com.ubiqube.etsi.mano.service.pkg.vnf;
 
 import java.io.Closeable;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,21 +86,30 @@ public interface VnfPackageReader extends Closeable {
 	@Nonnull
 	List<VduScalingAspectDeltas> getVduScalingAspectDeltas(Map<String, String> parameters);
 
+	@Nonnull
 	Set<AffinityRuleAdapater> getAffinityRules(Map<String, String> userDefinedData);
 
+	@Nonnull
 	Set<SecurityGroupAdapter> getSecurityGroups(Map<String, String> userData);
 
+	@Nonnull
 	List<String> getImports();
 
 	String getManifestContent();
 
 	byte[] getFileContent(String fileName);
 
+	@Nonnull
 	Set<OsContainer> getOsContainer(Map<String, String> parameters);
 
+	@Nonnull
 	Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(Map<String, String> parameters);
 
+	@Nonnull
 	Set<VirtualCp> getVirtualCp(Map<String, String> parameters);
 
+	@Nonnull
 	Set<McIops> getMciops(Map<String, String> userDefinedData);
+
+	InputStream getFileInputStream(final String path);
 }

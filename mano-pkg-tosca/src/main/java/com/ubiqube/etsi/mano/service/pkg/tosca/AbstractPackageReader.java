@@ -140,7 +140,6 @@ public abstract class AbstractPackageReader implements Closeable {
 		return toscaParser.getFiles();
 	}
 
-	@SuppressWarnings("null")
 	@Nonnull
 	protected <U> Set<U> getCsarFiles(final Class<U> dest) {
 		return toscaParser.getFiles().stream()
@@ -185,5 +184,9 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	public byte[] getFileContent(final String fileName) {
 		return toscaParser.getFileContent(fileName);
+	}
+
+	public InputStream getFileInputStream(final String path) {
+		return toscaParser.getFileInputStream(path);
 	}
 }
