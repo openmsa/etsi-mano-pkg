@@ -116,8 +116,8 @@ class ToscaPackageProviderTest {
 				assertEquals("SHA-256", checksum.getAlgorithm());
 				assertEquals("01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b", checksum.getHash());
 
-				assertEquals("BARE", swImage.getContainerFormat());
-				assertEquals("QCOW2", swImage.getDiskFormat());
+				assertEquals("BARE", swImage.getContainerFormat().toString());
+				assertEquals("QCOW2", swImage.getDiskFormat().toString());
 				assertEquals(5000000000L, swImage.getMinDisk());
 				assertEquals(512000000L, swImage.getMinRam());
 				assertEquals("cirros", swImage.getName());

@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.ubiqube.etsi.mano.dao.mano.NsAddressData;
 import com.ubiqube.etsi.mano.dao.mano.NsSap;
 import com.ubiqube.etsi.mano.dao.mano.NsVlProfile;
@@ -83,8 +80,6 @@ import tosca.policies.nfv.VnfToLevelMapping;
  *
  */
 public class ToscaNsPackageProvider extends AbstractPackageReader implements NsPackageProvider {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ToscaNsPackageProvider.class);
 
 	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, final UUID id) {
 		super(data, repo, id);
@@ -224,24 +219,22 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 				final NfpDescriptor nnfpd = new NfpDescriptor();
 				vnffgd.getNfpd().add(nnfpd);
 				nnfpd.setToscaName(lNfp.getInternalName());
-				nnfpd.setInstancces(new ArrayList<>());
+				nnfpd.setInstances(new ArrayList<>());
 				final NfpRule nfpRule = findNfpRule(lNfp.getInternalName());
 				vnffgd.setClassifier(toClassifier(nfpRule));
 				lNfp.getNfpPositionReq().forEach(lPosition -> {
 					final List<NfpPosition> pos = findNfpPosition(nfpPosition, lPosition);
 					final VnffgInstance vnffgInstance = new VnffgInstance();
-					nnfpd.getInstancces().add(vnffgInstance);
+					nnfpd.getInstances().add(vnffgInstance);
 					vnffgInstance.setPairs(new ArrayList<>());
 					vnffgInstance.setToscaName(lPosition);
-					pos.forEach(l -> {
-						l.getElementReq().forEach(m -> {
-							final List<NfpPositionElement> elem = findPositionElement(elements, m);
-							elem.forEach(nfposElem -> {
-								final CpPair cp = handleProfileElement(nfposElem.getProfileElementReq(), fwList);
-								vnffgInstance.getPairs().add(cp);
-							});
+					pos.forEach(l -> l.getElementReq().forEach(m -> {
+						final List<NfpPositionElement> elem = findPositionElement(elements, m);
+						elem.forEach(nfposElem -> {
+							final CpPair cp = handleProfileElement(nfposElem.getProfileElementReq(), fwList);
+							vnffgInstance.getPairs().add(cp);
 						});
-					});
+					}));
 				});
 			});
 			return vnffgd;
