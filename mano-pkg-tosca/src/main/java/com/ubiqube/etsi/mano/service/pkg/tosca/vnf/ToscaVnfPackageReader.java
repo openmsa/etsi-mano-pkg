@@ -85,6 +85,10 @@ import tosca.policies.nfv.VduScalingAspectDeltas;
  */
 public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfPackageReader {
 
+	private static final String DESCRIPTOR_VERSION = "descriptorVersion";
+	private static final String DESCRIPTOR_ID = "descriptorId";
+	private static final String TOSCA_NAME = "toscaName";
+	private static final String INTERNAL_NAME = "internalName";
 	private static final Logger LOG = LoggerFactory.getLogger(ToscaVnfPackageReader.class);
 
 	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final UUID id) {
@@ -97,10 +101,10 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("vnfProvider", "provider")
 				.field("vnfProductName", "productName")
 				.field("vnfSoftwareVersion", "softwareVersion")
-				.field("vnfdVersion", "descriptorVersion")
-				.field("descriptorVersion", "descriptorVersion")
-				.field("vnfdId", "descriptorId")
-				.field("descriptorId", "descriptorId")
+				.field("vnfdVersion", DESCRIPTOR_VERSION)
+				.field(DESCRIPTOR_VERSION, DESCRIPTOR_VERSION)
+				.field("vnfdId", DESCRIPTOR_ID)
+				.field(DESCRIPTOR_ID, DESCRIPTOR_ID)
 				.field("flavorId", "flavourId")
 				.field("monitoringParameters{}", "monitoringParameters{value}")
 				.field("monitoringParameters{name}", "monitoringParameters{key}")
@@ -122,13 +126,13 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("artifacts{value}", "softwareImage")
 				.field("artifacts{key}", "softwareImage.name")
 				.field("virtualBlockStorageData.sizeOfStorage", "size")
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.field("", "myField:{|setType('BLOCK')}")
 				.byDefault()
 				.register();
 		mapperFactory.classMap(VirtualObjectStorage.class, VnfStorage.class)
 				.field("virtualObjectStorageData.maxSizeOfStorage", "size")
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.field("", "myField:{|setType('OBJECT')}")
 				.byDefault()
 				.register();
@@ -136,7 +140,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("monitoringParameters{value}", "monitoringParameters{}")
 				.field("monitoringParameters{key}", "monitoringParameters{name}")
 				// .field("swImageData", "softwareImage")
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.field("virtualStorageReq", "storages")
 				.field("virtualCompute.virtualCpu", "virtualCpu")
 				.field("virtualCompute.virtualMemory", "virtualMemory")
@@ -150,11 +154,11 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("virtualBindingReq", "virtualBinding")
 				.field("virtualLinkReq", "virtualLink")
 				.field("order", "interfaceOrder")
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
 		mapperFactory.classMap(VnfVirtualLink.class, VnfVl.class)
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.field("vlProfile", "vlProfileEntity")
 				.byDefault()
 				.register();
@@ -169,19 +173,19 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		mapperFactory.classMap(tosca.nodes.nfv.VnfExtCp.class, VnfExtCp.class)
 				.field("externalVirtualLinkReq", "externalVirtualLink")
 				.field("internalVirtualLinkReq", "internalVirtualLink")
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
 		mapperFactory.classMap(AffinityRule.class, com.ubiqube.etsi.mano.dao.mano.AffinityRule.class)
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
 		mapperFactory.classMap(AntiAffinityRule.class, com.ubiqube.etsi.mano.dao.mano.AffinityRule.class)
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
 		mapperFactory.classMap(SecurityGroupRule.class, SecurityGroup.class)
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
 		mapperFactory.classMap(VirtualBlockStorage.class, VnfStorage.class)
