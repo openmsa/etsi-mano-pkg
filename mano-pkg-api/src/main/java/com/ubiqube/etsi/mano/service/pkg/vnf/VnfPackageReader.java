@@ -112,4 +112,6 @@ public interface VnfPackageReader extends Closeable {
 	Set<McIops> getMciops(Map<String, String> userDefinedData);
 
 	InputStream getFileInputStream(final String path);
+
+	List<String> getVnfdFiles(boolean includeSignatures);
 }

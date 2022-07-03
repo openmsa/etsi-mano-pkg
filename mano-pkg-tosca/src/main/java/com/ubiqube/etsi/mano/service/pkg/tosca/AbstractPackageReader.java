@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
@@ -188,5 +190,22 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	public InputStream getFileInputStream(final String path) {
 		return toscaParser.getFileInputStream(path);
+	}
+
+	public List<String> getVnfdFiles(final boolean includeSignature) {
+		final List<String> imports = getImports();
+		final Set<String> ret = new HashSet<>(imports);
+		if (imports.size() > 1) {
+			ret.add("TOSCA-Metadata/TOSCA.meta");
+		}
+		if (includeSignature) {
+			final List<ArtefactInformations> files = toscaParser.getFiles();
+			final Set<String> cert = files.stream()
+					.filter(x -> ret.contains(x.getCertificate()))
+					.flatMap(x -> Stream.of(x.getSignature(), x.getCertificate()))
+					.collect(Collectors.toSet());
+			ret.addAll(cert);
+		}
+		return ret.stream().toList();
 	}
 }

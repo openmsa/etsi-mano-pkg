@@ -188,4 +188,10 @@ class ToscaPackageProviderTest {
 		assertNotNull(res);
 		assertEquals(1, res.size());
 	}
+
+	@Test
+	void testVnfd() {
+		final List<String> files = tpp.getVnfdFiles(true);
+		assertEquals(3, files.size());
+	}
 }
