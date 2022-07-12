@@ -16,6 +16,7 @@
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf;
 
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Optional;
 
@@ -25,12 +26,13 @@ import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
 import com.ubiqube.etsi.mano.dao.mano.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.common.Checksum;
 import com.ubiqube.etsi.mano.service.pkg.tosca.SizeConverter;
+import com.ubiqube.parser.tosca.Artifact;
+import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ChecksumData;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.VirtualBlockStorage;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
-import tosca.artifacts.nfv.SwImage;
-import tosca.datatypes.nfv.ChecksumData;
-import tosca.nodes.nfv.vdu.VirtualBlockStorage;
 
 /**
  *
@@ -45,7 +47,11 @@ public class ArtefactMapper extends CustomMapper<VirtualBlockStorage, VnfStorage
 			return;
 		}
 		final SizeConverter sc = new SizeConverter();
-		final Entry aa = a.getArtifacts().entrySet().iterator().next();
+		final Iterator<Entry<String, Artifact>> ite = a.getArtifacts().entrySet().iterator();
+		if (!ite.hasNext()) {
+			return;
+		}
+		final Entry aa = ite.next();
 		final SoftwareImage si = new SoftwareImage();
 		if (aa.getValue() instanceof final SwImage sw) {
 			final ChecksumData cd = sw.getChecksum();

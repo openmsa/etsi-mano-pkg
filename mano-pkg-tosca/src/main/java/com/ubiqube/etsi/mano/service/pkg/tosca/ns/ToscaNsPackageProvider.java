@@ -53,26 +53,25 @@ import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlLevelMapping;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlStepMapping;
 import com.ubiqube.etsi.mano.service.pkg.ns.NsPackageProvider;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.LinkBitrateRequirements;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVirtualLinkProtocolData;
+import com.ubiqube.parser.tosca.objects.tosca.groups.nfv.VNFFG;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.Forwarding;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NFP;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NS;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NfpPosition;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NfpPositionElement;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.Sap;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VNF;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NfpRule;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsToLevelMapping;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.SecurityGroupRule;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VirtualLinkToLevelMapping;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToInstantiationLevelMapping;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToLevelMapping;
 
 import ma.glasnost.orika.MapperFactory;
-import tosca.datatypes.nfv.AddressData;
-import tosca.datatypes.nfv.LinkBitrateRequirements;
-import tosca.datatypes.nfv.NsVirtualLinkProtocolData;
-import tosca.groups.nfv.VNFFG;
-import tosca.nodes.nfv.Forwarding;
-import tosca.nodes.nfv.NFP;
-import tosca.nodes.nfv.NS;
-import tosca.nodes.nfv.NfpPosition;
-import tosca.nodes.nfv.NfpPositionElement;
-import tosca.nodes.nfv.Sap;
-import tosca.nodes.nfv.VNF;
-import tosca.policies.nfv.NfpRule;
-import tosca.policies.nfv.NsAutoScale;
-import tosca.policies.nfv.NsToLevelMapping;
-import tosca.policies.nfv.SecurityGroupRule;
-import tosca.policies.nfv.VirtualLinkToLevelMapping;
-import tosca.policies.nfv.VnfToInstantiationLevelMapping;
-import tosca.policies.nfv.VnfToLevelMapping;
 
 /**
  *
@@ -87,13 +86,13 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 
 	@Override
 	protected void additionalMapping(final MapperFactory mapperFactory) {
-		mapperFactory.classMap(tosca.nodes.nfv.NsVirtualLink.class, NsVirtualLink.class)
+		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NsVirtualLink.class, NsVirtualLink.class)
 				.field("internalName", "toscaName")
 				.field("vlProfile", "nsVlProfile")
 				.field("connectivityType", "vlConnectivityType")
 				.byDefault()
 				.register();
-		mapperFactory.classMap(tosca.datatypes.nfv.NsVlProfile.class, NsVlProfile.class)
+		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVlProfile.class, NsVlProfile.class)
 				.field("minBitrateRequirements.root", "linkBitrateRoot")
 				.field("minBitrateRequirements.leaf", "linkBitrateLeaf")
 				.field("maxBitrateRequirements.root", "maxBitrateRequirementsRoot")
@@ -103,7 +102,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 				.byDefault()
 				.register();
 
-		mapperFactory.classMap(AddressData.class, NsAddressData.class)
+		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.AddressData.class, NsAddressData.class)
 				.field("l2AddressData.macAddressAssignment", "macAddressAssignment")
 				.field("l3AddressData.numberOfIpAddress", "numberOfIpAddress")
 				.field("l3AddressData.ipAddressAssignment", "ipAddressAssignment")
@@ -142,7 +141,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 
 	@Override
 	public Set<NsVirtualLink> getNsVirtualLink(final Map<String, String> userData) {
-		return getSetOf(tosca.nodes.nfv.NsVirtualLink.class, NsVirtualLink.class, userData);
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NsVirtualLink.class, NsVirtualLink.class, userData);
 	}
 
 	@Override

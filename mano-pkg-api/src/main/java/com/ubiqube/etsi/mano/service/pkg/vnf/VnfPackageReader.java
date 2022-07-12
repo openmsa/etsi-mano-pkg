@@ -36,12 +36,12 @@ import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
 import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
-import com.ubiqube.etsi.mano.service.pkg.bean.InstantiationLevels;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
-import com.ubiqube.etsi.mano.service.pkg.bean.VduInitialDelta;
-import com.ubiqube.etsi.mano.service.pkg.bean.VduInstantiationLevels;
-import com.ubiqube.etsi.mano.service.pkg.bean.VduScalingAspectDeltas;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 /**
  *

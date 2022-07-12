@@ -48,6 +48,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.ToscaVnfPackageReader;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 import ma.glasnost.orika.OrikaSystemProperties;
 import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
@@ -159,7 +160,7 @@ class ToscaPackageProviderTest {
 
 	@Test
 	void testVduScalingAspectDeltas() throws Exception {
-		final List<com.ubiqube.etsi.mano.service.pkg.bean.VduScalingAspectDeltas> list = tpp.getVduScalingAspectDeltas(new HashMap<String, String>());
+		final List<VduScalingAspectDeltas> list = tpp.getVduScalingAspectDeltas(new HashMap<String, String>());
 		System.out.println("" + list);
 		assertNotNull(list);
 	}

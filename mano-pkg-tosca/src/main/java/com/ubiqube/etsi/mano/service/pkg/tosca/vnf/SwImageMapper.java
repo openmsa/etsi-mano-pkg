@@ -19,10 +19,10 @@ package com.ubiqube.etsi.mano.service.pkg.tosca.vnf;
 import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
 import com.ubiqube.etsi.mano.dao.mano.DiskFormatType;
 import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
+import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
-import tosca.artifacts.nfv.SwImage;
 
 /**
  *

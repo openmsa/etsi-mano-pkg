@@ -20,6 +20,9 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ubiqube.etsi.mano.Constants;
+import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
 import com.ubiqube.etsi.mano.service.pkg.PkgUtils;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
@@ -48,7 +53,9 @@ import com.ubiqube.parser.tosca.Imports;
 import com.ubiqube.parser.tosca.ParseException;
 import com.ubiqube.parser.tosca.ToscaContext;
 import com.ubiqube.parser.tosca.ToscaParser;
+import com.ubiqube.parser.tosca.api.OrikaMapper;
 import com.ubiqube.parser.tosca.api.ToscaApi;
+import com.ubiqube.parser.tosca.scalar.Version;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -64,6 +71,8 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	private static final String FOUND_NODE_IN_TOSCA_MODEL = "Found {} {} node in TOSCA model";
 
+	private static final String JAR_PATH = "/tosca-class-%s-2.0.0-SNAPSHOT.jar";
+
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPackageReader.class);
 
 	private final ToscaContext root;
@@ -74,6 +83,12 @@ public abstract class AbstractPackageReader implements Closeable {
 	private final File tempFile;
 
 	private final BinaryRepository repo;
+
+	private URLClassLoader urlLoader;
+
+	private MapperFacade toscaMapper;
+
+	private ToscaApi toscaApi;
 
 	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, final UUID id) {
 		this.repo = repo;
@@ -91,6 +106,57 @@ public abstract class AbstractPackageReader implements Closeable {
 		converterFactory.registerConverter(new TimeConverter());
 		converterFactory.registerConverter(new FrequencyConverter());
 		mapper = mapperFactory.getMapperFacade();
+		prepareVersionSettings();
+	}
+
+	private void prepareVersionSettings() {
+		final Version version = getVersion(root.getMetadata());
+		final String jarPath = String.format(JAR_PATH, toJarVersions(version));
+		final URL cls = this.getClass().getResource(jarPath);
+		if (null == cls) {
+			throw new ParseException("Unable to find " + jarPath);
+		}
+		this.urlLoader = URLClassLoader.newInstance(new URL[] { cls }, this.getClass().getClassLoader());
+		Thread.currentThread().setContextClassLoader(urlLoader);
+		toscaMapper = createToscaMapper().getMapperFacade();
+		toscaApi = new ToscaApi(urlLoader, toscaMapper);
+	}
+
+	private MapperFactory createToscaMapper() {
+		final MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+		final ConverterFactory converterFactory = mapperFactory.getConverterFactory();
+		converterFactory.registerConverter(new SizeConverter());
+		converterFactory.registerConverter(new Size2Converter());
+		converterFactory.registerConverter(new TimeConverter());
+		converterFactory.registerConverter(new Time2Converter());
+		converterFactory.registerConverter(new FrequencyConverter());
+		converterFactory.registerConverter(new Frequency2Converter());
+		final OrikaMapper meh = getVersionedMapperMethod();
+		meh.configureMapper(mapperFactory);
+		return mapperFactory;
+	}
+
+	private OrikaMapper getVersionedMapperMethod() {
+		try {
+			final Class<?> clz = urlLoader.loadClass("com.ubiqube.etsi.mano.sol001.OrikaMapperImpl");
+			return (OrikaMapper) clz.getDeclaredConstructor().newInstance();
+		} catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			throw new GenericException(e);
+		}
+	}
+
+	private static String toJarVersions(final Version v) {
+		return v.toString().replace(".", "");
+	}
+
+	private static Version getVersion(final Map<String, String> metadata) {
+		final String author = metadata.get("template_author");
+		if (null == author) {
+			return new Version("2.5.1");
+		}
+		return Optional.ofNullable(metadata.get("template_version"))
+				.map(Version::new)
+				.orElseGet(() -> new Version("2.5.1"));
 	}
 
 	private void unpackAndResend(@NotNull final UUID id) {
@@ -105,36 +171,36 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	@SuppressWarnings("null")
 	@Nonnull
-	protected <T, U> Set<U> getSetOf(final Class<T> toscaClass, final Class<U> to, final Map<String, String> parameters) {
-		final List<T> list = ToscaApi.getObjects(root, parameters, toscaClass);
-		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), toscaClass.getSimpleName());
+	protected <T, U> Set<U> getSetOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
+		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
+		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), manoClass.getSimpleName());
 		return list.stream()
 				.map(x -> mapper.map(x, to))
 				.collect(Collectors.toSet());
 	}
 
 	@Nonnull
-	protected <T> Set<T> getSetOf(final Class<T> toscaClass, final Map<String, String> parameters) {
-		final List<T> list = ToscaApi.getObjects(root, parameters, toscaClass);
-		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), toscaClass.getSimpleName());
+	protected <T> Set<T> getSetOf(final Class<T> manoClass, final Map<String, String> parameters) {
+		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
+		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), manoClass.getSimpleName());
 		return list.stream()
 				.collect(Collectors.toSet());
 	}
 
 	@SuppressWarnings("null")
 	@Nonnull
-	protected <T, U> List<U> getListOf(final Class<T> toscaClass, final Class<U> to, final Map<String, String> parameters) {
-		final List<T> obj = ToscaApi.getObjects(root, parameters, toscaClass);
-		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), toscaClass.getSimpleName());
+	protected <T, U> List<U> getListOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
+		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
+		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
 		return mapper.mapAsList(obj, to);
 	}
 
 	@SuppressWarnings("null")
 	@Nonnull
-	protected <U> List<U> getObjects(final Class<U> toscaClass, final Map<String, String> parameters) {
-		final List<U> obj = ToscaApi.getObjects(root, parameters, toscaClass);
-		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), toscaClass.getSimpleName());
-		return obj;
+	protected <U> List<U> getObjects(final Class<U> manoClass, final Map<String, String> parameters) {
+		final List<U> obj = toscaApi.getObjects(root, parameters, manoClass);
+		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
+		return toscaMapper.mapAsList(obj, manoClass);
 	}
 
 	@Nonnull
