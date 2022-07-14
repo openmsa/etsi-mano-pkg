@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -138,9 +139,11 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	private OrikaMapper getVersionedMapperMethod() {
 		try {
-			final Class<?> clz = urlLoader.loadClass("com.ubiqube.etsi.mano.sol001.OrikaMapperImpl");
+			final Properties props = new Properties();
+			props.load(urlLoader.getResourceAsStream("META-INF/tosca-resources.properties"));
+			final Class<?> clz = urlLoader.loadClass(props.getProperty("mapper"));
 			return (OrikaMapper) clz.getDeclaredConstructor().newInstance();
-		} catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+		} catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IOException e) {
 			throw new GenericException(e);
 		}
 	}

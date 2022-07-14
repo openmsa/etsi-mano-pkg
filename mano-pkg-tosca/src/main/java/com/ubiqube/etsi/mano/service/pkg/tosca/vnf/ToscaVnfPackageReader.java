@@ -236,11 +236,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		}
 		final Entry<String, ?> it = y.entrySet().iterator().next();
 		final Object obj = it.getValue();
-		if (!(obj instanceof final SwImage sw)) {
-			throw new ParseException("Unknown artefact type: " + obj.getClass());
-		}
-		final SoftwareImage softwareImage = getMapper().map(sw, SoftwareImage.class);
-		softwareImage.setDiskFormat(softwareImage.getDiskFormat());
+		final SoftwareImage softwareImage = getMapper().map(obj, SoftwareImage.class);
 		softwareImage.setName(it.getKey());
 		o.setSoftwareImage(softwareImage);
 	}
