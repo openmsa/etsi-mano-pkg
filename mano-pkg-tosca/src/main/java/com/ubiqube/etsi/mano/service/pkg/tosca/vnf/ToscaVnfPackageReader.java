@@ -243,7 +243,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public Set<VnfStorage> getVnfStorages(final Map<String, String> parameters) {
-		return getSetOf(VnfStorage.class, parameters, VirtualBlockStorage.class, VirtualObjectStorage.class);
+		return getSetOf(VnfStorage.class, parameters, VirtualBlockStorage.class);
 	}
 
 	@Override
