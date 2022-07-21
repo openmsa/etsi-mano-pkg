@@ -128,6 +128,8 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("virtualBlockStorageData.sizeOfStorage", "size")
 				.field(INTERNAL_NAME, TOSCA_NAME)
 				.field("", "myField:{|setType('BLOCK')}")
+				.exclude("artifacts")
+				.customize(new ArtefactMapper())
 				.byDefault()
 				.register();
 		mapperFactory.classMap(VirtualObjectStorage.class, VnfStorage.class)
@@ -186,11 +188,6 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.register();
 		mapperFactory.classMap(SecurityGroupRule.class, SecurityGroup.class)
 				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
-		mapperFactory.classMap(VirtualBlockStorage.class, VnfStorage.class)
-				.exclude("artifacts")
-				.customize(new ArtefactMapper())
 				.byDefault()
 				.register();
 		mapperFactory.classMap(SwImage.class, SoftwareImage.class)
