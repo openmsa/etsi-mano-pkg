@@ -132,6 +132,7 @@ public abstract class AbstractPackageReader implements Closeable {
 		converterFactory.registerConverter(new Time2Converter());
 		converterFactory.registerConverter(new FrequencyConverter());
 		converterFactory.registerConverter(new Frequency2Converter());
+		converterFactory.registerConverter(new Range2Converter());
 		final OrikaMapper meh = getVersionedMapperMethod();
 		meh.configureMapper(mapperFactory);
 		return mapperFactory;
