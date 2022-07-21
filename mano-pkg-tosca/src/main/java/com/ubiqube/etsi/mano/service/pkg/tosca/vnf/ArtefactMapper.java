@@ -69,7 +69,6 @@ public class ArtefactMapper extends CustomMapper<VirtualBlockStorage, VnfStorage
 			si.setMinRam(Optional.ofNullable(sw.getMinRam()).map(x -> sc.convertTo(x, null, context)).orElse(0L));
 			si.setProvider(sw.getProvider());
 			si.setVersion(sw.getVersion());
-			b.setSize(Optional.ofNullable(sw.getSize()).map(x -> sc.convertTo(x, null, context)).orElse(0L));
 		}
 		b.setToscaName(a.getInternalName());
 		b.setType("BLOCK");
