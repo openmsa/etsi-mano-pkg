@@ -230,7 +230,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 					pos.forEach(l -> l.getElementReq().forEach(m -> {
 						final List<NfpPositionElement> elem = findPositionElement(elements, m);
 						elem.forEach(nfposElem -> {
-							final CpPair cp = handleProfileElement(nfposElem.getProfileElementReq(), fwList);
+							final CpPair cp = handleProfileElement(nfposElem, fwList);
 							vnffgInstance.getPairs().add(cp);
 						});
 					}));
@@ -249,20 +249,21 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 				.orElseThrow(() -> new ToscaException("Could not find nfpRule " + internalName));
 	}
 
-	private static CpPair handleProfileElement(final List<String> list, final List<Forwarding> fwList) {
-		if (list.size() > 2) {
+	private static CpPair handleProfileElement(final NfpPositionElement nfposElem, final List<Forwarding> fwList) {
+		final List<String> nfposElement = nfposElem.getProfileElementReq();
+		if (nfposElement.size() > 2) {
 			throw new ToscaException("Size of list 'ProfileElement' must be equal or less than 2.");
 		}
-		final String igress = list.get(0);
+		final String igress = nfposElement.get(0);
 		final CpPair cp = new CpPair();
 		cp.setIngress(igress);
 		final Forwarding fwin = findForwarding(fwList, igress);
-		cp.setToscaName(fwin.getInternalName());
+		cp.setToscaName(nfposElem.getInternalName());
 		cp.setIngressVl(fwin.getVirtualLinkReq());
-		if (list.size() != 2) {
+		if (nfposElement.size() != 2) {
 			return cp;
 		}
-		final String egress = list.get(1);
+		final String egress = nfposElement.get(1);
 		cp.setEgress(egress);
 		final Forwarding fweg = findForwarding(fwList, egress);
 		cp.setEgressVl(fweg.getVirtualLinkReq());
