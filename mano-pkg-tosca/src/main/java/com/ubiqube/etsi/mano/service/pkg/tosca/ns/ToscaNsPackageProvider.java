@@ -41,6 +41,7 @@ import com.ubiqube.etsi.mano.dao.mano.nsd.NfpDescriptor;
 import com.ubiqube.etsi.mano.dao.mano.nsd.VnffgDescriptor;
 import com.ubiqube.etsi.mano.dao.mano.nsd.VnffgInstance;
 import com.ubiqube.etsi.mano.dao.mano.v2.nfvo.NsVirtualLink;
+import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
 import com.ubiqube.etsi.mano.service.pkg.ToscaException;
 import com.ubiqube.etsi.mano.service.pkg.bean.NsInformations;
@@ -136,6 +137,9 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 	@Override
 	public NsInformations getNsInformations(final Map<String, String> userData) {
 		final List<NsInformations> nss = getListOf(NS.class, NsInformations.class, userData);
+		if (nss.isEmpty()) {
+			throw new GenericException("Unable to find a NSD block in this NSD.");
+		}
 		return nss.get(0);
 	}
 
