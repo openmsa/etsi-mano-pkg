@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import com.ubiqube.etsi.mano.dao.mano.NsAddressData;
@@ -203,7 +204,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 	 * VNFFGd -> 1..N, NfpPositionElement -> 0..N Nfpd.
 	 */
 	@Override
-	public Set<VnffgDescriptor> getVnffg(final Map<String, String> userData) {
+	public @Nullable Set<VnffgDescriptor> getVnffg(final Map<String, String> userData) {
 		// Port pair group ?
 		final List<NfpPositionElement> elements = getObjects(NfpPositionElement.class, userData);
 		// NfpPosition link to NfpPositionElement
@@ -227,13 +228,13 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 				vnffgd.setClassifier(toClassifier(nfpRule));
 				lNfp.getNfpPositionReq().forEach(lPosition -> {
 					final List<NfpPosition> pos = findNfpPosition(nfpPosition, lPosition);
-					final VnffgInstance vnffgInstance = new VnffgInstance();
-					nnfpd.getInstances().add(vnffgInstance);
-					vnffgInstance.setPairs(new ArrayList<>());
-					vnffgInstance.setToscaName(lPosition);
 					pos.forEach(l -> l.getElementReq().forEach(m -> {
 						final List<NfpPositionElement> elem = findPositionElement(elements, m);
 						elem.forEach(nfposElem -> {
+							final VnffgInstance vnffgInstance = new VnffgInstance();
+							nnfpd.getInstances().add(vnffgInstance);
+							vnffgInstance.setPairs(new ArrayList<>());
+							vnffgInstance.setToscaName(nfposElem.getInternalName());
 							final CpPair cp = handleProfileElement(nfposElem, fwList);
 							vnffgInstance.getPairs().add(cp);
 						});
