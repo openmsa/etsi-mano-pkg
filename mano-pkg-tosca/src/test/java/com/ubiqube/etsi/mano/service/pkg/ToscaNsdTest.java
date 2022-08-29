@@ -17,6 +17,7 @@
 package com.ubiqube.etsi.mano.service.pkg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,6 +106,7 @@ class ToscaNsdTest {
 	@Test
 	void testVnffg() {
 		final Set<VnffgDescriptor> list = tpp.getVnffg(new HashMap<String, String>());
+		assertNotNull(list);
 		assertEquals(0, list.size());
 	}
 }
