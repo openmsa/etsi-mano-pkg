@@ -51,7 +51,7 @@ public class ArtefactMapper extends CustomMapper<VirtualBlockStorage, VnfStorage
 		if (!ite.hasNext()) {
 			return;
 		}
-		final Entry aa = ite.next();
+		final Entry<String, ?> aa = ite.next();
 		final SoftwareImage si = new SoftwareImage();
 		if (aa.getValue() instanceof final SwImage sw) {
 			final ChecksumData cd = sw.getChecksum();
@@ -60,7 +60,7 @@ public class ArtefactMapper extends CustomMapper<VirtualBlockStorage, VnfStorage
 					.hash(cd.getHash())
 					.build();
 			si.setChecksum(check);
-			si.setName((String) aa.getKey());
+			si.setName(aa.getKey());
 			b.setSoftwareImage(si);
 			si.setContainerFormat(ContainerFormatType.fromValue(sw.getContainerFormat()));
 			si.setDiskFormat(DiskFormatType.fromValue(sw.getDiskFormat()));
