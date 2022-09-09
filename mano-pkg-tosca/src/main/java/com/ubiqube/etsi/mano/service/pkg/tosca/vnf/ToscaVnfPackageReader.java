@@ -19,6 +19,7 @@ package com.ubiqube.etsi.mano.service.pkg.tosca.vnf;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
 import com.ubiqube.etsi.mano.dao.mano.L3Data;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
@@ -38,6 +41,7 @@ import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
 import com.ubiqube.etsi.mano.dao.mano.VlProtocolData;
 import com.ubiqube.etsi.mano.dao.mano.VnfCompute;
 import com.ubiqube.etsi.mano.dao.mano.VnfExtCp;
+import com.ubiqube.etsi.mano.dao.mano.VnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.VnfLinkPort;
 import com.ubiqube.etsi.mano.dao.mano.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.VnfVl;
@@ -55,7 +59,10 @@ import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Artifact;
+import com.ubiqube.parser.tosca.ConditionListDefintion;
+import com.ubiqube.parser.tosca.ConditionValue;
 import com.ubiqube.parser.tosca.ParseException;
+import com.ubiqube.parser.tosca.TriggerDefinition;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.HelmChart;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.L3ProtocolData;
@@ -333,6 +340,13 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	@Override
 	public Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
 		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp.class, VirtualCp.class, parameters);
+	}
+	
+	@Override
+	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
+		Set<com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator> VnfIndicators =  getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, parameters);
+		 Set<VnfIndicator> vnfIndicators = new HashSet<VnfIndicator>();
+		return vnfIndicators;
 	}
 
 	@Override

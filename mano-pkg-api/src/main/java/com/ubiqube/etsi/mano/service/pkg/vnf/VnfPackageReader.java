@@ -28,6 +28,7 @@ import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
 import com.ubiqube.etsi.mano.dao.mano.VnfCompute;
 import com.ubiqube.etsi.mano.dao.mano.VnfExtCp;
+import com.ubiqube.etsi.mano.dao.mano.VnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.VnfLinkPort;
 import com.ubiqube.etsi.mano.dao.mano.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.VnfVl;
@@ -107,6 +108,8 @@ public interface VnfPackageReader extends Closeable {
 
 	@Nonnull
 	Set<VirtualCp> getVirtualCp(Map<String, String> parameters);
+	
+	Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters);
 
 	@Nonnull
 	Set<McIops> getMciops(Map<String, String> userDefinedData);
