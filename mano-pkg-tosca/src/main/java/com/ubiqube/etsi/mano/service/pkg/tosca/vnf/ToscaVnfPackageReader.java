@@ -17,7 +17,6 @@
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,11 +30,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ubiqube.etsi.mano.dao.mano.ActivityListDefinition;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
-import com.ubiqube.etsi.mano.dao.mano.ConditionListDefintion;
 import com.ubiqube.etsi.mano.dao.mano.L3Data;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
 import com.ubiqube.etsi.mano.dao.mano.SecurityGroup;
@@ -60,10 +55,8 @@ import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
-import com.ubiqube.parser.tosca.ActionInputValue;
 import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.ParseException;
-import com.ubiqube.parser.tosca.TriggerDefinition;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.HelmChart;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.L3ProtocolData;
@@ -342,68 +335,10 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	public Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
 		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp.class, VirtualCp.class, parameters);
 	}
-	
+
 	@Override
 	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
-		Set<com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator> VnfIndicators =  getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, parameters);
-		Set<VnfIndicator> vnfIndicators = new HashSet<>();
-		for(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator vnfInd : VnfIndicators) {
-			VnfIndicator vnfIndicator = new VnfIndicator();
-			vnfIndicator.setTargets(vnfInd.getTargets());
-			vnfIndicator.setName(vnfInd.getInternalName());
-			vnfIndicator.setSource(vnfInd.getSource());
-			Map<String, com.ubiqube.etsi.mano.dao.mano.TriggerDefinition> triggers = new HashMap<>();
-			for(Map.Entry<String, TriggerDefinition> entry : vnfInd.getTriggers().entrySet()) {
-				com.ubiqube.etsi.mano.dao.mano.TriggerDefinition triggerDefinition = new com.ubiqube.etsi.mano.dao.mano.TriggerDefinition();
-				triggerDefinition.setTargets(entry.getValue().getTargets());
-				triggerDefinition.setEvent(entry.getValue().getEvent());
-				//Actions
-				List<ActivityListDefinition> actions = new ArrayList<>();
-				for(com.ubiqube.parser.tosca.ActivityListDefinition activity : entry.getValue().getAction()) {
-					ActivityListDefinition activityListDefinition = new ActivityListDefinition();
-					activityListDefinition.setOperation(activity.getActivity().getOperation());
-					Map<String, String> inputs = new HashMap<>();
-					for(Map.Entry<String, ActionInputValue> input : activity.getActivity().getInputs().entrySet()) {
-						inputs.put(input.getKey(), input.getValue().getValue());
-					}
-					activityListDefinition.setInputs(inputs);
-					actions.add(activityListDefinition);
-				}
-				triggerDefinition.setActions(actions);
-				//Conditions
-				List<ConditionListDefintion> conditionList = new ArrayList<>();
-				ConditionListDefintion conditionListDefintion = new ConditionListDefintion();
-				List<Object> conditions = new ArrayList<>();
-				try {
-					ObjectMapper objectMapper = new ObjectMapper();
-					conditions = objectMapper.readValue(entry.getValue().getCondition(), List.class);
-				}
-				catch (JsonProcessingException e) {
-					LOG.error("errro parsing json "+e);
-				}
-				for (Object ob : conditions) {
-					Map<String, List> mc = (Map<String, List>) ob;
-					for (Map.Entry<String, List> condition : mc.entrySet()) {
-						conditionListDefintion.setIndicatorName(condition.getKey());
-						for (Object obj : condition.getValue()) {
-							Map<String, Object> mt = (Map<String, Object>) obj;
-							Map<String, String> thresholdValues = new HashMap<>();
-							for (Map.Entry<String, Object> threshold : mt.entrySet()) {
-								String[] value = String.valueOf(threshold.getValue()).split("=");
-								thresholdValues.put(threshold.getKey(), value[1]);
-							}
-							conditionListDefintion.setThresholdValues(thresholdValues);
-						}
-					}
-				}
-				conditionList.add(conditionListDefintion);
-				triggerDefinition.setConditions(conditionList);
-				triggers.put(entry.getKey(), triggerDefinition);
-			}
-			vnfIndicator.setTriggers(triggers);
-			vnfIndicators.add(vnfIndicator);
-		}
-		return vnfIndicators;
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, VnfIndicator.class, parameters);
 	}
 
 	@Override
