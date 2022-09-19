@@ -39,6 +39,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.ns.ToscaNsPackageProvider;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
+import com.ubiqube.parser.test.ArtifactDownloader;
 
 import ma.glasnost.orika.OrikaSystemProperties;
 import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
@@ -47,6 +48,7 @@ class ToscaNsdTest {
 	private final ToscaNsPackageProvider tpp;
 
 	public ToscaNsdTest() throws IOException {
+		ArtifactDownloader.prepareArtifact("421");
 		System.setProperty(OrikaSystemProperties.COMPILER_STRATEGY, EclipseJdtCompilerStrategy.class.getName());
 		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES, "true");
 		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES_TO_PATH, "/tmp/orika-test");

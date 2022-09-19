@@ -48,6 +48,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.ToscaVnfPackageReader;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
+import com.ubiqube.parser.test.ArtifactDownloader;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 import ma.glasnost.orika.OrikaSystemProperties;
@@ -57,6 +58,7 @@ class ToscaPackageProviderTest {
 	private final ToscaVnfPackageReader tpp;
 
 	public ToscaPackageProviderTest() throws IOException {
+		ArtifactDownloader.prepareArtifact("421");
 		System.setProperty(OrikaSystemProperties.COMPILER_STRATEGY, EclipseJdtCompilerStrategy.class.getName());
 		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES, "true");
 		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES_TO_PATH, "/tmp/orika-test");
