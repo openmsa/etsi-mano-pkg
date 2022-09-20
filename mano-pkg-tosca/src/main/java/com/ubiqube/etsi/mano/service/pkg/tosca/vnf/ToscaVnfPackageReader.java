@@ -357,7 +357,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		final Entry<String, Artifact> arte = m.getArtifacts().entrySet().iterator().next();
 		final Object obj = arte.getValue();
 		if (!(obj instanceof final HelmChart av)) {
-			throw new GenericException("Unknown class type " + obj);
+			throw new GenericException("Only HelmChart can be defined for " + m.getInternalName() + ", not " + obj.getClass().getSimpleName());
 		}
 		final CnfImage image = new CnfImage();
 		image.setToscaName(arte.getKey());
