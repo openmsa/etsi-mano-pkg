@@ -57,7 +57,6 @@ import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.ParseException;
-import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.HelmChart;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.L3ProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VirtualLinkProtocolData;
@@ -356,8 +355,8 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		}
 		final Entry<String, Artifact> arte = m.getArtifacts().entrySet().iterator().next();
 		final Object obj = arte.getValue();
-		if (!(obj instanceof final HelmChart av)) {
-			throw new GenericException("Only HelmChart can be defined for " + m.getInternalName() + ", not " + obj.getClass().getSimpleName());
+		if (!(obj instanceof final Artifact av)) {
+			throw new GenericException("Only Artifact can be defined for " + m.getInternalName() + ", not " + obj.getClass().getSimpleName());
 		}
 		final CnfImage image = new CnfImage();
 		image.setToscaName(arte.getKey());
