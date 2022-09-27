@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
+import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
 import com.ubiqube.etsi.mano.dao.mano.L3Data;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
 import com.ubiqube.etsi.mano.dao.mano.SecurityGroup;
@@ -45,7 +46,6 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
-import com.ubiqube.etsi.mano.dao.mano.vnfm.CnfImage;
 import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
@@ -343,10 +343,10 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	@Override
 	public Set<McIops> getMciops(final Map<String, String> userDefinedData) {
 		final Set<Mciop> mciops = getSetOf(Mciop.class, userDefinedData);
-		return mciops.stream().map(ToscaVnfPackageReader::map).collect(Collectors.toSet());
+		return mciops.stream().map(this::map).collect(Collectors.toSet());
 	}
 
-	private static McIops map(final Mciop m) {
+	private McIops map(final Mciop m) {
 		final McIops ret = new McIops();
 		ret.setAssociatedVdu(m.getAssociatedVduReq().stream().collect(Collectors.toSet()));
 		ret.setToscaName(m.getInternalName());
@@ -358,11 +358,10 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		if (!(obj instanceof final Artifact av)) {
 			throw new GenericException("Only Artifact can be defined for " + m.getInternalName() + ", not " + obj.getClass().getSimpleName());
 		}
-		final CnfImage image = new CnfImage();
-		image.setToscaName(arte.getKey());
-		image.setType(av.getType());
-		image.setUrl(av.getFile());
-		ret.setImage(image);
+		final SoftwareImage img = getMapper().map(obj, SoftwareImage.class);
+		img.setName(arte.getKey());
+		img.setContainerFormat(ContainerFormatType.HELM);
+		ret.setArtifacts(Map.of(arte.getKey(), img));
 		return ret;
 	}
 }
