@@ -17,6 +17,7 @@
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,12 +31,18 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
 import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
 import com.ubiqube.etsi.mano.dao.mano.L3Data;
+import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
 import com.ubiqube.etsi.mano.dao.mano.SecurityGroup;
 import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
+import com.ubiqube.etsi.mano.dao.mano.TriggerDefinition;
 import com.ubiqube.etsi.mano.dao.mano.VlProtocolData;
 import com.ubiqube.etsi.mano.dao.mano.VnfCompute;
 import com.ubiqube.etsi.mano.dao.mano.VnfExtCp;
@@ -46,6 +53,7 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
+import com.ubiqube.etsi.mano.dao.mano.pm.PmType;
 import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
@@ -337,7 +345,37 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
-		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, VnfIndicator.class, parameters);
+		final Set<VnfIndicator> vnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, VnfIndicator.class, parameters);
+		for (VnfIndicator vnfIndicator : vnfIndicators) {
+			Map<String, MonitoringParams> mPs = new HashMap<>();
+			List<TriggerDefinition> triggerDefinitions = new ArrayList<TriggerDefinition>(
+					vnfIndicator.getTriggers().values());
+			for (TriggerDefinition triggerDefinition : triggerDefinitions) {
+				ObjectMapper mapper = new ObjectMapper();
+				JsonNode actualObj;
+				try {
+					actualObj = mapper.readTree(triggerDefinition.getCondition());
+					for (JsonNode jsonNode : actualObj) {
+						Map<String, Object> conditions = mapper.convertValue(jsonNode,
+								new TypeReference<Map<String, Object>>() {
+								});
+						for (String keyInd : conditions.keySet()) {
+							MonitoringParams monitoringParams = new MonitoringParams();
+							monitoringParams.setCollectionPeriod(600L);
+							monitoringParams.setName(keyInd);
+							monitoringParams.setPerformanceMetric(keyInd);
+							monitoringParams.setObjectType(PmType.VNF);
+							mPs.put(keyInd, monitoringParams);
+						}
+					}
+				} catch (JsonProcessingException e) {
+					LOG.error(e.getMessage());
+				}
+			}
+			Set<MonitoringParams> m = new HashSet<MonitoringParams>(mPs.values());
+			vnfIndicator.setMonitoringParameters(m);
+		}
+		return vnfIndicators;
 	}
 
 	@Override
