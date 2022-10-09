@@ -188,7 +188,6 @@ topology_template:
           min_bitrate_requirements:
             root: 11
             leaf: 16
-          virtual_link_protocol_data:
           qos:
             latency: 5 ms
             packet_delay_variation: 1 s
@@ -226,7 +225,6 @@ topology_template:
           min_bitrate_requirements:
             root: 11
             leaf: 16
-          virtual_link_protocol_data:
           qos:
             latency: 5 ms
             packet_delay_variation: 1 s

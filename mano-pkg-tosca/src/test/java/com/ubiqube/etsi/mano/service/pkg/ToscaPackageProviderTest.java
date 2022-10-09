@@ -106,7 +106,7 @@ class ToscaPackageProviderTest {
 	void testStorage01() throws Exception {
 		final Set<VnfStorage> storages = tpp.getVnfStorages(new HashMap<String, String>());
 		System.out.println("" + storages);
-		assertEquals(2, storages.size());
+		assertEquals(1, storages.size());
 		for (final VnfStorage vnfStorage : storages) {
 			assertEquals(6000000000L, vnfStorage.getSize());
 			assertNotNull(vnfStorage.getToscaName());
@@ -195,6 +195,6 @@ class ToscaPackageProviderTest {
 	@Test
 	void testVnfd() {
 		final List<String> files = tpp.getVnfdFiles(true);
-		assertEquals(3, files.size());
+		assertEquals(4, files.size());
 	}
 }
