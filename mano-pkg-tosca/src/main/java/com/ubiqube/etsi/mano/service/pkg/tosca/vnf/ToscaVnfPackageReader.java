@@ -205,6 +205,10 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.customize(new SwImageMapper())
 				.byDefault()
 				.register();
+		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, VnfIndicator.class)
+				.field(INTERNAL_NAME, TOSCA_NAME)
+				.byDefault()
+				.register();
 	}
 
 	@Override
@@ -374,6 +378,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 			}
 			Set<MonitoringParams> m = new HashSet<MonitoringParams>(mPs.values());
 			vnfIndicator.setMonitoringParameters(m);
+			vnfIndicator.setName(vnfIndicator.getToscaName());
 		}
 		return vnfIndicators;
 	}
