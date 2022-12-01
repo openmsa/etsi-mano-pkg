@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import com.ubiqube.etsi.mano.dao.mano.NsAddressData;
@@ -204,7 +203,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 	 * VNFFGd -> 1..N, NfpPositionElement -> 0..N Nfpd.
 	 */
 	@Override
-	public @Nullable Set<VnffgDescriptor> getVnffg(final Map<String, String> userData) {
+	public Set<VnffgDescriptor> getVnffg(final Map<String, String> userData) {
 		// Port pair group ?
 		final List<NfpPositionElement> elements = getObjects(NfpPositionElement.class, userData);
 		// NfpPosition link to NfpPositionElement

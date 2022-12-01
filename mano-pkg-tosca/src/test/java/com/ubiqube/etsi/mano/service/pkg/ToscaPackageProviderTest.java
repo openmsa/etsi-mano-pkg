@@ -26,12 +26,15 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
+import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
+import com.ubiqube.etsi.mano.dao.mano.DiskFormatType;
 import com.ubiqube.etsi.mano.dao.mano.IpPool;
 import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
@@ -119,8 +122,8 @@ class ToscaPackageProviderTest {
 				assertEquals("SHA-256", checksum.getAlgorithm());
 				assertEquals("01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b", checksum.getHash());
 
-				assertEquals("BARE", swImage.getContainerFormat().toString());
-				assertEquals("QCOW2", swImage.getDiskFormat().toString());
+				assertEquals("BARE", Optional.ofNullable(swImage.getContainerFormat()).map(ContainerFormatType::toString).orElseThrow());
+				assertEquals("QCOW2", Optional.ofNullable(swImage.getDiskFormat()).map(DiskFormatType::toString).orElseThrow());
 				assertEquals(5000000000L, swImage.getMinDisk());
 				assertEquals(512000000L, swImage.getMinRam());
 				assertEquals("cirros", swImage.getName());

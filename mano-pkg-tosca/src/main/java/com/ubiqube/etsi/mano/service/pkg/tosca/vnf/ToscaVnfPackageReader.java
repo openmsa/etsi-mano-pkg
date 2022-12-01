@@ -350,21 +350,22 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	@Override
 	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
 		final Set<VnfIndicator> vnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, VnfIndicator.class, parameters);
-		for (VnfIndicator vnfIndicator : vnfIndicators) {
-			Map<String, MonitoringParams> mPs = new HashMap<>();
-			List<TriggerDefinition> triggerDefinitions = new ArrayList<TriggerDefinition>(
+		for (final VnfIndicator vnfIndicator : vnfIndicators) {
+			final Map<String, MonitoringParams> mPs = new HashMap<>();
+			final List<TriggerDefinition> triggerDefinitions = new ArrayList<>(
 					vnfIndicator.getTriggers().values());
-			for (TriggerDefinition triggerDefinition : triggerDefinitions) {
-				ObjectMapper mapper = new ObjectMapper();
+			for (final TriggerDefinition triggerDefinition : triggerDefinitions) {
+				final ObjectMapper mapper = new ObjectMapper();
 				JsonNode actualObj;
 				try {
 					actualObj = mapper.readTree(triggerDefinition.getCondition());
-					for (JsonNode jsonNode : actualObj) {
-						Map<String, Object> conditions = mapper.convertValue(jsonNode,
+					for (final JsonNode jsonNode : actualObj) {
+						final Map<String, Object> conditions = mapper.convertValue(jsonNode,
 								new TypeReference<Map<String, Object>>() {
+									//
 								});
-						for (String keyInd : conditions.keySet()) {
-							MonitoringParams monitoringParams = new MonitoringParams();
+						for (final String keyInd : conditions.keySet()) {
+							final MonitoringParams monitoringParams = new MonitoringParams();
 							monitoringParams.setCollectionPeriod(600L);
 							monitoringParams.setName(keyInd);
 							monitoringParams.setPerformanceMetric(keyInd);
@@ -372,11 +373,11 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 							mPs.put(keyInd, monitoringParams);
 						}
 					}
-				} catch (JsonProcessingException e) {
-					LOG.error(e.getMessage());
+				} catch (final JsonProcessingException e) {
+					LOG.error(e.getMessage(), e);
 				}
 			}
-			Set<MonitoringParams> m = new HashSet<MonitoringParams>(mPs.values());
+			final Set<MonitoringParams> m = new HashSet<>(mPs.values());
 			vnfIndicator.setMonitoringParameters(m);
 			vnfIndicator.setName(vnfIndicator.getToscaName());
 		}
