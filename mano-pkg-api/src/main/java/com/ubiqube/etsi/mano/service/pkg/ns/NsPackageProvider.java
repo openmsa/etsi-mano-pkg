@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import com.ubiqube.etsi.mano.dao.mano.NsSap;
+import com.ubiqube.etsi.mano.dao.mano.NsVnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsNsd;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsVnf;
 import com.ubiqube.etsi.mano.dao.mano.nsd.VnffgDescriptor;
@@ -57,4 +58,5 @@ public interface NsPackageProvider {
 
 	NsScaling getNsScaling(Map<String, String> userData);
 
+	Set<NsVnfIndicator> getNsVnfIndicator(final Map<String, String> parameters);
 }
