@@ -18,6 +18,8 @@ package com.ubiqube.etsi.mano.service.pkg.tosca.ns;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,11 +30,22 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
 import com.ubiqube.etsi.mano.dao.mano.NsAddressData;
 import com.ubiqube.etsi.mano.dao.mano.NsSap;
 import com.ubiqube.etsi.mano.dao.mano.NsVlProfile;
+import com.ubiqube.etsi.mano.dao.mano.NsVnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.SecurityGroup;
+import com.ubiqube.etsi.mano.dao.mano.TriggerDefinition;
 import com.ubiqube.etsi.mano.dao.mano.VlProtocolData;
+import com.ubiqube.etsi.mano.dao.mano.VnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsNsd;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsVnf;
 import com.ubiqube.etsi.mano.dao.mano.nsd.Classifier;
@@ -40,6 +53,7 @@ import com.ubiqube.etsi.mano.dao.mano.nsd.CpPair;
 import com.ubiqube.etsi.mano.dao.mano.nsd.NfpDescriptor;
 import com.ubiqube.etsi.mano.dao.mano.nsd.VnffgDescriptor;
 import com.ubiqube.etsi.mano.dao.mano.nsd.VnffgInstance;
+import com.ubiqube.etsi.mano.dao.mano.pm.PmType;
 import com.ubiqube.etsi.mano.dao.mano.v2.nfvo.NsVirtualLink;
 import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
@@ -54,6 +68,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlLevelMapping;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlStepMapping;
 import com.ubiqube.etsi.mano.service.pkg.ns.NsPackageProvider;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.ToscaVnfPackageReader;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.LinkBitrateRequirements;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVirtualLinkProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.groups.nfv.VNFFG;
@@ -81,6 +96,8 @@ import ma.glasnost.orika.MapperFactory;
  */
 public class ToscaNsPackageProvider extends AbstractPackageReader implements NsPackageProvider {
 
+	private static final Logger LOG = LoggerFactory.getLogger(ToscaNsPackageProvider.class);
+	
 	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, final UUID id) {
 		super(data, repo, id);
 	}
@@ -131,6 +148,11 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 				.field("l3ProtocolData.ipAllocationPools", "ipAllocationPools")
 				.byDefault()
 				.register();
+		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale.class, NsVnfIndicator.class)
+				.field("internalName", "toscaName")
+				.byDefault()
+				.register();
+
 	}
 
 	@SuppressWarnings("null")
@@ -343,6 +365,42 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 		return ret;
 	}
 
+	@Override
+	public Set<NsVnfIndicator> getNsVnfIndicator(final Map<String, String> parameters) {
+		final Set<NsVnfIndicator> nsVnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale.class, NsVnfIndicator.class, parameters);
+		for (NsVnfIndicator nsVnfIndicator : nsVnfIndicators) {
+			Map<String, MonitoringParams> mPs = new HashMap<>();
+			List<TriggerDefinition> triggerDefinitions = new ArrayList<TriggerDefinition>(
+					nsVnfIndicator.getTriggers().values());
+			for (TriggerDefinition triggerDefinition : triggerDefinitions) {
+				ObjectMapper mapper = new ObjectMapper();
+				JsonNode actualObj;
+				try {
+					actualObj = mapper.readTree(triggerDefinition.getCondition());
+					for (JsonNode jsonNode : actualObj) {
+						Map<String, Object> conditions = mapper.convertValue(jsonNode,
+								new TypeReference<Map<String, Object>>() {
+								});
+						for (String keyInd : conditions.keySet()) {
+							MonitoringParams monitoringParams = new MonitoringParams();
+							monitoringParams.setCollectionPeriod(600L);
+							monitoringParams.setName(keyInd);
+							monitoringParams.setPerformanceMetric(keyInd);
+							monitoringParams.setObjectType(PmType.NS);
+							mPs.put(keyInd, monitoringParams);
+						}
+					}
+				} catch (JsonProcessingException e) {
+					LOG.error(e.getMessage());
+				}
+			}
+			Set<MonitoringParams> m = new HashSet<MonitoringParams>(mPs.values());
+			nsVnfIndicator.setMonitoringParameters(m);
+			nsVnfIndicator.setName(nsVnfIndicator.getToscaName());
+		}
+		return nsVnfIndicators;
+	}
+	
 	private static Map<Integer, RootLeaf> mapVlLevel(@NotNull final Map<String, LinkBitrateRequirements> bitRateRequirements) {
 		return bitRateRequirements.entrySet().stream()
 				.collect(Collectors.toMap(x -> Integer.valueOf(x.getKey()), x -> new RootLeaf(x.getValue().getRoot(), x.getValue().getLeaf())));
