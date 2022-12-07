@@ -91,7 +91,7 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	private ToscaApi toscaApi;
 
-	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, final UUID id) {
+	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, @NotNull final UUID id) {
 		this.repo = repo;
 		tempFile = PkgUtils.fetchData(data);
 		toscaParser = new ToscaParser(tempFile);
@@ -139,9 +139,9 @@ public abstract class AbstractPackageReader implements Closeable {
 	}
 
 	private OrikaMapper getVersionedMapperMethod() {
-		try {
+		try (InputStream stream = urlLoader.getResourceAsStream("META-INF/tosca-resources.properties")) {
 			final Properties props = new Properties();
-			props.load(urlLoader.getResourceAsStream("META-INF/tosca-resources.properties"));
+			props.load(stream);
 			final Class<?> clz = urlLoader.loadClass(props.getProperty("mapper"));
 			return (OrikaMapper) clz.getDeclaredConstructor().newInstance();
 		} catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IOException e) {
@@ -173,7 +173,6 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	protected abstract void additionalMapping(MapperFactory mapperFactory);
 
-	@SuppressWarnings("null")
 	@Nonnull
 	protected <T, U> Set<U> getSetOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
 		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
@@ -191,7 +190,6 @@ public abstract class AbstractPackageReader implements Closeable {
 				.collect(Collectors.toSet());
 	}
 
-	@SuppressWarnings("null")
 	@Nonnull
 	protected <T, U> List<U> getListOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
 		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
@@ -199,7 +197,6 @@ public abstract class AbstractPackageReader implements Closeable {
 		return mapper.mapAsList(obj, to);
 	}
 
-	@SuppressWarnings("null")
 	@Nonnull
 	protected <U> List<U> getObjects(final Class<U> manoClass, final Map<String, String> parameters) {
 		final List<U> obj = toscaApi.getObjects(root, parameters, manoClass);

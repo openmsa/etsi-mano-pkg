@@ -69,8 +69,9 @@ class ToscaPackageProviderTest {
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_vnfd_types.yaml", "Definitions/etsi_nfv_sol001_vnfd_types.yaml"),
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_common_types.yaml", "Definitions/etsi_nfv_sol001_common_types.yaml"),
 				Entry.of("ubi-tosca/TOSCA-Metadata/TOSCA.meta", "TOSCA-Metadata/TOSCA.meta"));
-		final InputStream data = Files.newInputStream(Path.of("/tmp/ubi-tosca.csar"));
-		tpp = new ToscaVnfPackageReader(data, null, UUID.randomUUID());
+		try (final InputStream data = Files.newInputStream(Path.of("/tmp/ubi-tosca.csar"))) {
+			tpp = new ToscaVnfPackageReader(data, null, UUID.randomUUID());
+		}
 	}
 
 	@Test
