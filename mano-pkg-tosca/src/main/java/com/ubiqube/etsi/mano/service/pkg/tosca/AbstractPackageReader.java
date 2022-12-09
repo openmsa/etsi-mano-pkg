@@ -173,7 +173,7 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	protected abstract void additionalMapping(MapperFactory mapperFactory);
 
-	@Nonnull
+	@NotNull
 	protected <T, U> Set<U> getSetOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
 		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), manoClass.getSimpleName());
@@ -197,7 +197,7 @@ public abstract class AbstractPackageReader implements Closeable {
 		return mapper.mapAsList(obj, to);
 	}
 
-	@Nonnull
+	@NotNull
 	protected <U> List<U> getObjects(final Class<U> manoClass, final Map<String, String> parameters) {
 		final List<U> obj = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
