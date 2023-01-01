@@ -45,7 +45,6 @@ import com.ubiqube.etsi.mano.dao.mano.NsVnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.SecurityGroup;
 import com.ubiqube.etsi.mano.dao.mano.TriggerDefinition;
 import com.ubiqube.etsi.mano.dao.mano.VlProtocolData;
-import com.ubiqube.etsi.mano.dao.mano.VnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsNsd;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsVnf;
 import com.ubiqube.etsi.mano.dao.mano.nsd.Classifier;
@@ -68,7 +67,6 @@ import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlLevelMapping;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlStepMapping;
 import com.ubiqube.etsi.mano.service.pkg.ns.NsPackageProvider;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
-import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.ToscaVnfPackageReader;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.LinkBitrateRequirements;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVirtualLinkProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.groups.nfv.VNFFG;
@@ -96,16 +94,18 @@ import ma.glasnost.orika.MapperFactory;
  */
 public class ToscaNsPackageProvider extends AbstractPackageReader implements NsPackageProvider {
 
+	private static final String TOSCA_NAME = "toscaName";
+	private static final String INTERNAL_NAME = "internalName";
 	private static final Logger LOG = LoggerFactory.getLogger(ToscaNsPackageProvider.class);
-	
-	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, final UUID id) {
+
+	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, @NotNull final UUID id) {
 		super(data, repo, id);
 	}
 
 	@Override
 	protected void additionalMapping(final MapperFactory mapperFactory) {
 		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NsVirtualLink.class, NsVirtualLink.class)
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.field("vlProfile", "nsVlProfile")
 				.field("connectivityType", "vlConnectivityType")
 				.byDefault()
@@ -141,7 +141,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 				.byDefault()
 				.register();
 		mapperFactory.classMap(Sap.class, NsSap.class)
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
 		mapperFactory.classMap(NsVirtualLinkProtocolData.class, VlProtocolData.class)
@@ -149,7 +149,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 				.byDefault()
 				.register();
 		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale.class, NsVnfIndicator.class)
-				.field("internalName", "toscaName")
+				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
 
@@ -188,7 +188,6 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 			sgr.remove(0);
 		}
 		return sgr.stream()
-				.filter(x -> x.getDescriptorId() != null)
 				.map(x -> new NsNsd(x.getInvariantId(), x.getInternalName(), x.getFlavourId(), x.getVirtualLinkReq()))
 				.collect(Collectors.toSet());
 	}
@@ -197,7 +196,6 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 	public Set<NsVnf> getVnfd(final Map<String, String> userData) {
 		final List<VNF> sgr = getObjects(VNF.class, userData);
 		return sgr.stream()
-				.filter(x -> x.getDescriptorId() != null)
 				.map(ToscaNsPackageProvider::map)
 				.collect(Collectors.toSet());
 	}
@@ -368,21 +366,22 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 	@Override
 	public Set<NsVnfIndicator> getNsVnfIndicator(final Map<String, String> parameters) {
 		final Set<NsVnfIndicator> nsVnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale.class, NsVnfIndicator.class, parameters);
-		for (NsVnfIndicator nsVnfIndicator : nsVnfIndicators) {
-			Map<String, MonitoringParams> mPs = new HashMap<>();
-			List<TriggerDefinition> triggerDefinitions = new ArrayList<TriggerDefinition>(
+		for (final NsVnfIndicator nsVnfIndicator : nsVnfIndicators) {
+			final Map<String, MonitoringParams> mPs = new HashMap<>();
+			final List<TriggerDefinition> triggerDefinitions = new ArrayList<>(
 					nsVnfIndicator.getTriggers().values());
-			for (TriggerDefinition triggerDefinition : triggerDefinitions) {
-				ObjectMapper mapper = new ObjectMapper();
+			for (final TriggerDefinition triggerDefinition : triggerDefinitions) {
+				final ObjectMapper mapper = new ObjectMapper();
 				JsonNode actualObj;
 				try {
 					actualObj = mapper.readTree(triggerDefinition.getCondition());
-					for (JsonNode jsonNode : actualObj) {
-						Map<String, Object> conditions = mapper.convertValue(jsonNode,
+					for (final JsonNode jsonNode : actualObj) {
+						final Map<String, Object> conditions = mapper.convertValue(jsonNode,
 								new TypeReference<Map<String, Object>>() {
+									//
 								});
-						for (String keyInd : conditions.keySet()) {
-							MonitoringParams monitoringParams = new MonitoringParams();
+						for (final String keyInd : conditions.keySet()) {
+							final MonitoringParams monitoringParams = new MonitoringParams();
 							monitoringParams.setCollectionPeriod(600L);
 							monitoringParams.setName(keyInd);
 							monitoringParams.setPerformanceMetric(keyInd);
@@ -390,17 +389,17 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 							mPs.put(keyInd, monitoringParams);
 						}
 					}
-				} catch (JsonProcessingException e) {
+				} catch (final JsonProcessingException e) {
 					LOG.error(e.getMessage());
 				}
 			}
-			Set<MonitoringParams> m = new HashSet<MonitoringParams>(mPs.values());
+			final Set<MonitoringParams> m = new HashSet<>(mPs.values());
 			nsVnfIndicator.setMonitoringParameters(m);
 			nsVnfIndicator.setName(nsVnfIndicator.getToscaName());
 		}
 		return nsVnfIndicators;
 	}
-	
+
 	private static Map<Integer, RootLeaf> mapVlLevel(@NotNull final Map<String, LinkBitrateRequirements> bitRateRequirements) {
 		return bitRateRequirements.entrySet().stream()
 				.collect(Collectors.toMap(x -> Integer.valueOf(x.getKey()), x -> new RootLeaf(x.getValue().getRoot(), x.getValue().getLeaf())));
