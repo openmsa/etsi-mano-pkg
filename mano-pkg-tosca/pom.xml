@@ -3,16 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>mano-pkg-tosca</artifactId>
-	<name>mano-pkg-tosca</name>
-	<description>ETSI MANO Tosca package implementation.</description>
 	<parent>
 		<groupId>com.ubiqube.mano</groupId>
 		<artifactId>mano-super-pom</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath></relativePath>
 	</parent>
-
+	<artifactId>mano-pkg-tosca</artifactId>
+	<name>mano-pkg-tosca</name>
+	<description>ETSI MANO Tosca package implementation.</description>
 	<distributionManagement>
 		<snapshotRepository>
 			<id>nexus-snapshots</id>
@@ -36,7 +35,7 @@
 		</dependency>
 		<dependency>
 			<groupId>ma.glasnost.orika</groupId>
-			<artifactId>orika-core</artifactId>
+			<artifactId>ubi-orika-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -49,7 +48,7 @@
 		</dependency>
 		<dependency>
 			<groupId>ma.glasnost.orika</groupId>
-			<artifactId>orika-eclipse-tools</artifactId>
+			<artifactId>ubi-orika-eclipse-tools</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
