@@ -19,8 +19,6 @@ package com.ubiqube.etsi.mano.service.pkg.ns;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import com.ubiqube.etsi.mano.dao.mano.NsSap;
 import com.ubiqube.etsi.mano.dao.mano.NsVnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsNsd;
@@ -30,6 +28,8 @@ import com.ubiqube.etsi.mano.dao.mano.v2.nfvo.NsVirtualLink;
 import com.ubiqube.etsi.mano.service.pkg.bean.NsInformations;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.NsScaling;
+
+import jakarta.annotation.Nonnull;
 
 public interface NsPackageProvider {
 

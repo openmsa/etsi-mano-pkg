@@ -28,8 +28,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +83,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VirtualLinkToLevelMap
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToInstantiationLevelMapping;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToLevelMapping;
 
+import jakarta.validation.constraints.NotNull;
 import ma.glasnost.orika.MapperFactory;
 
 /**

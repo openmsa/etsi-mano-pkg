@@ -16,9 +16,8 @@
  */
 package com.ubiqube.etsi.mano.service.pkg.bean;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 

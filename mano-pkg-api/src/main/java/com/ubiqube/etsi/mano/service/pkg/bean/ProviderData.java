@@ -18,11 +18,11 @@ package com.ubiqube.etsi.mano.service.pkg.bean;
 
 import java.util.Set;
 
-import javax.validation.constraints.NotNull;
-
 import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VnfProfile;
+import com.ubiqube.parser.tosca.objects.tosca.interfaces.nfv.Vnflcm;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -95,4 +95,6 @@ public class ProviderData {
 	private String virtualLink8Req;
 	private String virtualLink9Req;
 	private String virtualLink10Req;
+
+	private Vnflcm Vnflcm;
 }

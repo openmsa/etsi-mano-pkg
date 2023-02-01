@@ -37,9 +37,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +55,7 @@ import com.ubiqube.parser.tosca.api.OrikaMapper;
 import com.ubiqube.parser.tosca.api.ToscaApi;
 import com.ubiqube.parser.tosca.scalar.Version;
 
+import jakarta.annotation.Nonnull;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.converter.ConverterFactory;
@@ -91,7 +89,7 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	private ToscaApi toscaApi;
 
-	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, @NotNull final UUID id) {
+	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, @Nonnull final UUID id) {
 		this.repo = repo;
 		tempFile = PkgUtils.fetchData(data);
 		toscaParser = new ToscaParser(tempFile);
@@ -163,7 +161,7 @@ public abstract class AbstractPackageReader implements Closeable {
 				.orElseGet(() -> new Version("2.5.1"));
 	}
 
-	private void unpackAndResend(@NotNull final UUID id) {
+	private void unpackAndResend(@Nonnull final UUID id) {
 		try (final InputStream is = toscaParser.getCsarInputStream()) {
 			repo.storeBinary(id, Constants.REPOSITORY_FILENAME_VNFD, is);
 		} catch (final IOException e) {
@@ -173,7 +171,7 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	protected abstract void additionalMapping(MapperFactory mapperFactory);
 
-	@NotNull
+	@Nonnull
 	protected <T, U> Set<U> getSetOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
 		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), manoClass.getSimpleName());
@@ -197,7 +195,7 @@ public abstract class AbstractPackageReader implements Closeable {
 		return mapper.mapAsList(obj, to);
 	}
 
-	@NotNull
+	@Nonnull
 	protected <U> List<U> getObjects(final Class<U> manoClass, final Map<String, String> parameters) {
 		final List<U> obj = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());

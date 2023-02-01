@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
 import com.ubiqube.etsi.mano.dao.mano.VnfCompute;
@@ -43,6 +41,8 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
+
+import jakarta.annotation.Nonnull;
 
 /**
  *
@@ -108,7 +108,7 @@ public interface VnfPackageReader extends Closeable {
 
 	@Nonnull
 	Set<VirtualCp> getVirtualCp(Map<String, String> parameters);
-	
+
 	Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters);
 
 	@Nonnull
