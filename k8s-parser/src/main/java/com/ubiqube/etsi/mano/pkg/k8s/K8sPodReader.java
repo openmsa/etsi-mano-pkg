@@ -63,6 +63,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevel
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 import io.kubernetes.client.openapi.models.V1Pod;
+import jakarta.annotation.Nonnull;
 
 /**
  *
@@ -83,7 +84,7 @@ public class K8sPodReader implements VnfPackageReader {
 	}
 
 	@Override
-	public ProviderData getProviderPadata() {
+	public @Nonnull ProviderData getProviderPadata() {
 		final ProviderData pd = new ProviderData();
 		pd.setVnfProvider("K8S-POD");
 		pd.setVnfProductName(obj.getKind());
@@ -91,138 +92,125 @@ public class K8sPodReader implements VnfPackageReader {
 	}
 
 	@Override
-	public Set<AdditionalArtifact> getAdditionalArtefacts(final Map<String, String> parameters) {
+	public @Nonnull Set<AdditionalArtifact> getAdditionalArtefacts(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public Set<VnfCompute> getVnfComputeNodes(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfCompute> getVnfComputeNodes(final Map<String, String> parameters) {
 		final VnfCompute vc = new VnfCompute();
 		vc.setToscaName(obj.getKind());
 		return Set.of(vc);
 	}
 
 	@Override
-	public Set<VnfStorage> getVnfStorages(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfStorage> getVnfStorages(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public Set<VnfVl> getVnfVirtualLinks(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfVl> getVnfVirtualLinks(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public Set<VnfLinkPort> getVnfVduCp(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfLinkPort> getVnfVduCp(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public Set<VnfExtCp> getVnfExtCp(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfExtCp> getVnfExtCp(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public Set<ScalingAspect> getScalingAspects(final Map<String, String> parameters) {
+	public @Nonnull Set<ScalingAspect> getScalingAspects(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public List<InstantiationLevels> getInstatiationLevels(final Map<String, String> parameters) {
+	public @Nonnull List<InstantiationLevels> getInstatiationLevels(final Map<String, String> parameters) {
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<VduInstantiationLevels> getVduInstantiationLevels(final Map<String, String> parameters) {
+	public @Nonnull List<VduInstantiationLevels> getVduInstantiationLevels(final Map<String, String> parameters) {
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<VduInitialDelta> getVduInitialDelta(final Map<String, String> parameters) {
+	public @Nonnull List<VduInitialDelta> getVduInitialDelta(final Map<String, String> parameters) {
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<VduScalingAspectDeltas> getVduScalingAspectDeltas(final Map<String, String> parameters) {
+	public @Nonnull List<VduScalingAspectDeltas> getVduScalingAspectDeltas(final Map<String, String> parameters) {
 		return new ArrayList<>();
 	}
 
 	@Override
 	public void close() throws IOException {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public Set<AffinityRuleAdapater> getAffinityRules(final Map<String, String> userDefinedData) {
-		// TODO Auto-generated method stub
+	public @Nonnull Set<AffinityRuleAdapater> getAffinityRules(final Map<String, String> userDefinedData) {
 		return Set.of();
 	}
 
 	@Override
-	public Set<SecurityGroupAdapter> getSecurityGroups(final Map<String, String> userData) {
-		// TODO Auto-generated method stub
+	public @Nonnull Set<SecurityGroupAdapter> getSecurityGroups(final Map<String, String> userData) {
 		return Set.of();
 	}
 
 	@Override
-	public List<String> getImports() {
-		// TODO Auto-generated method stub
+	public @Nonnull List<String> getImports() {
 		return List.of();
 	}
 
 	@Override
 	public String getManifestContent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public byte[] getFileContent(final String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+		return new byte[0];
 	}
 
 	@Override
-	public Set<OsContainer> getOsContainer(final Map<String, String> parameters) {
-		// TODO Auto-generated method stub
+	public @Nonnull Set<OsContainer> getOsContainer(final Map<String, String> parameters) {
 		return Set.of();
 	}
 
 	@Override
-	public Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(final Map<String, String> parameters) {
-		// TODO Auto-generated method stub
+	public @Nonnull Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(final Map<String, String> parameters) {
 		return Set.of();
 	}
 
 	@Override
-	public Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
-		// TODO Auto-generated method stub
+	public @Nonnull Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
 		return Set.of();
 	}
 
 	@Override
-	public Set<McIops> getMciops(final Map<String, String> userDefinedData) {
-		// TODO Auto-generated method stub
+	public @Nonnull Set<McIops> getMciops(final Map<String, String> userDefinedData) {
 		return Set.of();
 	}
 
 	@Override
 	public InputStream getFileInputStream(final String path) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<String> getVnfdFiles(final boolean includeSignatures) {
-		// TODO Auto-generated method stub
-		return null;
+		return List.of();
 	}
 
 	@Override
-	public Set<VnfIndicator> getVnfIndicator(Map<String, String> parameters) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
+		return Set.of();
 	}
 
 }
