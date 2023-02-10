@@ -24,10 +24,13 @@ import org.springframework.stereotype.Service;
 import com.ubiqube.etsi.mano.repository.ManoResource;
 import com.ubiqube.etsi.mano.repository.VirtualFileSystem;
 import com.ubiqube.etsi.mano.repository.VnfPackageRepository;
+import com.ubiqube.etsi.mano.service.cond.ConditionService;
 import com.ubiqube.etsi.mano.service.pkg.PackageDescriptor;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
 import com.ubiqube.etsi.mano.sol004.Sol004Onboarding;
+
+import jakarta.annotation.Nonnull;
 
 /**
  *
@@ -39,9 +42,11 @@ public class ToscaVnfRegistryHandler implements PackageDescriptor<VnfPackageRead
 
 	private final VnfPackageRepository repo;
 
-	public ToscaVnfRegistryHandler(final VnfPackageRepository repo) {
-		super();
+	private final ConditionService conditionService;
+
+	public ToscaVnfRegistryHandler(final VnfPackageRepository repo, final ConditionService conditionService) {
 		this.repo = repo;
+		this.conditionService = conditionService;
 	}
 
 	@Override
@@ -56,8 +61,8 @@ public class ToscaVnfRegistryHandler implements PackageDescriptor<VnfPackageRead
 	}
 
 	@Override
-	public VnfPackageReader getNewReaderInstance(final InputStream data, final UUID id) {
-		return new ToscaVnfPackageReader(data, repo, id);
+	public VnfPackageReader getNewReaderInstance(final InputStream data, final @Nonnull UUID id) {
+		return new ToscaVnfPackageReader(data, repo, id, conditionService);
 	}
 
 	@Override

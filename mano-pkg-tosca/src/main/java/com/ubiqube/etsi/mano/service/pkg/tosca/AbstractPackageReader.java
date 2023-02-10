@@ -233,6 +233,7 @@ public abstract class AbstractPackageReader implements Closeable {
 		Files.delete(tempFile.toPath());
 	}
 
+	@Nonnull
 	public final List<String> getImports() {
 		final Imports imps = this.root.getImports();
 		final String entry = this.toscaParser.getEntryFileName();

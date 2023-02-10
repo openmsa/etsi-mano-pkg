@@ -41,10 +41,12 @@ import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
 import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
 import com.ubiqube.etsi.mano.dao.mano.VnfCompute;
 import com.ubiqube.etsi.mano.dao.mano.VnfExtCp;
+import com.ubiqube.etsi.mano.dao.mano.VnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.VnfLinkPort;
 import com.ubiqube.etsi.mano.dao.mano.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.common.Checksum;
+import com.ubiqube.etsi.mano.service.cond.ConditionService;
 import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
@@ -58,7 +60,8 @@ import ma.glasnost.orika.OrikaSystemProperties;
 import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
 
 class ToscaPackageProviderTest {
-	private final ToscaVnfPackageReader tpp;
+	private final ConditionService cs;
+	ToscaVnfPackageReader tpp;
 
 	public ToscaPackageProviderTest() throws IOException {
 		ArtifactDownloader.prepareArtifact("421");
@@ -69,8 +72,9 @@ class ToscaPackageProviderTest {
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_vnfd_types.yaml", "Definitions/etsi_nfv_sol001_vnfd_types.yaml"),
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_common_types.yaml", "Definitions/etsi_nfv_sol001_common_types.yaml"),
 				Entry.of("ubi-tosca/TOSCA-Metadata/TOSCA.meta", "TOSCA-Metadata/TOSCA.meta"));
+		this.cs = new ConditionService();
 		try (final InputStream data = Files.newInputStream(Path.of("/tmp/ubi-tosca.csar"))) {
-			tpp = new ToscaVnfPackageReader(data, null, UUID.randomUUID());
+			tpp = new ToscaVnfPackageReader(data, null, UUID.randomUUID(), cs);
 		}
 	}
 
@@ -200,5 +204,12 @@ class ToscaPackageProviderTest {
 	void testVnfd() {
 		final List<String> files = tpp.getVnfdFiles(true);
 		assertEquals(4, files.size());
+	}
+
+	@Test
+	void testVnfIndicator() {
+		final Set<VnfIndicator> res = tpp.getVnfIndicator(Map.of());
+		assertNotNull(res);
+		assertEquals(2, res.size());
 	}
 }

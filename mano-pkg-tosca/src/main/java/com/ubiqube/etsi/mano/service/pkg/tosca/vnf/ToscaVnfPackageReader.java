@@ -20,9 +20,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -32,13 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
 import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
 import com.ubiqube.etsi.mano.dao.mano.L3Data;
-import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
 import com.ubiqube.etsi.mano.dao.mano.SecurityGroup;
 import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
@@ -53,10 +52,11 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
-import com.ubiqube.etsi.mano.dao.mano.pm.PmType;
 import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
+import com.ubiqube.etsi.mano.service.cond.ConditionService;
+import com.ubiqube.etsi.mano.service.cond.Node;
 import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
@@ -100,8 +100,11 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	private static final String INTERNAL_NAME = "internalName";
 	private static final Logger LOG = LoggerFactory.getLogger(ToscaVnfPackageReader.class);
 
-	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final UUID id) {
+	private final ConditionService conditionService;
+
+	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final @Nonnull UUID id, final ConditionService conditionService) {
 		super(data, repo, id);
+		this.conditionService = Objects.requireNonNull(conditionService);
 	}
 
 	@Override
@@ -223,12 +226,12 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	}
 
 	@Override
-	public Set<AdditionalArtifact> getAdditionalArtefacts(final Map<String, String> parameters) {
+	public @Nonnull Set<AdditionalArtifact> getAdditionalArtefacts(final Map<String, String> parameters) {
 		return getCsarFiles(AdditionalArtifact.class);
 	}
 
 	@Override
-	public Set<VnfCompute> getVnfComputeNodes(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfCompute> getVnfComputeNodes(final Map<String, String> parameters) {
 		final Set<Compute> r = this.getSetOf(Compute.class, parameters);
 		return r.stream().map(x -> {
 			final VnfCompute o = getMapper().map(x, VnfCompute.class);
@@ -252,27 +255,27 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	}
 
 	@Override
-	public Set<VnfStorage> getVnfStorages(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfStorage> getVnfStorages(final Map<String, String> parameters) {
 		return getSetOf(VnfStorage.class, parameters, VirtualBlockStorage.class);
 	}
 
 	@Override
-	public Set<VnfVl> getVnfVirtualLinks(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfVl> getVnfVirtualLinks(final Map<String, String> parameters) {
 		return this.getSetOf(VnfVirtualLink.class, VnfVl.class, parameters);
 	}
 
 	@Override
-	public Set<VnfLinkPort> getVnfVduCp(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfLinkPort> getVnfVduCp(final Map<String, String> parameters) {
 		return this.getSetOf(VduCp.class, VnfLinkPort.class, parameters);
 	}
 
 	@Override
-	public Set<VnfExtCp> getVnfExtCp(final Map<String, String> parameters) {
+	public @Nonnull Set<VnfExtCp> getVnfExtCp(final Map<String, String> parameters) {
 		return this.getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VnfExtCp.class, VnfExtCp.class, parameters);
 	}
 
 	@Override
-	public Set<ScalingAspect> getScalingAspects(final Map<String, String> parameters) {
+	public @Nonnull Set<ScalingAspect> getScalingAspects(final Map<String, String> parameters) {
 		final List<ScalingAspects> list = getObjects(ScalingAspects.class, parameters);
 		final Set<ScalingAspect> ret = new HashSet<>();
 		for (final ScalingAspects scalingAspects : list) {
@@ -288,33 +291,33 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	}
 
 	@Override
-	public List<com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels> getInstatiationLevels(final Map<String, String> parameters) {
+	public @Nonnull List<com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels> getInstatiationLevels(final Map<String, String> parameters) {
 		return getListOf(InstantiationLevels.class, com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels.class, parameters);
 	}
 
 	@Override
-	public List<VduInstantiationLevels> getVduInstantiationLevels(final Map<String, String> parameters) {
+	public @Nonnull List<VduInstantiationLevels> getVduInstantiationLevels(final Map<String, String> parameters) {
 		return getListOf(VduInstantiationLevels.class, VduInstantiationLevels.class, parameters);
 	}
 
 	@Override
-	public List<VduInitialDelta> getVduInitialDelta(final Map<String, String> parameters) {
+	public @Nonnull List<VduInitialDelta> getVduInitialDelta(final Map<String, String> parameters) {
 		return getListOf(VduInitialDelta.class, VduInitialDelta.class, parameters);
 	}
 
 	@Override
-	public List<VduScalingAspectDeltas> getVduScalingAspectDeltas(final Map<String, String> parameters) {
+	public @Nonnull List<VduScalingAspectDeltas> getVduScalingAspectDeltas(final Map<String, String> parameters) {
 		return getListOf(VduScalingAspectDeltas.class, VduScalingAspectDeltas.class, parameters);
 	}
 
 	@Override
-	public Set<SecurityGroupAdapter> getSecurityGroups(final Map<String, String> userDefinedData) {
+	public @Nonnull Set<SecurityGroupAdapter> getSecurityGroups(final Map<String, String> userDefinedData) {
 		final List<SecurityGroupRule> sgr = getObjects(SecurityGroupRule.class, userDefinedData);
 		return sgr.stream().map(x -> new SecurityGroupAdapter(getMapper().map(x, SecurityGroup.class), x.getTargets())).collect(Collectors.toSet());
 	}
 
 	@Override
-	public Set<AffinityRuleAdapater> getAffinityRules(final Map<String, String> userDefinedData) {
+	public @Nonnull Set<AffinityRuleAdapater> getAffinityRules(final Map<String, String> userDefinedData) {
 		final Set<AffinityRuleAdapater> af = getSetOf(AffinityRule.class, userDefinedData).stream()
 				.map(x -> {
 					final com.ubiqube.etsi.mano.dao.mano.AffinityRule afDao = getMapper().map(x, com.ubiqube.etsi.mano.dao.mano.AffinityRule.class);
@@ -334,17 +337,17 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	}
 
 	@Override
-	public Set<OsContainer> getOsContainer(final Map<String, String> parameters) {
+	public @Nonnull Set<OsContainer> getOsContainer(final Map<String, String> parameters) {
 		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainer.class, OsContainer.class, parameters);
 	}
 
 	@Override
-	public Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(final Map<String, String> parameters) {
+	public @Nonnull Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(final Map<String, String> parameters) {
 		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainerDeployableUnit.class, OsContainerDeployableUnit.class, parameters);
 	}
 
 	@Override
-	public Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
+	public @Nonnull Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
 		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp.class, VirtualCp.class, parameters);
 	}
 
@@ -352,41 +355,33 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
 		final Set<VnfIndicator> vnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, VnfIndicator.class, parameters);
 		for (final VnfIndicator vnfIndicator : vnfIndicators) {
-			final Map<String, MonitoringParams> mPs = new HashMap<>();
-			final List<TriggerDefinition> triggerDefinitions = new ArrayList<>(
-					vnfIndicator.getTriggers().values());
+			final Set<String> mPs = new LinkedHashSet<>();
+			final List<TriggerDefinition> triggerDefinitions = new ArrayList<>(vnfIndicator.getTriggers().values());
 			for (final TriggerDefinition triggerDefinition : triggerDefinitions) {
 				final ObjectMapper mapper = new ObjectMapper();
-				JsonNode actualObj;
+				final Node res = conditionService.parse(triggerDefinition.getCondition());
+				final List<String> indicators = extractIndicators(res);
+				mPs.addAll(indicators);
 				try {
-					actualObj = mapper.readTree(triggerDefinition.getCondition());
-					for (final JsonNode jsonNode : actualObj) {
-						final Map<String, Object> conditions = mapper.convertValue(jsonNode,
-								new TypeReference<Map<String, Object>>() {
-									//
-								});
-						for (final String keyInd : conditions.keySet()) {
-							final MonitoringParams monitoringParams = new MonitoringParams();
-							monitoringParams.setCollectionPeriod(600L);
-							monitoringParams.setName(keyInd);
-							monitoringParams.setPerformanceMetric(keyInd);
-							monitoringParams.setObjectType(PmType.VNF);
-							mPs.put(keyInd, monitoringParams);
-						}
-					}
+					triggerDefinition.setCondition(mapper.writeValueAsString(res));
 				} catch (final JsonProcessingException e) {
-					LOG.error(e.getMessage(), e);
+					throw new ParseException("Unable to parse condition: " + triggerDefinition.getCondition(), e);
 				}
 			}
-			final Set<MonitoringParams> m = new HashSet<>(mPs.values());
-			vnfIndicator.setMonitoringParameters(m);
+			vnfIndicator.setIndicators(mPs);
 			vnfIndicator.setName(vnfIndicator.getToscaName());
 		}
 		return vnfIndicators;
 	}
 
+	private static List<String> extractIndicators(final Node root) {
+		final NodeIndicatorVisitor niv = new NodeIndicatorVisitor();
+		root.accept(niv, null);
+		return niv.getResults();
+	}
+
 	@Override
-	public Set<McIops> getMciops(final Map<String, String> userDefinedData) {
+	public @Nonnull Set<McIops> getMciops(final Map<String, String> userDefinedData) {
 		final Set<Mciop> mciops = getSetOf(Mciop.class, userDefinedData);
 		return mciops.stream().map(this::map).collect(Collectors.toSet());
 	}
