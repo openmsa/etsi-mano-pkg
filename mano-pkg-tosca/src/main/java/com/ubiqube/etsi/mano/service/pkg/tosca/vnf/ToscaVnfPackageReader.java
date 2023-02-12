@@ -84,6 +84,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
+import jakarta.annotation.Nonnull;
 import ma.glasnost.orika.MapperFactory;
 
 /**
@@ -212,7 +213,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	}
 
 	@Override
-	public ProviderData getProviderPadata() {
+	public @Nonnull ProviderData getProviderPadata() {
 		final List<ProviderData> vnfs = getListOf(VNF.class, ProviderData.class, new HashMap<>());
 		if (vnfs.isEmpty()) {
 			LOG.warn("No VNF node found in the package.");
