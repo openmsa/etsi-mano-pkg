@@ -16,10 +16,15 @@
  */
 package com.ubiqube.etsi.mano.service.pkg.bean;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.ubiqube.etsi.mano.dao.mano.Attributes;
 import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VnfProfile;
+import com.ubiqube.parser.tosca.InterfaceDefinition;
+import com.ubiqube.parser.tosca.RequirementDefinition;
 import com.ubiqube.parser.tosca.objects.tosca.interfaces.nfv.Vnflcm;
 
 import jakarta.validation.constraints.NotNull;
@@ -97,4 +102,13 @@ public class ProviderData {
 	private String virtualLink10Req;
 
 	private Vnflcm Vnflcm;
+
+	private List<Attributes> attributes;
+
+	// See Attributes for overloadedAttributes
+
+	private RequirementDefinition overloadedRequirements;
+
+	private Map<String, InterfaceDefinition> overloadedInterfaces;
+
 }

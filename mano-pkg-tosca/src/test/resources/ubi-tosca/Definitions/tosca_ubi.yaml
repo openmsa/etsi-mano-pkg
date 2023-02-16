@@ -38,6 +38,32 @@ topology_template:
             collection_period: 1 m
       requirements:
         - virtual_link: public
+      attributes:
+        utilization_vnf_indicator:
+          type: float
+          description: holds the value of the utilization VNF indicator. It is assigned the output value of the utilization notification.
+        health_vnf_indicator:
+          type: string
+          description: holds the value of the health VNF indicator. It is assigned the output value of the health notification.
+        call_proc_scale_level:
+          type: integer
+        database_scale_level:
+          type: integer
+      interfaces:
+        Vnflcm:
+          operations:
+            heal:
+              inputs:
+                key: value
+        VnfIndicator:
+          type: MyCompany.nfv.interfaces.VnfIndicator
+          notifications:
+            utilization:
+              outputs: 
+                utilization_vnf_indicator: [ SELF, utilization_vnf_indicator ]
+            health:
+              outputs:
+                health_vnf_indicator: [ SELF, health_vnf_indicator ]
 
 
 

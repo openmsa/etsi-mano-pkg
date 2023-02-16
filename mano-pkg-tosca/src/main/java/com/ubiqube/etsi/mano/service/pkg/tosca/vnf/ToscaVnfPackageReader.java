@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
+import com.ubiqube.etsi.mano.dao.mano.Attributes;
 import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
 import com.ubiqube.etsi.mano.dao.mano.L3Data;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
@@ -65,6 +66,7 @@ import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.ParseException;
+import com.ubiqube.parser.tosca.ValueObject;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.L3ProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VirtualLinkProtocolData;
@@ -86,6 +88,9 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDelta
 
 import jakarta.annotation.Nonnull;
 import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
+import ma.glasnost.orika.converter.BidirectionalConverter;
+import ma.glasnost.orika.metadata.Type;
 
 /**
  *
@@ -122,6 +127,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("monitoringParameters{name}", "monitoringParameters{key}")
 				.field("scaleStatus{}", "scaleStatus{value}")
 				.field("scaleStatus{name}", "scaleStatus{key}")
+				.fieldMap("attributes", "overloadedAttributes").converter("attributes").add()
 				.byDefault()
 				.register();
 		mapperFactory.classMap(ArtefactInformations.class, AdditionalArtifact.class)
@@ -213,6 +219,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
+		mapperFactory.getConverterFactory().registerConverter("attributes", new AttrConverter());
 	}
 
 	@Override
@@ -222,7 +229,17 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 			LOG.warn("No VNF node found in the package.");
 			return new ProviderData();
 		}
-		return vnfs.get(0);
+		final ProviderData vnf = vnfs.get(0);
+		// Add default attributes
+		final Attributes scaleStatus = Attributes.builder()
+				.name("scale_status")
+				.type("map")
+				.entrySchema("tosca.datatypes.nfv.ScaleInfo")
+				.build();
+		final List<Attributes> attrs = Optional.ofNullable(vnf.getAttributes()).orElseGet(ArrayList::new);
+		vnf.setAttributes(new ArrayList<>(attrs));
+		vnf.getAttributes().add(scaleStatus);
+		return vnf;
 	}
 
 	@Override
@@ -395,7 +412,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		}
 		final Entry<String, Artifact> arte = m.getArtifacts().entrySet().iterator().next();
 		final Object obj = arte.getValue();
-		if (!(obj instanceof final Artifact av)) {
+		if (!(obj instanceof final Artifact)) {
 			throw new GenericException("Only Artifact can be defined for " + m.getInternalName() + ", not " + obj.getClass().getSimpleName());
 		}
 		final SoftwareImage img = getMapper().map(obj, SoftwareImage.class);
@@ -404,4 +421,25 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		ret.setArtifacts(Map.of(arte.getKey(), img));
 		return ret;
 	}
+}
+
+class AttrConverter extends BidirectionalConverter<List<Attributes>, Map<String, ValueObject>> {
+
+	@Override
+	public Map<String, ValueObject> convertTo(final List<Attributes> source, final Type<Map<String, ValueObject>> destinationType, final MappingContext mappingContext) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<Attributes> convertFrom(final Map<String, ValueObject> source, final Type<List<Attributes>> destinationType, final MappingContext mappingContext) {
+		return source.entrySet().stream().map(x -> {
+			final Attributes attr = new Attributes();
+			Optional.ofNullable(x.getValue().getDef()).map(Object::toString).ifPresent(attr::setDef);
+			attr.setName(x.getKey());
+			attr.setType(x.getValue().getType());
+			return attr;
+		})
+				.toList();
+	}
+
 }
