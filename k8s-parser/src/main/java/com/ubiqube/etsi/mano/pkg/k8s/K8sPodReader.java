@@ -150,7 +150,7 @@ public class K8sPodReader implements VnfPackageReader {
 
 	@Override
 	public void close() throws IOException {
-
+		//
 	}
 
 	@Override

@@ -99,6 +99,7 @@ import ma.glasnost.orika.metadata.Type;
  */
 public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfPackageReader {
 
+	private static final String ATTRIBUTES = "attributes";
 	private static final String DESCRIPTOR_VERSION = "descriptorVersion";
 	private static final String DESCRIPTOR_ID = "descriptorId";
 	private static final String TOSCA_NAME = "toscaName";
@@ -127,7 +128,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("monitoringParameters{name}", "monitoringParameters{key}")
 				.field("scaleStatus{}", "scaleStatus{value}")
 				.field("scaleStatus{name}", "scaleStatus{key}")
-				.fieldMap("attributes", "overloadedAttributes").converter("attributes").add()
+				.fieldMap(ATTRIBUTES, "overloadedAttributes").converter(ATTRIBUTES).add()
 				.byDefault()
 				.register();
 		mapperFactory.classMap(ArtefactInformations.class, AdditionalArtifact.class)
@@ -219,7 +220,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
-		mapperFactory.getConverterFactory().registerConverter("attributes", new AttrConverter());
+		mapperFactory.getConverterFactory().registerConverter(ATTRIBUTES, new AttrConverter());
 	}
 
 	@Override
