@@ -39,9 +39,9 @@ import jakarta.annotation.Nonnull;
  */
 @Service
 public class ToscaVnfRegistryHandler implements PackageDescriptor<VnfPackageReader> {
-
+	@Nonnull
 	private final VnfPackageRepository repo;
-
+	@Nonnull
 	private final ConditionService conditionService;
 
 	public ToscaVnfRegistryHandler(final VnfPackageRepository repo, final ConditionService conditionService) {

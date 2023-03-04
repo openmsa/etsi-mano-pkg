@@ -29,29 +29,20 @@ import com.ubiqube.etsi.mano.service.pkg.bean.NsInformations;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.NsScaling;
 
-import jakarta.annotation.Nonnull;
-
 public interface NsPackageProvider {
 
-	@Nonnull
 	NsInformations getNsInformations(Map<String, String> userData);
 
-	@Nonnull
 	Set<NsVirtualLink> getNsVirtualLink(Map<String, String> userData);
 
-	@Nonnull
 	Set<NsSap> getNsSap(Map<String, String> userData);
 
-	@Nonnull
 	Set<SecurityGroupAdapter> getSecurityGroups(Map<String, String> userData);
 
-	@Nonnull
 	Set<NsNsd> getNestedNsd(final Map<String, String> userData);
 
-	@Nonnull
 	Set<NsVnf> getVnfd(final Map<String, String> userData);
 
-	@Nonnull
 	Set<VnffgDescriptor> getVnffg(Map<String, String> userData);
 
 	boolean isAutoHealEnabled();

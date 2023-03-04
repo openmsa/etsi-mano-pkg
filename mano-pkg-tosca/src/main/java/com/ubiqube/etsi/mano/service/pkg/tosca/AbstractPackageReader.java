@@ -73,14 +73,15 @@ public abstract class AbstractPackageReader implements Closeable {
 	private static final String JAR_PATH = "/tosca-class-%s-2.0.0-SNAPSHOT.jar";
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPackageReader.class);
-
+	@Nonnull
 	private final ToscaContext root;
+	@Nonnull
 	private final MapperFacade mapper;
-
+	@Nonnull
 	private final ToscaParser toscaParser;
-
+	@Nonnull
 	private final File tempFile;
-
+	@Nonnull
 	private final BinaryRepository repo;
 
 	private URLClassLoader urlLoader;
@@ -89,7 +90,7 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	private ToscaApi toscaApi;
 
-	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, @Nonnull final UUID id) {
+	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, final UUID id) {
 		this.repo = repo;
 		tempFile = PkgUtils.fetchData(data);
 		toscaParser = new ToscaParser(tempFile);
@@ -161,7 +162,7 @@ public abstract class AbstractPackageReader implements Closeable {
 				.orElseGet(() -> new Version("2.5.1"));
 	}
 
-	private void unpackAndResend(@Nonnull final UUID id) {
+	private void unpackAndResend(final UUID id) {
 		try (final InputStream is = toscaParser.getCsarInputStream()) {
 			repo.storeBinary(id, Constants.REPOSITORY_FILENAME_VNFD, is);
 		} catch (final IOException e) {
@@ -171,7 +172,6 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	protected abstract void additionalMapping(MapperFactory mapperFactory);
 
-	@Nonnull
 	protected <T, U> Set<U> getSetOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
 		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), manoClass.getSimpleName());
@@ -180,7 +180,6 @@ public abstract class AbstractPackageReader implements Closeable {
 				.collect(Collectors.toSet());
 	}
 
-	@Nonnull
 	protected <T> Set<T> getSetOf(final Class<T> manoClass, final Map<String, String> parameters) {
 		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), manoClass.getSimpleName());
@@ -188,33 +187,28 @@ public abstract class AbstractPackageReader implements Closeable {
 				.collect(Collectors.toSet());
 	}
 
-	@Nonnull
 	protected <T, U> List<U> getListOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
 		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
 		return mapper.mapAsList(obj, to);
 	}
 
-	@Nonnull
 	protected <U> List<U> getObjects(final Class<U> manoClass, final Map<String, String> parameters) {
 		final List<U> obj = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
 		return toscaMapper.mapAsList(obj, manoClass);
 	}
 
-	@Nonnull
 	protected List<ArtefactInformations> getCsarFiles() {
 		return toscaParser.getFiles();
 	}
 
-	@Nonnull
 	protected <U> Set<U> getCsarFiles(final Class<U> dest) {
 		return toscaParser.getFiles().stream()
 				.map(x -> mapper.map(x, dest))
 				.collect(Collectors.toSet());
 	}
 
-	@Nonnull
 	protected <U> Set<U> getSetOf(final Class<U> to, final Map<String, String> parameters, final Class<?>... toscaClass) {
 		final Set<U> ret = new LinkedHashSet<>();
 		for (final Class<?> class1 : toscaClass) {
@@ -233,7 +227,6 @@ public abstract class AbstractPackageReader implements Closeable {
 		Files.delete(tempFile.toPath());
 	}
 
-	@Nonnull
 	public final List<String> getImports() {
 		final Imports imps = this.root.getImports();
 		final String entry = this.toscaParser.getEntryFileName();

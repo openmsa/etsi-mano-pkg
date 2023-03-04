@@ -105,10 +105,10 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	private static final String TOSCA_NAME = "toscaName";
 	private static final String INTERNAL_NAME = "internalName";
 	private static final Logger LOG = LoggerFactory.getLogger(ToscaVnfPackageReader.class);
-
+	@Nonnull
 	private final ConditionService conditionService;
 
-	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final @Nonnull UUID id, final ConditionService conditionService) {
+	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final UUID id, final ConditionService conditionService) {
 		super(data, repo, id);
 		this.conditionService = Objects.requireNonNull(conditionService);
 	}

@@ -30,6 +30,8 @@ import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.Sol004PreOnboarding;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
 import com.ubiqube.etsi.mano.sol004.Sol004Onboarding;
 
+import jakarta.annotation.Nonnull;
+
 /**
  *
  * @author Olivier Vignaud <ovi@ubiqube.com>
@@ -37,10 +39,10 @@ import com.ubiqube.etsi.mano.sol004.Sol004Onboarding;
  */
 @Service
 public class ToscaNsRegistryHandler implements PackageDescriptor<NsPackageProvider> {
+	@Nonnull
 	private final NsdRepository repo;
 
 	public ToscaNsRegistryHandler(final NsdRepository repo) {
-		super();
 		this.repo = repo;
 	}
 

@@ -27,9 +27,12 @@ import com.ubiqube.etsi.mano.repository.ManoResource;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
 import com.ubiqube.etsi.mano.sol004.Sol004Exception;
 
+import jakarta.annotation.Nonnull;
+
 public class Sol004PreOnboarding {
 
 	private final ManoResource resource;
+	@Nonnull
 	private CsarModeEnum mode;
 
 	public Sol004PreOnboarding(final ManoResource mr) {

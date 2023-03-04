@@ -83,7 +83,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VirtualLinkToLevelMap
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToInstantiationLevelMapping;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToLevelMapping;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.annotation.Nonnull;
 import ma.glasnost.orika.MapperFactory;
 
 /**
@@ -97,7 +97,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 	private static final String INTERNAL_NAME = "internalName";
 	private static final Logger LOG = LoggerFactory.getLogger(ToscaNsPackageProvider.class);
 
-	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, @NotNull final UUID id) {
+	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, final UUID id) {
 		super(data, repo, id);
 	}
 
@@ -231,7 +231,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 		final List<NFP> nfp = getObjects(NFP.class, userData);
 		final List<Forwarding> fwList = getObjects(Forwarding.class, userData);
 		// vnffg link to NFP, VNF, PNF, NS, NsVirtualLink, NfpPositionElement
-		final List<VNFFG> vnffg = getObjects(VNFFG.class, userData);
+		final List<@Nonnull VNFFG> vnffg = getObjects(VNFFG.class, userData);
 		return vnffg.stream().map(x -> {
 			final VnffgDescriptor vnffgd = new VnffgDescriptor();
 			vnffgd.setName(x.getInternalName());
@@ -399,7 +399,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 		return nsVnfIndicators;
 	}
 
-	private static Map<Integer, RootLeaf> mapVlLevel(@NotNull final Map<String, LinkBitrateRequirements> bitRateRequirements) {
+	private static Map<Integer, RootLeaf> mapVlLevel(final Map<String, LinkBitrateRequirements> bitRateRequirements) {
 		return bitRateRequirements.entrySet().stream()
 				.collect(Collectors.toMap(x -> Integer.valueOf(x.getKey()), x -> new RootLeaf(x.getValue().getRoot(), x.getValue().getLeaf())));
 	}
@@ -409,7 +409,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 				.collect(Collectors.toMap(x -> Integer.valueOf(x.getKey()), Entry::getValue));
 	}
 
-	private static Map<String, RootLeaf> map(@NotNull final Map<String, LinkBitrateRequirements> bitRateRequirements) {
+	private static Map<String, RootLeaf> map(final Map<String, LinkBitrateRequirements> bitRateRequirements) {
 		return bitRateRequirements.entrySet().stream()
 				.collect(Collectors.toMap(Entry::getKey, x -> new RootLeaf(x.getValue().getRoot(), x.getValue().getLeaf())));
 	}
