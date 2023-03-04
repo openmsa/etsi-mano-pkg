@@ -43,6 +43,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevel
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  *
@@ -96,6 +97,7 @@ public interface VnfPackageReader extends Closeable {
 	@Nonnull
 	List<String> getImports();
 
+	@Nullable
 	String getManifestContent();
 
 	byte[] getFileContent(String fileName);

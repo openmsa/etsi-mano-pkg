@@ -25,12 +25,7 @@ public class SecurityGroupAdapter {
 
 	private List<String> targets;
 
-	public SecurityGroupAdapter() {
-		// Nothing.
-	}
-
 	public SecurityGroupAdapter(final SecurityGroup securityGroup, final List<String> targets) {
-		super();
 		this.securityGroup = securityGroup;
 		this.targets = targets;
 	}

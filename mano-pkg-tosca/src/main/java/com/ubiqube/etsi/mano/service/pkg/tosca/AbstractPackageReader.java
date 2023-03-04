@@ -56,6 +56,7 @@ import com.ubiqube.parser.tosca.api.ToscaApi;
 import com.ubiqube.parser.tosca.scalar.Version;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.converter.ConverterFactory;
@@ -239,6 +240,7 @@ public abstract class AbstractPackageReader implements Closeable {
 		return ret;
 	}
 
+	@Nullable
 	public final String getManifestContent() {
 		return this.toscaParser.getManifestContent();
 	}
