@@ -83,7 +83,6 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VirtualLinkToLevelMap
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToInstantiationLevelMapping;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToLevelMapping;
 
-import jakarta.annotation.Nonnull;
 import ma.glasnost.orika.MapperFactory;
 
 /**
@@ -231,7 +230,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 		final List<NFP> nfp = getObjects(NFP.class, userData);
 		final List<Forwarding> fwList = getObjects(Forwarding.class, userData);
 		// vnffg link to NFP, VNF, PNF, NS, NsVirtualLink, NfpPositionElement
-		final List<@Nonnull VNFFG> vnffg = getObjects(VNFFG.class, userData);
+		final List<VNFFG> vnffg = getObjects(VNFFG.class, userData);
 		return vnffg.stream().map(x -> {
 			final VnffgDescriptor vnffgd = new VnffgDescriptor();
 			vnffgd.setName(x.getInternalName());
