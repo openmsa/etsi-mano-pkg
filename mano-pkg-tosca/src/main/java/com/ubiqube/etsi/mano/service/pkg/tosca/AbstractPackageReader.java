@@ -85,8 +85,6 @@ public abstract class AbstractPackageReader implements Closeable {
 	@Nonnull
 	private final BinaryRepository repo;
 
-	private URLClassLoader urlLoader;
-
 	private MapperFacade toscaMapper;
 
 	private ToscaApi toscaApi;
@@ -117,13 +115,13 @@ public abstract class AbstractPackageReader implements Closeable {
 		if (null == cls) {
 			throw new ParseException("Unable to find " + jarPath);
 		}
-		this.urlLoader = URLClassLoader.newInstance(new URL[] { cls }, this.getClass().getClassLoader());
+		final URLClassLoader urlLoader = URLClassLoader.newInstance(new URL[] { cls }, this.getClass().getClassLoader());
 		Thread.currentThread().setContextClassLoader(urlLoader);
-		toscaMapper = createToscaMapper().getMapperFacade();
+		toscaMapper = createToscaMapper(urlLoader).getMapperFacade();
 		toscaApi = new ToscaApi(urlLoader, toscaMapper);
 	}
 
-	private MapperFactory createToscaMapper() {
+	private static MapperFactory createToscaMapper(final URLClassLoader urlLoader) {
 		final MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 		final ConverterFactory converterFactory = mapperFactory.getConverterFactory();
 		converterFactory.registerConverter(new SizeConverter());
@@ -133,12 +131,12 @@ public abstract class AbstractPackageReader implements Closeable {
 		converterFactory.registerConverter(new FrequencyConverter());
 		converterFactory.registerConverter(new Frequency2Converter());
 		converterFactory.registerConverter(new Range2Converter());
-		final OrikaMapper meh = getVersionedMapperMethod();
+		final OrikaMapper meh = getVersionedMapperMethod(urlLoader);
 		meh.configureMapper(mapperFactory);
 		return mapperFactory;
 	}
 
-	private OrikaMapper getVersionedMapperMethod() {
+	private static OrikaMapper getVersionedMapperMethod(final URLClassLoader urlLoader) {
 		try (InputStream stream = urlLoader.getResourceAsStream("META-INF/tosca-resources.properties")) {
 			final Properties props = new Properties();
 			props.load(stream);
