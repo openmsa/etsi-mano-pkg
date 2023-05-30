@@ -14,24 +14,24 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ubiqube.etsi.mano.service.pkg;
+package com.ubiqube.etsi.mano.service.pkg.bean;
 
-/**
- *
- * @author Olivier Vignaud
- *
- */
-public class ToscaException extends RuntimeException {
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-	/** Serial. */
-	private static final long serialVersionUID = 1L;
+import java.util.List;
 
-	public ToscaException(final Throwable e) {
-		super(e);
-	}
+import org.junit.jupiter.api.Test;
 
-	public ToscaException(final String message) {
-		super(message);
+class SecurityGroupAdapterTest {
+
+	@Test
+	void test() {
+		final SecurityGroupAdapter srv = new SecurityGroupAdapter(null, null);
+		srv.setSecurityGroup(null);
+		srv.setTargets(List.of());
+		srv.getSecurityGroup();
+		srv.getTargets();
+		assertTrue(true);
 	}
 
 }

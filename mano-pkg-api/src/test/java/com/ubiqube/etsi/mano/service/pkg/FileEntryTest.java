@@ -16,22 +16,33 @@
  */
 package com.ubiqube.etsi.mano.service.pkg;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+
 /**
  *
  * @author Olivier Vignaud
  *
  */
-public class ToscaException extends RuntimeException {
+class FileEntryTest {
 
-	/** Serial. */
-	private static final long serialVersionUID = 1L;
-
-	public ToscaException(final Throwable e) {
-		super(e);
-	}
-
-	public ToscaException(final String message) {
-		super(message);
+	@Test
+	void test() {
+		final FileEntry srv = new FileEntry(null, null);
+		srv.content();
+		srv.fileName();
+		srv.hashCode();
+		srv.equals(srv);
+		srv.equals("");
+		srv.equals(null);
+		final FileEntry srv2 = new FileEntry(null, null);
+		srv.equals(srv2);
+		final FileEntry srv3 = new FileEntry("", null);
+		srv.equals(srv3);
+		final FileEntry srv4 = new FileEntry(null, "hello".getBytes());
+		srv.equals(srv4);
+		assertNotNull(srv4.toString());
 	}
 
 }

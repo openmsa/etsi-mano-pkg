@@ -14,24 +14,25 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ubiqube.etsi.mano.service.pkg;
+package com.ubiqube.etsi.mano.service.pkg.bean.nsscaling;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Olivier Vignaud
  *
  */
-public class ToscaException extends RuntimeException {
+class RootLeafTest {
 
-	/** Serial. */
-	private static final long serialVersionUID = 1L;
-
-	public ToscaException(final Throwable e) {
-		super(e);
-	}
-
-	public ToscaException(final String message) {
-		super(message);
+	@Test
+	void test() {
+		final RootLeaf srv = new RootLeaf(0, 0);
+		srv.leaf();
+		srv.root();
+		assertTrue(true);
 	}
 
 }

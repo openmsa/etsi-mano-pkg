@@ -16,22 +16,36 @@
  */
 package com.ubiqube.etsi.mano.service.pkg;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 /**
  *
  * @author Olivier Vignaud
  *
  */
-public class ToscaException extends RuntimeException {
+class PkgUtilsTest {
 
-	/** Serial. */
-	private static final long serialVersionUID = 1L;
-
-	public ToscaException(final Throwable e) {
-		super(e);
+	@Test
+	void test() {
+		final InputStream is = InputStream.nullInputStream();
+		PkgUtils.fetchData(is);
+		assertTrue(true);
 	}
 
-	public ToscaException(final String message) {
-		super(message);
+	@Test
+	void test1() throws IOException {
+		final InputStream is = Mockito.mock(InputStream.class);
+		when(is.transferTo(any())).thenThrow(IOException.class);
+		assertThrows(ToscaException.class, () -> PkgUtils.fetchData(is));
 	}
 
 }

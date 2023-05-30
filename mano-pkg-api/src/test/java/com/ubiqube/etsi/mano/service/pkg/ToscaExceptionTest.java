@@ -16,22 +16,22 @@
  */
 package com.ubiqube.etsi.mano.service.pkg;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+
 /**
  *
  * @author Olivier Vignaud
  *
  */
-public class ToscaException extends RuntimeException {
+@SuppressWarnings("static-method")
+class ToscaExceptionTest {
 
-	/** Serial. */
-	private static final long serialVersionUID = 1L;
-
-	public ToscaException(final Throwable e) {
-		super(e);
-	}
-
-	public ToscaException(final String message) {
-		super(message);
+	@Test
+	void test() {
+		assertNotNull(new ToscaException(new RuntimeException()));
+		assertNotNull(new ToscaException("  "));
 	}
 
 }

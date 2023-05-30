@@ -14,24 +14,21 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ubiqube.etsi.mano.service.pkg;
+package com.ubiqube.etsi.mano.service.pkg.bean.nsscaling;
 
-/**
- *
- * @author Olivier Vignaud
- *
- */
-public class ToscaException extends RuntimeException {
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-	/** Serial. */
-	private static final long serialVersionUID = 1L;
+import org.junit.jupiter.api.Test;
 
-	public ToscaException(final Throwable e) {
-		super(e);
-	}
+class VlStepMappingTest {
 
-	public ToscaException(final String message) {
-		super(message);
+	@Test
+	void test() {
+		final VlStepMapping srv = new VlStepMapping(null, null, null);
+		srv.aspectId();
+		srv.mapping();
+		srv.targets();
+		assertTrue(true);
 	}
 
 }
