@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,10 @@ import com.ubiqube.etsi.mano.repository.VnfPackageRepository;
 import com.ubiqube.etsi.mano.service.cond.ConditionService;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
+import com.ubiqube.parser.test.ArtifactDownloader;
+
+import ma.glasnost.orika.OrikaSystemProperties;
+import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
 
 /**
  *
@@ -46,6 +51,12 @@ class ToscaVnfRegistryHandlerTest {
 	private VnfPackageRepository repo;
 	@Mock
 	private ConditionService conditonService;
+
+	public ToscaVnfRegistryHandlerTest() throws MalformedURLException {
+		System.setProperty(OrikaSystemProperties.COMPILER_STRATEGY, EclipseJdtCompilerStrategy.class.getName());
+		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES, "true");
+		ArtifactDownloader.prepareArtifact("421");
+	}
 
 	@Test
 	void testIsProcesseble() {
