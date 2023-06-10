@@ -18,6 +18,7 @@ package com.ubiqube.etsi.mano.service.pkg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,12 +31,14 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 import com.ubiqube.etsi.mano.dao.mano.NsSap;
+import com.ubiqube.etsi.mano.dao.mano.NsVnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsNsd;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsVnf;
 import com.ubiqube.etsi.mano.dao.mano.nsd.VnffgDescriptor;
 import com.ubiqube.etsi.mano.dao.mano.v2.nfvo.NsVirtualLink;
 import com.ubiqube.etsi.mano.service.pkg.bean.NsInformations;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
+import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.NsScaling;
 import com.ubiqube.etsi.mano.service.pkg.tosca.ns.ToscaNsPackageProvider;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
@@ -109,6 +112,25 @@ class ToscaNsdTest {
 	void testVnffg() {
 		final Set<VnffgDescriptor> list = tpp.getVnffg(new HashMap<String, String>());
 		assertNotNull(list);
-		assertEquals(0, list.size());
+		assertEquals(1, list.size());
 	}
+
+	@Test
+	void testAutoHealing() {
+		final boolean list = tpp.isAutoHealEnabled();
+		assertTrue(list);
+	}
+
+	@Test
+	void testVnffgNsScaling() {
+		final NsScaling list = tpp.getNsScaling(new HashMap<String, String>());
+		assertNotNull(list);
+	}
+
+	@Test
+	void testNsIndictor() {
+		final Set<NsVnfIndicator> list = tpp.getNsVnfIndicator(new HashMap<String, String>());
+		assertNotNull(list);
+	}
+
 }

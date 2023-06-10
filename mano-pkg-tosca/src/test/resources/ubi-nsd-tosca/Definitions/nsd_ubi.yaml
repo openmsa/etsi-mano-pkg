@@ -93,6 +93,72 @@ topology_template:
         # - external_virtual_link:
         # - internal_virtual_link: # Must be defined
 
+    VNF_left_forward_1:
+      type: tosca.nodes.nfv.Forwarding
+      requirements:
+        - virtual_link: left_vl
+
+    VNF_left_forward_2:
+      type: tosca.nodes.nfv.Forwarding
+      requirements:
+        - virtual_link: left_vl
+
+    # For VNF_1
+    element_1:  # Port pair? port pair group ?
+      type: tosca.nodes.nfv.NfpPositionElement
+      requirements:
+        - profile_element:
+            node: VNF_left_forward_1
+            capability: VNF_left_forward_1
+        - profile_element:
+            node: VNF_left_forward_2
+            capability: VNF_left_forward_2
+
+    nfp_position_1:
+      type: tosca.nodes.nfv.NfpPosition
+      properties:
+        forwarding_behaviour: lb
+      requirements:
+        - element: element_1 # tosca.nodes.nfv.NfpPositionElement
+
+    nfp_1:
+      type: tosca.nodes.nfv.NFP
+      requirements:
+        - nfp_position: nfp_position_1 # tosca.nodes.nfv.NfpPosition
+
+    forwarding:
+      type: tosca.nodes.nfv.Forwarding
+      requirements:
+        - virtual_link: vl01
+
+  policies:
+    - nfp_rule: # classifier
+        type: tosca.policies.nfv.NfpRule
+        properties:
+          ether_destination_address:
+          ether_source_address:
+          ether_type: ipv4
+          vlan_tag:
+            - srt
+            - str2
+          protocol: TCP
+          dscp:
+          source_port_range: 0 - 22
+          source_ip_address_prefix:
+          destination_ip_address_prefix:
+          extended_criteria: # tosca.datatypes.nfv.Mask
+            - starting_point: 1
+              length: 7
+              value: string
+        targets:
+          - nfp_1 # tosca.nodes.nfv.NFP
+
+  groups:
+    vnffg_1:
+      type: tosca.groups.nfv.VNFFG
+      properties:
+        description: descr
+      members:  [ nfp_1, vnf_left, internal, element_1 ]
 
 policies:
   affinity:
@@ -123,9 +189,100 @@ policies:
     targets:
       - sap01
 
+  ns_scaling_aspect:
+    type: tosca.policies.nfv.NsScalingAspects
+    properties:
+      aspects: # map tosca.datatypes.nfv.NsScalingAspect
+        vnf_left_aspect:
+          name: an another name
+          description: descr
+          ns_scale_levels:
+            1: # map<Integer, tosca.datatypes.nfv.NsLevels> 
+              description: descr
+            2:
+              description: d2
 
+  vnf_left_aspect:
+    type: tosca.policies.nfv.VnfToLevelMapping
+    properties:
+      aspect: vnf_left_aspect
+      number_of_instances: # map<Integer, Integer>
+        1: 1
+        2: 2
+        3: 3
+        4: 4
+    targets:  [ vnf_left ] # [ tosca.nodes.nfv.VNF ]
 
+  ns instantiation_level:
+    type: tosca.policies.nfv.NsInstantiationLevels
+    properties:
+      ns_levels: # map<tosca.datatypes.nfv.NsLevels>
+        level_1:
+          description: descr 1
+        level_2:
+          description: descr 2
+        level_3:
+          description: descr 3
+        level_4:
+          description: descr 4
 
+  vnf_to_inst_level:
+    type: tosca.policies.nfv.VnfToInstantiationLevelMapping
+    properties:
+      number_of_instances: # map<String, Integer>
+        inst_lvl: 5
+        level_2: 2
+    targets: [ vnf_left ] #[ tosca.nodes.nfv.VNF ]
+
+  monitoring_rule:
+    type: tosca.policies.nfv.NsMonitoring
+    properties:
+      ns_monitoring_parameters: # map tosca.datatypes.nfv.NsMonitoringParameter
+        mon_name:
+          name: name
+          performance_metric: byte_incoming_sap
+          collection_period: 60 s
+    targets: # tosca.nodes.nfv.NS
+
+  vnf_mon:
+    type: tosca.policies.nfv.VnfMonitoring
+    properties:
+      vnf_monitoring_parameters: # map tosca.datatypes.nfv.VnfMonitoringParameter
+        vnf_mon:
+          name: name
+
+  vnfIndicator:
+    type: tosca.policies.nfv.NsAutoScale
+    triggers:
+      scale_out:
+        event: tosca.interfaces.nfv.NsVnfIndicator.utilization # full name of a notification in the VnfIndicator interface
+        condition:
+          - vnf_1_utilization_vnf_indicator: [ { greater_or_equal: 80.0 } ]
+          - vnf_2_utilization_vnf_indicator: [ { greater_or_equal: 80.0 } ]
+          - call_proc_scale_level: [ { less_than: 2 } ]
+        action:
+          - call_operation:
+            operation: Nslcm.scale
+            inputs:
+              scale_ns_by_steps_data:
+                scaling_direction: scale_out
+                aspect: call_proc
+                number_of_steps: 1 # optional
+      scale_in:
+        event: tosca.interfaces.nfv.NsVnfIndicator.utilization # full name of a notification in the VnfIndicator interface
+        condition:
+          - vnf_1_utilization_vnf_indicator: [ { less_or_equal: 10.0 } ]
+          - vnf_2_utilization_vnf_indicator: [ { less_or_equal: 10.0 } ]
+          - call_proc_scale_level: [ { greater_than: 2 } ]
+        action:
+          - call_operation:
+            operation: Nslcm.scale
+            inputs:
+              scale_ns_by_steps_data:
+                scaling_direction: scale_out
+                aspect: call_proc
+                number_of_steps: 1 # optional
+    targets: [ my_service ]
 
 
 
