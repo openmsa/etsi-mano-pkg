@@ -61,8 +61,6 @@ public class ProviderData {
 
 	private String vnfdVersion;
 
-	private String vnfdId;
-
 	private String descriptorId;
 
 	private String descriptorVersion;

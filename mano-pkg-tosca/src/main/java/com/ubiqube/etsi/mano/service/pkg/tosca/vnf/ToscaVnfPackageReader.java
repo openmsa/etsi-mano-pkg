@@ -121,7 +121,6 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("vnfSoftwareVersion", "softwareVersion")
 				.field("vnfdVersion", DESCRIPTOR_VERSION)
 				.field(DESCRIPTOR_VERSION, DESCRIPTOR_VERSION)
-				.field("vnfdId", DESCRIPTOR_ID)
 				.field(DESCRIPTOR_ID, DESCRIPTOR_ID)
 				.field("flavorId", "flavourId")
 				.field("monitoringParameters{}", "monitoringParameters{value}")
