@@ -52,7 +52,7 @@ import tosca.policies.mec.DnsRuleDescriptor;
 
 /**
  *
- * @author Olivier Vignaud <ovi@ubiqube.com>
+ * @author Olivier Vignaud {@literal <ovi@ubiqube.com>}
  *
  */
 public class AppToscaProvider extends AbstractPackageReader implements AppPackageProvider {

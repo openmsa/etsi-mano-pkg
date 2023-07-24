@@ -40,7 +40,7 @@ import com.ubiqube.parser.tosca.csar.CsarParserImpl;
 
 /**
  *
- * @author Olivier Vignaud <ovi@ubiqube.com>
+ * @author Olivier Vignaud {@literal <ovi@ubiqube.com>}
  *
  */
 @Service

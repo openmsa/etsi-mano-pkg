@@ -18,7 +18,7 @@ package com.ubiqube.etsi.mano.service.pkg.mec;
 
 /**
  *
- * @author Olivier Vignaud <ovi@ubiqube.com>
+ * @author Olivier Vignaud {@literal <ovi@ubiqube.com>}
  *
  */
 public interface AppRegistryHandler {

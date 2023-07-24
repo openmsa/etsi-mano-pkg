@@ -28,7 +28,7 @@ import com.ubiqube.etsi.mano.dao.mec.pkg.ServiceDescriptor;
 
 /**
  *
- * @author Olivier Vignaud <ovi@ubiqube.com>
+ * @author Olivier Vignaud {@literal <ovi@ubiqube.com>}
  *
  */
 public interface AppPackageProvider {
