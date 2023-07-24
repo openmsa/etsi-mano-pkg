@@ -32,7 +32,8 @@
 		-->
 	</modules>
 
-  <scm>
-    <tag>mano-pkg-aggregator-3.0.0</tag>
-  </scm>
+	<scm>
+		<developerConnection>scm:git:https://github.com/openmsa/etsi-mano-pkg.git</developerConnection>
+		<tag>mano-pkg-aggregator-3.0.0</tag>
+	</scm>
 </project>
