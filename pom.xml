@@ -12,16 +12,6 @@
 	<packaging>pom</packaging>
 	<name>mano-pkg-aggregator</name>
 	<description>Build document for ETSI-MANO project</description>
-	<properties>
-		<version.mano-model>3.0.0</version.mano-model>
-		<version.mano-condition>3.0.0</version.mano-condition>
-		<version.orchestration-api>3.0.0</version.orchestration-api>
-		<version.sol001-objects>2.0.0</version.sol001-objects>
-		<version.tosca-api>2.0.0</version.tosca-api>
-		<version.mano-commons>3.0.0</version.mano-commons>
-		<version.tosca-test-utils>2.0.0</version.tosca-test-utils>
-		<version.mano-repo-api>3.0.0</version.mano-repo-api>
-	</properties>
 	<modules>
 		<module>mano-pkg-api</module>
 		<module>mano-pkg-tosca</module>
