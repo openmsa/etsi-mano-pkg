@@ -23,6 +23,7 @@ import java.util.Set;
 import com.ubiqube.etsi.mano.dao.mano.Attributes;
 import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VnfProfile;
+import com.ubiqube.parser.tosca.AttributeAssignement;
 import com.ubiqube.parser.tosca.InterfaceDefinition;
 import com.ubiqube.parser.tosca.RequirementDefinition;
 import com.ubiqube.parser.tosca.objects.tosca.interfaces.nfv.Vnflcm;
@@ -104,6 +105,7 @@ public class ProviderData {
 	private List<Attributes> attributes;
 
 	// See Attributes for overloadedAttributes
+	private Map<String, AttributeAssignement> overloadedAttributes;
 
 	private RequirementDefinition overloadedRequirements;
 

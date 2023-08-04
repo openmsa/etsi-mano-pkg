@@ -39,16 +39,7 @@ topology_template:
       requirements:
         - virtual_link: public
       attributes:
-        utilization_vnf_indicator:
-          type: float
-          description: holds the value of the utilization VNF indicator. It is assigned the output value of the utilization notification.
-        health_vnf_indicator:
-          type: string
-          description: holds the value of the health VNF indicator. It is assigned the output value of the health notification.
-        call_proc_scale_level:
-          type: integer
-        database_scale_level:
-          type: integer
+        utilization_vnf_indicator:  { get_attribute: [ SELF, scale_status, call_proc, scale_level ] }
       interfaces:
         Vnflcm:
           operations:
