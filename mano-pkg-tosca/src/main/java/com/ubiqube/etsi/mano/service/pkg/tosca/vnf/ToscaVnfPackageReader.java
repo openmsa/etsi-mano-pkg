@@ -66,7 +66,6 @@ import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.ParseException;
-import com.ubiqube.parser.tosca.ValueObject;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.L3ProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VirtualLinkProtocolData;
@@ -88,9 +87,6 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDelta
 
 import jakarta.annotation.Nonnull;
 import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
-import ma.glasnost.orika.converter.BidirectionalConverter;
-import ma.glasnost.orika.metadata.Type;
 
 /**
  *
@@ -99,7 +95,6 @@ import ma.glasnost.orika.metadata.Type;
  */
 public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfPackageReader {
 
-	private static final String ATTRIBUTES = "attributes";
 	private static final String DESCRIPTOR_VERSION = "descriptorVersion";
 	private static final String DESCRIPTOR_ID = "descriptorId";
 	private static final String TOSCA_NAME = "toscaName";
@@ -127,7 +122,6 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field("monitoringParameters{name}", "monitoringParameters{key}")
 				.field("scaleStatus{}", "scaleStatus{value}")
 				.field("scaleStatus{name}", "scaleStatus{key}")
-				.fieldMap(ATTRIBUTES, "overloadedAttributes").converter(ATTRIBUTES).add()
 				.byDefault()
 				.register();
 		mapperFactory.classMap(ArtefactInformations.class, AdditionalArtifact.class)
@@ -219,7 +213,6 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
-		mapperFactory.getConverterFactory().registerConverter(ATTRIBUTES, new AttrConverter());
 	}
 
 	@Override
@@ -421,25 +414,4 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		ret.setArtifacts(Map.of(arte.getKey(), img));
 		return ret;
 	}
-}
-
-class AttrConverter extends BidirectionalConverter<List<Attributes>, Map<String, ValueObject>> {
-
-	@Override
-	public Map<String, ValueObject> convertTo(final List<Attributes> source, final Type<Map<String, ValueObject>> destinationType, final MappingContext mappingContext) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<Attributes> convertFrom(final Map<String, ValueObject> source, final Type<List<Attributes>> destinationType, final MappingContext mappingContext) {
-		return source.entrySet().stream().map(x -> {
-			final Attributes attr = new Attributes();
-			Optional.ofNullable(x.getValue().getDef()).map(Object::toString).ifPresent(attr::setDef);
-			attr.setName(x.getKey());
-			attr.setType(x.getValue().getType());
-			return attr;
-		})
-				.toList();
-	}
-
 }
