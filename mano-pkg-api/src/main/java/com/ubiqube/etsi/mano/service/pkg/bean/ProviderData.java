@@ -16,6 +16,8 @@
  */
 package com.ubiqube.etsi.mano.service.pkg.bean;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,13 +104,13 @@ public class ProviderData {
 
 	private Vnflcm Vnflcm;
 
-	private List<Attributes> attributes;
+	private List<Attributes> attributes = new ArrayList<>();
 
 	// See Attributes for overloadedAttributes
-	private Map<String, AttributeAssignement> overloadedAttributes;
+	private Map<String, AttributeAssignement> overloadedAttributes = new HashMap<>();
 
 	private RequirementDefinition overloadedRequirements;
 
-	private Map<String, InterfaceDefinition> overloadedInterfaces;
+	private Map<String, InterfaceDefinition> overloadedInterfaces = new HashMap<>();
 
 }
