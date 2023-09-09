@@ -20,11 +20,11 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
-import com.ubiqube.etsi.mano.dao.mano.DiskFormatType;
-import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
-import com.ubiqube.etsi.mano.dao.mano.VnfStorage;
-import com.ubiqube.etsi.mano.dao.mano.common.Checksum;
+import com.ubiqube.etsi.mano.dao.mano.vim.Checksum;
+import com.ubiqube.etsi.mano.dao.mano.vim.ContainerFormatType;
+import com.ubiqube.etsi.mano.dao.mano.vim.DiskFormatType;
+import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
+import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
 import com.ubiqube.etsi.mano.service.pkg.tosca.SizeConverter;
 import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;

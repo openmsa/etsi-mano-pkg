@@ -18,7 +18,7 @@ package com.ubiqube.etsi.mano.service.pkg.bean;
 
 import java.util.List;
 
-import com.ubiqube.etsi.mano.dao.mano.AffinityRule;
+import com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule;
 
 import lombok.Getter;
 import lombok.Setter;

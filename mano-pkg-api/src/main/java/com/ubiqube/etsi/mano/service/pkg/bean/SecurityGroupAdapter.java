@@ -18,7 +18,7 @@ package com.ubiqube.etsi.mano.service.pkg.bean;
 
 import java.util.List;
 
-import com.ubiqube.etsi.mano.dao.mano.SecurityGroup;
+import com.ubiqube.etsi.mano.dao.mano.vim.SecurityGroup;
 
 public class SecurityGroupAdapter {
 	private SecurityGroup securityGroup;

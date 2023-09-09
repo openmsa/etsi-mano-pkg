@@ -37,22 +37,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
 import com.ubiqube.etsi.mano.dao.mano.Attributes;
-import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
-import com.ubiqube.etsi.mano.dao.mano.L3Data;
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
-import com.ubiqube.etsi.mano.dao.mano.SecurityGroup;
-import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
 import com.ubiqube.etsi.mano.dao.mano.TriggerDefinition;
-import com.ubiqube.etsi.mano.dao.mano.VlProtocolData;
 import com.ubiqube.etsi.mano.dao.mano.VnfCompute;
 import com.ubiqube.etsi.mano.dao.mano.VnfExtCp;
 import com.ubiqube.etsi.mano.dao.mano.VnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.VnfLinkPort;
-import com.ubiqube.etsi.mano.dao.mano.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
+import com.ubiqube.etsi.mano.dao.mano.vim.ContainerFormatType;
+import com.ubiqube.etsi.mano.dao.mano.vim.L3Data;
+import com.ubiqube.etsi.mano.dao.mano.vim.SecurityGroup;
+import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
+import com.ubiqube.etsi.mano.dao.mano.vim.VlProtocolData;
+import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
@@ -190,11 +190,11 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
-		mapperFactory.classMap(AffinityRule.class, com.ubiqube.etsi.mano.dao.mano.AffinityRule.class)
+		mapperFactory.classMap(AffinityRule.class, com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule.class)
 				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
-		mapperFactory.classMap(AntiAffinityRule.class, com.ubiqube.etsi.mano.dao.mano.AffinityRule.class)
+		mapperFactory.classMap(AntiAffinityRule.class, com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule.class)
 				.field(INTERNAL_NAME, TOSCA_NAME)
 				.byDefault()
 				.register();
@@ -330,13 +330,13 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	public @Nonnull Set<AffinityRuleAdapater> getAffinityRules(final Map<String, String> userDefinedData) {
 		final Set<AffinityRuleAdapater> af = getSetOf(AffinityRule.class, userDefinedData).stream()
 				.map(x -> {
-					final com.ubiqube.etsi.mano.dao.mano.AffinityRule afDao = getMapper().map(x, com.ubiqube.etsi.mano.dao.mano.AffinityRule.class);
+					final com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule afDao = getMapper().map(x, com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule.class);
 					return AffinityRuleAdapater.of(afDao, x.getTargets());
 				})
 				.collect(Collectors.toSet());
 		final Set<AffinityRuleAdapater> anf = getSetOf(AntiAffinityRule.class, userDefinedData).stream()
 				.map(x -> {
-					final com.ubiqube.etsi.mano.dao.mano.AffinityRule afDao = getMapper().map(x, com.ubiqube.etsi.mano.dao.mano.AffinityRule.class);
+					final com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule afDao = getMapper().map(x, com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule.class);
 					afDao.setAnti(true);
 					return AffinityRuleAdapater.of(afDao, x.getTargets());
 				})

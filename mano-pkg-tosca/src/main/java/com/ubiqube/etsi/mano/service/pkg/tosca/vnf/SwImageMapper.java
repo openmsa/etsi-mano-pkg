@@ -16,9 +16,9 @@
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf;
 
-import com.ubiqube.etsi.mano.dao.mano.ContainerFormatType;
-import com.ubiqube.etsi.mano.dao.mano.DiskFormatType;
-import com.ubiqube.etsi.mano.dao.mano.SoftwareImage;
+import com.ubiqube.etsi.mano.dao.mano.vim.ContainerFormatType;
+import com.ubiqube.etsi.mano.dao.mano.vim.DiskFormatType;
+import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 
 import ma.glasnost.orika.CustomMapper;
