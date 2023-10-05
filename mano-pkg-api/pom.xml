@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ubiqube.mano.pkg</groupId>
 		<artifactId>mano-pkg-aggregator</artifactId>
-		<version>3.2.0</version>
+		<version>3.2.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>mano-pkg-api</artifactId>
 	<name>mano-pkg-api</name>
@@ -24,17 +24,17 @@
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-model</artifactId>
-			<version>${version.mano-model}</version>
+			<version>3.2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano.repository</groupId>
 			<artifactId>mano-repo-api</artifactId>
-			<version>${version.mano-repo-api}</version>
+			<version>3.2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano.sol001</groupId>
 			<artifactId>sol001-objects</artifactId>
-			<version>${version.sol001-objects}</version>
+			<version>3.2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
