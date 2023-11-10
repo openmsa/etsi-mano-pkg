@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ubiqube.mano.pkg</groupId>
 		<artifactId>mano-pkg-aggregator</artifactId>
-		<version>3.2.1-SNAPSHOT</version>
+		<version>3.2.1</version>
 	</parent>
 	<artifactId>mano-pkg-api</artifactId>
 	<name>mano-pkg-api</name>

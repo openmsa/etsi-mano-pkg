@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>com.ubiqube.mano</groupId>
 		<artifactId>mano-pkg-aggregator</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 	<artifactId>mano-pkg-mec-api</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mec-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 </project>
