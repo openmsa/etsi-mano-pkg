@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ubiqube.mano.pkg</groupId>
 		<artifactId>mano-pkg-aggregator</artifactId>
-		<version>3.2.1</version>
+		<version>3.2.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>mano-pkg-tosca</artifactId>
 	<name>mano-pkg-tosca</name>
@@ -36,17 +36,17 @@
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-model</artifactId>
-			<version>3.2.1</version>
+			<version>${version.mano-model}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-condition</artifactId>
-			<version>3.2.1</version>
+			<version>${version.mano-condition}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>orchestration-api</artifactId>
-			<version>3.2.1</version>
+			<version>${version.orchestration-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano.sol001</groupId>
@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-commons</artifactId>
-			<version>3.2.1</version>
+			<version>${version.mano-commons}</version>
 		</dependency>
 		<dependency>
 			<groupId>ma.glasnost.orika</groupId>
