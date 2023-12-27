@@ -219,8 +219,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	public @Nonnull ProviderData getProviderPadata() {
 		final List<ProviderData> vnfs = getListOf(VNF.class, ProviderData.class, new HashMap<>());
 		if (vnfs.isEmpty()) {
-			LOG.warn("No VNF node found in the package.");
-			return new ProviderData();
+			throw new GenericException("Unable to find a VNFD block in this VNFD.");
 		}
 		final ProviderData vnf = vnfs.get(0);
 		// Add default attributes
