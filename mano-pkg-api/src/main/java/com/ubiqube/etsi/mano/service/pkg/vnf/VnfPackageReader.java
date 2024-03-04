@@ -32,6 +32,7 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
+import com.ubiqube.etsi.mano.dao.mano.repo.Repository;
 import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
@@ -42,7 +43,6 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 /**
@@ -52,49 +52,34 @@ import jakarta.annotation.Nullable;
  */
 public interface VnfPackageReader extends Closeable {
 
-	@Nonnull
 	ProviderData getProviderPadata();
 
-	@Nonnull
 	Set<AdditionalArtifact> getAdditionalArtefacts(Map<String, String> parameters);
 
-	@Nonnull
 	Set<VnfCompute> getVnfComputeNodes(Map<String, String> parameters);
 
-	@Nonnull
 	Set<VnfStorage> getVnfStorages(Map<String, String> parameters);
 
-	@Nonnull
 	Set<VnfVl> getVnfVirtualLinks(Map<String, String> parameters);
 
-	@Nonnull
 	Set<VnfLinkPort> getVnfVduCp(Map<String, String> parameters);
 
-	@Nonnull
 	Set<VnfExtCp> getVnfExtCp(Map<String, String> parameters);
 
-	@Nonnull
 	Set<ScalingAspect> getScalingAspects(Map<String, String> parameters);
 
-	@Nonnull
 	List<InstantiationLevels> getInstatiationLevels(Map<String, String> parameters);
 
-	@Nonnull
 	List<VduInstantiationLevels> getVduInstantiationLevels(Map<String, String> parameters);
 
-	@Nonnull
 	List<VduInitialDelta> getVduInitialDelta(Map<String, String> parameters);
 
-	@Nonnull
 	List<VduScalingAspectDeltas> getVduScalingAspectDeltas(Map<String, String> parameters);
 
-	@Nonnull
 	Set<AffinityRuleAdapater> getAffinityRules(Map<String, String> userDefinedData);
 
-	@Nonnull
 	Set<SecurityGroupAdapter> getSecurityGroups(Map<String, String> userData);
 
-	@Nonnull
 	List<String> getImports();
 
 	@Nullable
@@ -102,21 +87,19 @@ public interface VnfPackageReader extends Closeable {
 
 	byte[] getFileContent(String fileName);
 
-	@Nonnull
 	Set<OsContainer> getOsContainer(Map<String, String> parameters);
 
-	@Nonnull
 	Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(Map<String, String> parameters);
 
-	@Nonnull
 	Set<VirtualCp> getVirtualCp(Map<String, String> parameters);
 
 	Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters);
 
-	@Nonnull
 	Set<McIops> getMciops(Map<String, String> userDefinedData);
 
 	InputStream getFileInputStream(final String path);
 
 	List<String> getVnfdFiles(boolean includeSignatures);
+
+	Set<Repository> getRepositories();
 }

@@ -47,6 +47,8 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
+import com.ubiqube.etsi.mano.dao.mano.repo.Repository;
+import com.ubiqube.etsi.mano.dao.mano.repo.ToscaRepository;
 import com.ubiqube.etsi.mano.dao.mano.vim.ContainerFormatType;
 import com.ubiqube.etsi.mano.dao.mano.vim.L3Data;
 import com.ubiqube.etsi.mano.dao.mano.vim.SecurityGroup;
@@ -66,6 +68,8 @@ import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.ParseException;
+import com.ubiqube.parser.tosca.RepositoryDefinition;
+import com.ubiqube.parser.tosca.RepositoryDefinition.Credential;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.L3ProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VirtualLinkProtocolData;
@@ -412,5 +416,29 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		img.setContainerFormat(ContainerFormatType.HELM);
 		ret.setArtifacts(Map.of(arte.getKey(), img));
 		return ret;
+	}
+
+	@Override
+	public Set<Repository> getRepositories() {
+		final Map<String, RepositoryDefinition> repos = getPkgRepositories();
+		return repos.entrySet().stream().map(this::map).collect(Collectors.toSet());
+	}
+
+	private Repository map(final Entry<String, RepositoryDefinition> x) {
+		final ToscaRepository rep = new ToscaRepository();
+		rep.setName(x.getKey());
+		final RepositoryDefinition val = x.getValue();
+		rep.setDescription(val.getDescription());
+		rep.setUrl(val.getUrl());
+		final Credential cred = val.getCredential();
+		if (null == cred) {
+			return rep;
+		}
+		rep.setKeys(cred.getKeys());
+		rep.setProtocol(cred.getProtocol());
+		rep.setToken(cred.getToken());
+		rep.setTokenType(cred.getTokenType());
+		rep.setUsername(cred.getUser());
+		return rep;
 	}
 }

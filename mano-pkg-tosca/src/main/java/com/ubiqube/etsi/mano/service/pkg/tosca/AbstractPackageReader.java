@@ -49,6 +49,7 @@ import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Import;
 import com.ubiqube.parser.tosca.Imports;
 import com.ubiqube.parser.tosca.ParseException;
+import com.ubiqube.parser.tosca.RepositoryDefinition;
 import com.ubiqube.parser.tosca.ToscaContext;
 import com.ubiqube.parser.tosca.ToscaParser;
 import com.ubiqube.parser.tosca.api.OrikaMapper;
@@ -196,6 +197,10 @@ public abstract class AbstractPackageReader implements Closeable {
 		final List<U> obj = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
 		return toscaMapper.mapAsList(obj, manoClass);
+	}
+
+	protected Map<String, RepositoryDefinition> getPkgRepositories() {
+		return root.getRepositories();
 	}
 
 	protected List<ArtefactInformations> getCsarFiles() {
