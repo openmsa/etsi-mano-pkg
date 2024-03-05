@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>com.ubiqube.mano.sol001</groupId>
 			<artifactId>sol001-objects</artifactId>
-			<version>${version.sol001-objects}</version>
+			<version>${version.tosca-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
@@ -87,7 +87,7 @@
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>tosca-test-utils</artifactId>
-			<version>${version.tosca-test-utils}</version>
+			<version>${version.tosca-api}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

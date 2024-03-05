@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>com.ubiqube.mano.sol001</groupId>
 			<artifactId>sol001-objects</artifactId>
-			<version>${version.sol001-objects}</version>
+			<version>${version.tosca-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
