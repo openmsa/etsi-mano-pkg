@@ -50,6 +50,7 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
 import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
+import com.ubiqube.etsi.mano.dao.mano.repo.Repository;
 import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.service.pkg.ToscaException;
@@ -210,6 +211,11 @@ public class K8sPodReader implements VnfPackageReader {
 
 	@Override
 	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
+		return Set.of();
+	}
+
+	@Override
+	public Set<Repository> getRepositories() {
 		return Set.of();
 	}
 
