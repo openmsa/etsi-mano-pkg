@@ -420,7 +420,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public Set<Repository> getRepositories() {
-		final Map<String, RepositoryDefinition> repos = getPkgRepositories();
+		final Map<String, RepositoryDefinition> repos = Optional.ofNullable(getPkgRepositories()).orElseGet(Map::of);
 		return repos.entrySet().stream().map(this::map).collect(Collectors.toSet());
 	}
 
