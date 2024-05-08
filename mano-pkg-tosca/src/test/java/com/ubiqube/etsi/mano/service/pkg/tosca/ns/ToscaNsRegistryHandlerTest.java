@@ -26,12 +26,19 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.ubiqube.etsi.mano.repository.ByteArrayResource;
 import com.ubiqube.etsi.mano.repository.ManoResource;
 import com.ubiqube.etsi.mano.repository.NsdRepository;
+import com.ubiqube.etsi.mano.service.pkg.TestFactory;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsInformationsMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsSapMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVirtualLinkMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVnfIndicatorMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
 import com.ubiqube.parser.test.ArtifactDownloader;
@@ -56,16 +63,25 @@ class ToscaNsRegistryHandlerTest {
 	}
 
 	@Test
-	void testgetFileSysteù() {
-		final ToscaNsRegistryHandler srv = new ToscaNsRegistryHandler(repo);
+	void testgetFileSystem() {
+		final ToscaNsRegistryHandler srv = createRegistryHandler();
 		final ManoResource res = new ByteArrayResource(new byte[0], "filename");
 		srv.getFileSystem(res);
 		assertTrue(true);
 	}
 
+	private ToscaNsRegistryHandler createRegistryHandler() {
+		final PkgMapper mapper = TestFactory.createPkgMapper();
+		final NsInformationsMapping nsInformationsMapping = Mappers.getMapper(NsInformationsMapping.class);
+		final NsVnfIndicatorMapping nsVnfIndicatorMapping = Mappers.getMapper(NsVnfIndicatorMapping.class);
+		final NsSapMapping nsSapMapping = Mappers.getMapper(NsSapMapping.class);
+		final NsVirtualLinkMapping nsVirtualLinkMapping = Mappers.getMapper(NsVirtualLinkMapping.class);
+		return new ToscaNsRegistryHandler(repo, nsVirtualLinkMapping, mapper, nsVnfIndicatorMapping, nsSapMapping, nsInformationsMapping);
+	}
+
 	@Test
 	void testIsProcessable() {
-		final ToscaNsRegistryHandler srv = new ToscaNsRegistryHandler(repo);
+		final ToscaNsRegistryHandler srv = createRegistryHandler();
 		final ManoResource res = new ByteArrayResource(new byte[0], "filename");
 		srv.isProcessable(res);
 		assertTrue(true);
@@ -73,7 +89,7 @@ class ToscaNsRegistryHandlerTest {
 
 	@Test
 	void testGetProviderName() {
-		final ToscaNsRegistryHandler srv = new ToscaNsRegistryHandler(repo);
+		final ToscaNsRegistryHandler srv = createRegistryHandler();
 		srv.getProviderName();
 		assertTrue(true);
 	}
@@ -84,7 +100,7 @@ class ToscaNsRegistryHandlerTest {
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_vnfd_types.yaml", "Definitions/etsi_nfv_sol001_vnfd_types.yaml"),
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_common_types.yaml", "Definitions/etsi_nfv_sol001_common_types.yaml"),
 				Entry.of("ubi-tosca/TOSCA-Metadata/TOSCA.meta", "TOSCA-Metadata/TOSCA.meta"));
-		final ToscaNsRegistryHandler srv = new ToscaNsRegistryHandler(repo);
+		final ToscaNsRegistryHandler srv = createRegistryHandler();
 		final InputStream is = new FileInputStream("/tmp/ubi-tosca.csar");
 		srv.getNewReaderInstance(is, UUID.randomUUID());
 		assertTrue(true);

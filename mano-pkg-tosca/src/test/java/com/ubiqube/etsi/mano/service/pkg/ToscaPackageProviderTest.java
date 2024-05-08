@@ -51,6 +51,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.ToscaVnfPackageReader;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
 import com.ubiqube.parser.test.ArtifactDownloader;
@@ -73,8 +74,9 @@ class ToscaPackageProviderTest {
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_common_types.yaml", "Definitions/etsi_nfv_sol001_common_types.yaml"),
 				Entry.of("ubi-tosca/TOSCA-Metadata/TOSCA.meta", "TOSCA-Metadata/TOSCA.meta"));
 		this.cs = new ConditionService();
+		final PkgMapper pm = TestFactory.createPkgMapper();
 		try (final InputStream data = Files.newInputStream(Path.of("/tmp/ubi-tosca.csar"))) {
-			tpp = new ToscaVnfPackageReader(data, null, UUID.randomUUID(), cs);
+			tpp = new ToscaVnfPackageReader(data, null, UUID.randomUUID(), cs, pm);
 		}
 	}
 
@@ -98,7 +100,7 @@ class ToscaPackageProviderTest {
 	}
 
 	private static void checkmonitoringConfig(final Set<MonitoringParams> set) {
-		if (set == null) {
+		if ((set == null) || set.isEmpty()) {
 			return;
 		}
 

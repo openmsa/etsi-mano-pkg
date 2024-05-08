@@ -64,6 +64,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Artifact;
@@ -106,10 +107,12 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	private static final Logger LOG = LoggerFactory.getLogger(ToscaVnfPackageReader.class);
 	@Nonnull
 	private final ConditionService conditionService;
+	private final PkgMapper mapper;
 
-	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final UUID id, final ConditionService conditionService) {
+	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final UUID id, final ConditionService conditionService, final PkgMapper mapper) {
 		super(data, repo, id);
 		this.conditionService = Objects.requireNonNull(conditionService);
+		this.mapper = mapper;
 	}
 
 	@Override
@@ -221,7 +224,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public @Nonnull ProviderData getProviderPadata() {
-		final List<ProviderData> vnfs = getListOf(VNF.class, ProviderData.class, new HashMap<>());
+		final List<ProviderData> vnfs = getListOf(VNF.class, mapper::mapToProviderData, new HashMap<>());
 		if (vnfs.isEmpty()) {
 			throw new GenericException("Unable to find a VNFD block in this VNFD.");
 		}
@@ -245,12 +248,12 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public @Nonnull Set<VnfCompute> getVnfComputeNodes(final Map<String, String> parameters) {
-		final Set<Compute> r = this.getSetOf(Compute.class, parameters);
-		return r.stream().map(x -> {
-			final VnfCompute o = getMapper().map(x, VnfCompute.class);
-			Optional.ofNullable(x.getArtifacts()).ifPresent(y -> map(y, o));
-			return o;
-		}).collect(Collectors.toSet());
+		return this.getSetOf(Compute.class, x -> mapper.mapToVnfCompute(x), parameters);
+//		return r.stream().map(x -> {
+//			final VnfCompute o = mapper.mapToVnfCompute(x);
+//			Optional.ofNullable(x.getArtifacts()).ifPresent(y -> map(y, o));
+//			return o;
+//		}).collect(Collectors.toSet());
 	}
 
 	private void map(final Map<String, ?> y, final VnfCompute o) {
@@ -262,29 +265,29 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		}
 		final Entry<String, ?> it = y.entrySet().iterator().next();
 		final Object obj = it.getValue();
-		final SoftwareImage softwareImage = getMapper().map(obj, SoftwareImage.class);
+		final SoftwareImage softwareImage = mapper.mapToSoftwareImage(obj);
 		softwareImage.setName(it.getKey());
 		o.setSoftwareImage(softwareImage);
 	}
 
 	@Override
 	public @Nonnull Set<VnfStorage> getVnfStorages(final Map<String, String> parameters) {
-		return getSetOf(VnfStorage.class, parameters, VirtualBlockStorage.class);
+		return getSetOf(VirtualBlockStorage.class, mapper::mapToVnfStorage, parameters);
 	}
 
 	@Override
 	public @Nonnull Set<VnfVl> getVnfVirtualLinks(final Map<String, String> parameters) {
-		return this.getSetOf(VnfVirtualLink.class, VnfVl.class, parameters);
+		return this.getSetOf(VnfVirtualLink.class, mapper::mapToVnfVl, parameters);
 	}
 
 	@Override
 	public @Nonnull Set<VnfLinkPort> getVnfVduCp(final Map<String, String> parameters) {
-		return this.getSetOf(VduCp.class, VnfLinkPort.class, parameters);
+		return this.getSetOf(VduCp.class, mapper::mapToVnfLinkPort, parameters);
 	}
 
 	@Override
 	public @Nonnull Set<VnfExtCp> getVnfExtCp(final Map<String, String> parameters) {
-		return this.getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VnfExtCp.class, VnfExtCp.class, parameters);
+		return this.getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VnfExtCp.class, mapper::mapToVnfExtCp, parameters);
 	}
 
 	@Override
@@ -294,7 +297,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		for (final ScalingAspects scalingAspects : list) {
 			final Map<String, com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScalingAspect> sa = scalingAspects.getAspects();
 			final Set<ScalingAspect> tmp = sa.entrySet().stream().map(x -> {
-				final ScalingAspect scaleRet = getMapper().map(x.getValue(), ScalingAspect.class);
+				final ScalingAspect scaleRet = mapper.mapToScalingAspect(x.getValue());
 				scaleRet.setName(x.getKey());
 				return scaleRet;
 			}).collect(Collectors.toSet());
@@ -304,42 +307,42 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	}
 
 	@Override
-	public @Nonnull List<com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels> getInstatiationLevels(final Map<String, String> parameters) {
-		return getListOf(InstantiationLevels.class, com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels.class, parameters);
+	public @Nonnull List<InstantiationLevels> getInstatiationLevels(final Map<String, String> parameters) {
+		return getListOf(InstantiationLevels.class, parameters);
 	}
 
 	@Override
 	public @Nonnull List<VduInstantiationLevels> getVduInstantiationLevels(final Map<String, String> parameters) {
-		return getListOf(VduInstantiationLevels.class, VduInstantiationLevels.class, parameters);
+		return getListOf(VduInstantiationLevels.class, parameters);
 	}
 
 	@Override
 	public @Nonnull List<VduInitialDelta> getVduInitialDelta(final Map<String, String> parameters) {
-		return getListOf(VduInitialDelta.class, VduInitialDelta.class, parameters);
+		return getListOf(VduInitialDelta.class, parameters);
 	}
 
 	@Override
 	public @Nonnull List<VduScalingAspectDeltas> getVduScalingAspectDeltas(final Map<String, String> parameters) {
-		return getListOf(VduScalingAspectDeltas.class, VduScalingAspectDeltas.class, parameters);
+		return getListOf(VduScalingAspectDeltas.class, parameters);
 	}
 
 	@Override
 	public @Nonnull Set<SecurityGroupAdapter> getSecurityGroups(final Map<String, String> userDefinedData) {
 		final List<SecurityGroupRule> sgr = getObjects(SecurityGroupRule.class, userDefinedData);
-		return sgr.stream().map(x -> new SecurityGroupAdapter(getMapper().map(x, SecurityGroup.class), x.getTargets())).collect(Collectors.toSet());
+		return sgr.stream().map(x -> new SecurityGroupAdapter(mapper.mapToSecurityGroup(x), x.getTargets())).collect(Collectors.toSet());
 	}
 
 	@Override
 	public @Nonnull Set<AffinityRuleAdapater> getAffinityRules(final Map<String, String> userDefinedData) {
-		final Set<AffinityRuleAdapater> af = getSetOf(AffinityRule.class, userDefinedData).stream()
+		final Set<AffinityRuleAdapater> af = getListOf(AffinityRule.class, userDefinedData).stream()
 				.map(x -> {
-					final com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule afDao = getMapper().map(x, com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule.class);
+					final com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule afDao = mapper.mapToAffinityRule(x);
 					return AffinityRuleAdapater.of(afDao, x.getTargets());
 				})
 				.collect(Collectors.toSet());
-		final Set<AffinityRuleAdapater> anf = getSetOf(AntiAffinityRule.class, userDefinedData).stream()
+		final Set<AffinityRuleAdapater> anf = getListOf(AntiAffinityRule.class, userDefinedData).stream()
 				.map(x -> {
-					final com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule afDao = getMapper().map(x, com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule.class);
+					final com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule afDao = mapper.mapToAffinityRule(x);
 					afDao.setAnti(true);
 					return AffinityRuleAdapater.of(afDao, x.getTargets());
 				})
@@ -351,22 +354,22 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public @Nonnull Set<OsContainer> getOsContainer(final Map<String, String> parameters) {
-		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainer.class, OsContainer.class, parameters);
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainer.class, x -> mapper.mapToOsContainer(x), parameters);
 	}
 
 	@Override
 	public @Nonnull Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(final Map<String, String> parameters) {
-		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainerDeployableUnit.class, OsContainerDeployableUnit.class, parameters);
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainerDeployableUnit.class, x -> mapper.mapToOsContainerDeployableUnit(x), parameters);
 	}
 
 	@Override
 	public @Nonnull Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
-		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp.class, VirtualCp.class, parameters);
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp.class, x -> mapper.mapToVirtualCp(x), parameters);
 	}
 
 	@Override
 	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
-		final Set<VnfIndicator> vnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, VnfIndicator.class, parameters);
+		final Set<VnfIndicator> vnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, x -> mapper.mapToVnfIndicator(x), parameters);
 		for (final VnfIndicator vnfIndicator : vnfIndicators) {
 			final Set<String> mPs = new LinkedHashSet<>();
 			final List<TriggerDefinition> triggerDefinitions = new ArrayList<>(vnfIndicator.getTriggers().values());
@@ -395,8 +398,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public @Nonnull Set<McIops> getMciops(final Map<String, String> userDefinedData) {
-		final Set<Mciop> mciops = getSetOf(Mciop.class, userDefinedData);
-		return mciops.stream().map(this::map).collect(Collectors.toSet());
+		return getSetOf(Mciop.class, this::map, userDefinedData);
 	}
 
 	private McIops map(final Mciop m) {
@@ -411,7 +413,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		if (!(obj instanceof Artifact)) {
 			throw new GenericException("Only Artifact can be defined for " + m.getInternalName() + ", not " + obj.getClass().getSimpleName());
 		}
-		final SoftwareImage img = getMapper().map(obj, SoftwareImage.class);
+		final SoftwareImage img = mapper.mapToSoftwareImage(obj);
 		img.setName(arte.getKey());
 		img.setContainerFormat(ContainerFormatType.HELM);
 		ret.setArtifacts(Map.of(arte.getKey(), img));
@@ -440,5 +442,10 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		rep.setTokenType(cred.getTokenType());
 		rep.setUsername(cred.getUser());
 		return rep;
+	}
+
+	@Override
+	public List<String> getVnfdFiles(final boolean includeSignatures) {
+		return getVnfdFiles(getImports(), includeSignatures);
 	}
 }

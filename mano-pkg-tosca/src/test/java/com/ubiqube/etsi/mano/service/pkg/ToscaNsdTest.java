@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import com.ubiqube.etsi.mano.dao.mano.NsSap;
 import com.ubiqube.etsi.mano.dao.mano.NsVnfIndicator;
@@ -40,6 +41,11 @@ import com.ubiqube.etsi.mano.service.pkg.bean.NsInformations;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.NsScaling;
 import com.ubiqube.etsi.mano.service.pkg.tosca.ns.ToscaNsPackageProvider;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsInformationsMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsSapMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVirtualLinkMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVnfIndicatorMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
 import com.ubiqube.parser.test.ArtifactDownloader;
@@ -62,12 +68,18 @@ class ToscaNsdTest {
 				Entry.of("ubi-nsd-tosca/Definitions/etsi_nfv_sol001_common_types.yaml", "Definitions/etsi_nfv_sol001_common_types.yaml"),
 				Entry.of("ubi-nsd-tosca/TOSCA-Metadata/TOSCA.meta", "TOSCA-Metadata/TOSCA.meta"));
 		final InputStream data = Files.newInputStream(Path.of("/tmp/ubi-nsd-tosca.csar"));
-		tpp = new ToscaNsPackageProvider(data, null, UUID.randomUUID());
+		final PkgMapper mapper = TestFactory.createPkgMapper();
+		final NsInformationsMapping nsInformationsMapping = Mappers.getMapper(NsInformationsMapping.class);
+		final NsVnfIndicatorMapping nsVnfIndicatorMapping = Mappers.getMapper(NsVnfIndicatorMapping.class);
+		final NsSapMapping nsSapMapping = Mappers.getMapper(NsSapMapping.class);
+		final NsVirtualLinkMapping nsVirtualLinkMapping = Mappers.getMapper(NsVirtualLinkMapping.class);
+		final UUID id = UUID.randomUUID();
+		tpp = new ToscaNsPackageProvider(data, null, id, mapper, nsInformationsMapping, nsVnfIndicatorMapping, nsSapMapping, nsVirtualLinkMapping);
 	}
 
 	@Test
 	void testNsInformations() throws Exception {
-		final NsInformations list = tpp.getNsInformations(new HashMap<String, String>());
+		final NsInformations list = tpp.getNsInformations(new HashMap<>());
 		assertEquals("flavor01", list.getFlavorId());
 		assertEquals("demo", list.getInstantiationLevel());
 		assertEquals(1, list.getMinNumberOfInstance());
@@ -80,37 +92,37 @@ class ToscaNsdTest {
 
 	@Test
 	void testNsVirtualLink() throws Exception {
-		final Set<NsVirtualLink> list = tpp.getNsVirtualLink(new HashMap<String, String>());
+		final Set<NsVirtualLink> list = tpp.getNsVirtualLink(new HashMap<>());
 		assertEquals(1, list.size());
 	}
 
 	@Test
 	void testNsSap() throws Exception {
-		final Set<NsSap> list = tpp.getNsSap(new HashMap<String, String>());
+		final Set<NsSap> list = tpp.getNsSap(new HashMap<>());
 		assertEquals(1, list.size());
 	}
 
 	@Test
 	void testSecurityGroupAdapter() throws Exception {
-		final Set<SecurityGroupAdapter> list = tpp.getSecurityGroups(new HashMap<String, String>());
+		final Set<SecurityGroupAdapter> list = tpp.getSecurityGroups(new HashMap<>());
 		assertEquals(1, list.size());
 	}
 
 	@Test
 	void testUbiqube01() throws Exception {
-		final Set<NsVnf> list = tpp.getVnfd(new HashMap<String, String>());
+		final Set<NsVnf> list = tpp.getVnfd(new HashMap<>());
 		assertEquals(1, list.size());
 	}
 
 	@Test
 	void testUbiqube02() throws Exception {
-		final Set<NsNsd> list = tpp.getNestedNsd(new HashMap<String, String>());
+		final Set<NsNsd> list = tpp.getNestedNsd(new HashMap<>());
 		assertEquals(0, list.size());
 	}
 
 	@Test
 	void testVnffg() {
-		final Set<VnffgDescriptor> list = tpp.getVnffg(new HashMap<String, String>());
+		final Set<VnffgDescriptor> list = tpp.getVnffg(new HashMap<>());
 		assertNotNull(list);
 		assertEquals(1, list.size());
 	}
@@ -123,13 +135,13 @@ class ToscaNsdTest {
 
 	@Test
 	void testVnffgNsScaling() {
-		final NsScaling list = tpp.getNsScaling(new HashMap<String, String>());
+		final NsScaling list = tpp.getNsScaling(new HashMap<>());
 		assertNotNull(list);
 	}
 
 	@Test
 	void testNsIndictor() {
-		final Set<NsVnfIndicator> list = tpp.getNsVnfIndicator(new HashMap<String, String>());
+		final Set<NsVnfIndicator> list = tpp.getNsVnfIndicator(new HashMap<>());
 		assertNotNull(list);
 	}
 

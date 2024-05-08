@@ -33,6 +33,8 @@ import com.ubiqube.etsi.mano.repository.ByteArrayResource;
 import com.ubiqube.etsi.mano.repository.ManoResource;
 import com.ubiqube.etsi.mano.repository.VnfPackageRepository;
 import com.ubiqube.etsi.mano.service.cond.ConditionService;
+import com.ubiqube.etsi.mano.service.pkg.TestFactory;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
 import com.ubiqube.parser.test.ArtifactDownloader;
@@ -52,6 +54,8 @@ class ToscaVnfRegistryHandlerTest {
 	@Mock
 	private ConditionService conditonService;
 
+	private final PkgMapper pkgMapper = TestFactory.createPkgMapper();
+
 	public ToscaVnfRegistryHandlerTest() throws MalformedURLException {
 		System.setProperty(OrikaSystemProperties.COMPILER_STRATEGY, EclipseJdtCompilerStrategy.class.getName());
 		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES, "true");
@@ -60,7 +64,7 @@ class ToscaVnfRegistryHandlerTest {
 
 	@Test
 	void testIsProcesseble() {
-		final ToscaVnfRegistryHandler srv = new ToscaVnfRegistryHandler(repo, conditonService);
+		final ToscaVnfRegistryHandler srv = new ToscaVnfRegistryHandler(repo, conditonService, pkgMapper);
 		final ManoResource res = new ByteArrayResource(new byte[0], "filename");
 		srv.isProcessable(res);
 		assertTrue(true);
@@ -68,7 +72,7 @@ class ToscaVnfRegistryHandlerTest {
 
 	@Test
 	void testGetProviderName() {
-		final ToscaVnfRegistryHandler srv = new ToscaVnfRegistryHandler(repo, conditonService);
+		final ToscaVnfRegistryHandler srv = new ToscaVnfRegistryHandler(repo, conditonService, pkgMapper);
 		srv.getProviderName();
 		assertTrue(true);
 	}
@@ -79,7 +83,7 @@ class ToscaVnfRegistryHandlerTest {
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_vnfd_types.yaml", "Definitions/etsi_nfv_sol001_vnfd_types.yaml"),
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_common_types.yaml", "Definitions/etsi_nfv_sol001_common_types.yaml"),
 				Entry.of("ubi-tosca/TOSCA-Metadata/TOSCA.meta", "TOSCA-Metadata/TOSCA.meta"));
-		final ToscaVnfRegistryHandler srv = new ToscaVnfRegistryHandler(repo, conditonService);
+		final ToscaVnfRegistryHandler srv = new ToscaVnfRegistryHandler(repo, conditonService, pkgMapper);
 		final InputStream is = new FileInputStream("/tmp/ubi-tosca.csar");
 		srv.getNewReaderInstance(is, UUID.randomUUID());
 		assertTrue(true);
@@ -87,7 +91,7 @@ class ToscaVnfRegistryHandlerTest {
 
 	@Test
 	void testGetFileSystem() {
-		final ToscaVnfRegistryHandler srv = new ToscaVnfRegistryHandler(repo, conditonService);
+		final ToscaVnfRegistryHandler srv = new ToscaVnfRegistryHandler(repo, conditonService, pkgMapper);
 		final ManoResource res = new ByteArrayResource(new byte[0], "filename");
 		srv.getFileSystem(res);
 		assertTrue(true);

@@ -20,65 +20,47 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ubiqube.etsi.mano.Constants;
-import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
 import com.ubiqube.etsi.mano.service.pkg.PkgUtils;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.ArtefactReader;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
-import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Import;
 import com.ubiqube.parser.tosca.Imports;
 import com.ubiqube.parser.tosca.ParseException;
 import com.ubiqube.parser.tosca.RepositoryDefinition;
 import com.ubiqube.parser.tosca.ToscaContext;
 import com.ubiqube.parser.tosca.ToscaParser;
-import com.ubiqube.parser.tosca.api.OrikaMapper;
 import com.ubiqube.parser.tosca.api.ToscaApi;
-import com.ubiqube.parser.tosca.scalar.Version;
 
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.converter.ConverterFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
  *
  * @author Olivier Vignaud {@literal <ovi@ubiqube.com>}
  *
  */
-public abstract class AbstractPackageReader implements Closeable {
+public abstract class AbstractPackageReader extends ArtefactReader implements Closeable {
 
 	private static final String FOUND_NODE_IN_TOSCA_MODEL = "Found {} {} node in TOSCA model";
-
-	private static final String JAR_PATH = "/tosca-class-%s-2.0.0-SNAPSHOT.jar";
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPackageReader.class);
 	@Nonnull
 	private final ToscaContext root;
-	@Nonnull
-	private final MapperFacade mapper;
 	@Nonnull
 	private final ToscaParser toscaParser;
 	@Nonnull
@@ -86,80 +68,19 @@ public abstract class AbstractPackageReader implements Closeable {
 	@Nonnull
 	private final BinaryRepository repo;
 
-	private MapperFacade toscaMapper;
-
-	private ToscaApi toscaApi;
+	private final ToscaApi toscaApi;
 
 	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, final UUID id) {
+		super(data, repo, id);
 		this.repo = repo;
 		tempFile = PkgUtils.fetchData(data);
-		toscaParser = new ToscaParser(tempFile);
+		toscaParser = getToscaParser();
 		final CsarModeEnum mode = toscaParser.getMode();
 		if (mode == CsarModeEnum.DOUBLE_ZIP) {
 			unpackAndResend(id);
 		}
 		root = toscaParser.getContext();
-		final MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-		additionalMapping(mapperFactory);
-		final ConverterFactory converterFactory = mapperFactory.getConverterFactory();
-		converterFactory.registerConverter(new SizeConverter());
-		converterFactory.registerConverter(new TimeConverter());
-		converterFactory.registerConverter(new FrequencyConverter());
-		mapper = mapperFactory.getMapperFacade();
-		prepareVersionSettings();
-	}
-
-	private void prepareVersionSettings() {
-		final Version version = getVersion(root.getMetadata());
-		final String jarPath = String.format(JAR_PATH, toJarVersions(version));
-		final URL cls = this.getClass().getResource(jarPath);
-		if (null == cls) {
-			throw new ParseException("Unable to find " + jarPath);
-		}
-		final URLClassLoader urlLoader = URLClassLoader.newInstance(new URL[] { cls }, this.getClass().getClassLoader());
-		Thread.currentThread().setContextClassLoader(urlLoader);
-		toscaMapper = createToscaMapper(urlLoader).getMapperFacade();
-		toscaApi = new ToscaApi(urlLoader, toscaMapper);
-	}
-
-	private static MapperFactory createToscaMapper(final URLClassLoader urlLoader) {
-		final MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-		final ConverterFactory converterFactory = mapperFactory.getConverterFactory();
-		converterFactory.registerConverter(new SizeConverter());
-		converterFactory.registerConverter(new Size2Converter());
-		converterFactory.registerConverter(new TimeConverter());
-		converterFactory.registerConverter(new Time2Converter());
-		converterFactory.registerConverter(new FrequencyConverter());
-		converterFactory.registerConverter(new Frequency2Converter());
-		converterFactory.registerConverter(new Range2Converter());
-		final OrikaMapper meh = getVersionedMapperMethod(urlLoader);
-		meh.configureMapper(mapperFactory);
-		return mapperFactory;
-	}
-
-	private static OrikaMapper getVersionedMapperMethod(final URLClassLoader urlLoader) {
-		try (InputStream stream = urlLoader.getResourceAsStream("META-INF/tosca-resources.properties")) {
-			final Properties props = new Properties();
-			props.load(stream);
-			final Class<?> clz = urlLoader.loadClass(props.getProperty("mapper"));
-			return (OrikaMapper) clz.getDeclaredConstructor().newInstance();
-		} catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IOException e) {
-			throw new GenericException(e);
-		}
-	}
-
-	private static String toJarVersions(final Version v) {
-		return v.toString().replace(".", "");
-	}
-
-	private static Version getVersion(final Map<String, String> metadata) {
-		final String author = metadata.get("template_author");
-		if (null == author) {
-			return new Version("2.5.1");
-		}
-		return Optional.ofNullable(metadata.get("template_version"))
-				.map(Version::new)
-				.orElseGet(() -> new Version("2.5.1"));
+		toscaApi = getToscaApi();
 	}
 
 	private void unpackAndResend(final UUID id) {
@@ -172,63 +93,40 @@ public abstract class AbstractPackageReader implements Closeable {
 
 	protected abstract void additionalMapping(MapperFactory mapperFactory);
 
-	protected <T, U> Set<U> getSetOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
+	protected <T, U> Set<U> getSetOf(final Class<T> manoClass, final Function<T, U> mapper, final Map<String, String> parameters) {
 		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), manoClass.getSimpleName());
 		return list.stream()
-				.map(x -> mapper.map(x, to))
+				.map(mapper::apply)
 				.collect(Collectors.toSet());
 	}
 
-	protected <T> Set<T> getSetOf(final Class<T> manoClass, final Map<String, String> parameters) {
-		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);
-		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, list.size(), manoClass.getSimpleName());
-		return list.stream()
-				.collect(Collectors.toSet());
-	}
-
-	protected <T, U> List<U> getListOf(final Class<T> manoClass, final Class<U> to, final Map<String, String> parameters) {
+	protected <T, U> List<U> getListOf(final Class<T> manoClass, final Function<T, U> mapper, final Map<String, String> parameters) {
 		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
-		return mapper.mapAsList(obj, to);
+		return obj.stream().map(mapper::apply).toList();
 	}
 
-	protected <U> List<U> getObjects(final Class<U> manoClass, final Map<String, String> parameters) {
-		final List<U> obj = toscaApi.getObjects(root, parameters, manoClass);
+	protected <T, U> List<U> getObjects(final Class<T> manoClass, final Function<T, U> mapper, final Map<String, String> parameters) {
+		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
-		return toscaMapper.mapAsList(obj, manoClass);
+		return obj.stream().map(mapper::apply).toList();
+	}
+
+	protected <T> List<T> getListOf(final Class<T> manoClass, final Map<String, String> parameters) {
+		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
+		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
+		return obj.stream().toList();
+	}
+
+	protected <T> List<T> getObjects(final Class<T> manoClass, final Map<String, String> parameters) {
+		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
+		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
+		return obj.stream().toList();
 	}
 
 	protected Map<String, RepositoryDefinition> getPkgRepositories() {
 		return root.getRepositories();
-	}
-
-	protected List<ArtefactInformations> getCsarFiles() {
-		return toscaParser.getFiles();
-	}
-
-	protected <U> Set<U> getCsarFiles(final Class<U> dest) {
-		return toscaParser.getFiles().stream()
-				.map(x -> mapper.map(x, dest))
-				.collect(Collectors.toSet());
-	}
-
-	protected <U> Set<U> getSetOf(final Class<U> to, final Map<String, String> parameters, final Class<?>... toscaClass) {
-		final Set<U> ret = new LinkedHashSet<>();
-		for (final Class<?> class1 : toscaClass) {
-			final Set<U> set = getSetOf(class1, to, parameters);
-			ret.addAll(set);
-		}
-		return ret;
-	}
-
-	protected MapperFacade getMapper() {
-		return mapper;
-	}
-
-	@Override
-	public void close() throws IOException {
-		Files.delete(tempFile.toPath());
 	}
 
 	public final List<String> getImports() {
@@ -243,33 +141,8 @@ public abstract class AbstractPackageReader implements Closeable {
 		return ret;
 	}
 
-	@Nullable
-	public final String getManifestContent() {
-		return this.toscaParser.getManifestContent();
-	}
-
-	public byte[] getFileContent(final String fileName) {
-		return toscaParser.getFileContent(fileName);
-	}
-
-	public InputStream getFileInputStream(final String path) {
-		return toscaParser.getFileInputStream(path);
-	}
-
-	public List<String> getVnfdFiles(final boolean includeSignature) {
-		final List<String> imports = getImports();
-		final Set<String> ret = new HashSet<>(imports);
-		if (imports.size() > 1) {
-			ret.add("TOSCA-Metadata/TOSCA.meta");
-		}
-		if (includeSignature) {
-			final List<ArtefactInformations> files = toscaParser.getFiles();
-			final Set<String> cert = files.stream()
-					.filter(x -> ret.contains(x.getCertificate()))
-					.flatMap(x -> Stream.of(x.getSignature(), x.getCertificate()))
-					.collect(Collectors.toSet());
-			ret.addAll(cert);
-		}
-		return ret.stream().toList();
+	@Override
+	public void close() throws IOException {
+		Files.delete(tempFile.toPath());
 	}
 }

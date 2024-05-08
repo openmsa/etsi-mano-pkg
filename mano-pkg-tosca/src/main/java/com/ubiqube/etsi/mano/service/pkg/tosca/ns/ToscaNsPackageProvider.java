@@ -36,9 +36,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
-import com.ubiqube.etsi.mano.dao.mano.NsAddressData;
 import com.ubiqube.etsi.mano.dao.mano.NsSap;
-import com.ubiqube.etsi.mano.dao.mano.NsVlProfile;
 import com.ubiqube.etsi.mano.dao.mano.NsVnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.TriggerDefinition;
 import com.ubiqube.etsi.mano.dao.mano.dto.NsNsd;
@@ -49,8 +47,6 @@ import com.ubiqube.etsi.mano.dao.mano.nsd.VnffgDescriptor;
 import com.ubiqube.etsi.mano.dao.mano.nsd.VnffgInstance;
 import com.ubiqube.etsi.mano.dao.mano.pm.PmType;
 import com.ubiqube.etsi.mano.dao.mano.v2.nfvo.NsVirtualLink;
-import com.ubiqube.etsi.mano.dao.mano.vim.SecurityGroup;
-import com.ubiqube.etsi.mano.dao.mano.vim.VlProtocolData;
 import com.ubiqube.etsi.mano.dao.mano.vim.vnffg.Classifier;
 import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
@@ -65,8 +61,12 @@ import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlLevelMapping;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlStepMapping;
 import com.ubiqube.etsi.mano.service.pkg.ns.NsPackageProvider;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsInformationsMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsSapMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVirtualLinkMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVnfIndicatorMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.LinkBitrateRequirements;
-import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVirtualLinkProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.groups.nfv.VNFFG;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.Forwarding;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NFP;
@@ -91,72 +91,33 @@ import ma.glasnost.orika.MapperFactory;
  *
  */
 public class ToscaNsPackageProvider extends AbstractPackageReader implements NsPackageProvider {
-
-	private static final String TOSCA_NAME = "toscaName";
-	private static final String INTERNAL_NAME = "internalName";
 	private static final Logger LOG = LoggerFactory.getLogger(ToscaNsPackageProvider.class);
+	private final PkgMapper mapper;
+	private final NsInformationsMapping nsInformationsMapping;
+	private final NsVnfIndicatorMapping nsVnfIndicatorMapping;
+	private final NsSapMapping nsSapMapping;
+	private final NsVirtualLinkMapping nsVirtualLinkMapping;
 
-	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, final UUID id) {
+	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, final UUID id,
+			final PkgMapper mapper, final NsInformationsMapping nsInformationsMapping,
+			final NsVnfIndicatorMapping nsVnfIndicatorMapping, final NsSapMapping nsSapMapping, final NsVirtualLinkMapping nsVirtualLinkMapping) {
 		super(data, repo, id);
+		this.mapper = mapper;
+		this.nsInformationsMapping = nsInformationsMapping;
+		this.nsVnfIndicatorMapping = nsVnfIndicatorMapping;
+		this.nsSapMapping = nsSapMapping;
+		this.nsVirtualLinkMapping = nsVirtualLinkMapping;
 	}
 
 	@Override
 	protected void additionalMapping(final MapperFactory mapperFactory) {
-		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NsVirtualLink.class, NsVirtualLink.class)
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.field("vlProfile", "nsVlProfile")
-				.field("connectivityType", "vlConnectivityType")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVlProfile.class, NsVlProfile.class)
-				.field("minBitrateRequirements.root", "linkBitrateRoot")
-				.field("minBitrateRequirements.leaf", "linkBitrateLeaf")
-				.field("maxBitrateRequirements.root", "maxBitrateRequirementsRoot")
-				.field("maxBitrateRequirements.leaf", "maxBitrateRequirementsLeaf")
-				.field("serviceAvailabilityLevel", "serviceAvailability")
-				.field("virtualLinkProtocolData", "vlProtocolData")
-				.byDefault()
-				.register();
-
-		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.AddressData.class, NsAddressData.class)
-				.field("l2AddressData.macAddressAssignment", "macAddressAssignment")
-				.field("l3AddressData.numberOfIpAddress", "numberOfIpAddress")
-				.field("l3AddressData.ipAddressAssignment", "ipAddressAssignment")
-				.field("l3AddressData.ipAddressType", "ipAddressType")
-				.field("l3AddressData.floatingIpActivated", "floatingIpActivated")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(NS.class, NsInformations.class)
-				.field("descriptorId", "nsdId")
-				.field("invariantId", "nsdInvariantId")
-				.field("nsProfile.minNumberOfInstances", "minNumberOfInstance")
-				.field("nsProfile.maxNumberOfInstances", "maxNumberOfInstance")
-				.field("nsProfile.nsInstantiationLevel", "instantiationLevel")
-				.field("name", "nsdName")
-				.field("flavourId", "flavorId")
-				.field("designer", "nsdDesigner")
-				.field("version", "nsdVersion")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(Sap.class, NsSap.class)
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
-		mapperFactory.classMap(NsVirtualLinkProtocolData.class, VlProtocolData.class)
-				.field("l3ProtocolData.ipAllocationPools", "ipAllocationPools")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale.class, NsVnfIndicator.class)
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
-
+		//
 	}
 
 	@SuppressWarnings("null")
 	@Override
 	public NsInformations getNsInformations(final Map<String, String> userData) {
-		final List<NsInformations> nss = getListOf(NS.class, NsInformations.class, userData);
+		final List<NsInformations> nss = getListOf(NS.class, nsInformationsMapping::mapToNsInformations, userData);
 		if (nss.isEmpty()) {
 			throw new GenericException("Unable to find a NSD block in this NSD.");
 		}
@@ -165,18 +126,18 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 
 	@Override
 	public Set<NsVirtualLink> getNsVirtualLink(final Map<String, String> userData) {
-		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NsVirtualLink.class, NsVirtualLink.class, userData);
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.NsVirtualLink.class, nsVirtualLinkMapping::mapToNsVirtualLink, userData);
 	}
 
 	@Override
 	public Set<NsSap> getNsSap(final Map<String, String> userData) {
-		return getSetOf(Sap.class, NsSap.class, userData);
+		return getSetOf(Sap.class, nsSapMapping::mapToNsSap, userData);
 	}
 
 	@Override
 	public Set<SecurityGroupAdapter> getSecurityGroups(final Map<String, String> userData) {
 		final List<SecurityGroupRule> sgr = getObjects(SecurityGroupRule.class, userData);
-		return sgr.stream().map(x -> new SecurityGroupAdapter(getMapper().map(x, SecurityGroup.class), x.getTargets())).collect(Collectors.toSet());
+		return sgr.stream().map(x -> new SecurityGroupAdapter(mapper.mapToSecurityGroup(x), x.getTargets())).collect(Collectors.toSet());
 	}
 
 	@Override
@@ -363,7 +324,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 
 	@Override
 	public Set<NsVnfIndicator> getNsVnfIndicator(final Map<String, String> parameters) {
-		final Set<NsVnfIndicator> nsVnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale.class, NsVnfIndicator.class, parameters);
+		final Set<NsVnfIndicator> nsVnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale.class, nsVnfIndicatorMapping::mapToNsVnfIndicator, parameters);
 		for (final NsVnfIndicator nsVnfIndicator : nsVnfIndicators) {
 			final Map<String, MonitoringParams> mPs = new HashMap<>();
 			final List<TriggerDefinition> triggerDefinitions = new ArrayList<>(

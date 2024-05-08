@@ -27,6 +27,11 @@ import com.ubiqube.etsi.mano.repository.VirtualFileSystem;
 import com.ubiqube.etsi.mano.service.pkg.PackageDescriptor;
 import com.ubiqube.etsi.mano.service.pkg.ns.NsPackageProvider;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.Sol004PreOnboarding;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsInformationsMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsSapMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVirtualLinkMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVnfIndicatorMapping;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
 import com.ubiqube.etsi.mano.sol004.Sol004Onboarding;
 
@@ -41,9 +46,24 @@ import jakarta.annotation.Nonnull;
 public class ToscaNsRegistryHandler implements PackageDescriptor<NsPackageProvider> {
 	@Nonnull
 	private final NsdRepository repo;
+	@Nonnull
+	private final PkgMapper mapper;
+	@Nonnull
+	private final NsInformationsMapping nsInformationsMapping;
+	@Nonnull
+	private final NsVnfIndicatorMapping nsVnfIndicatorMapping;
+	@Nonnull
+	private final NsSapMapping nsSapMapping;
+	@Nonnull
+	private final NsVirtualLinkMapping nsVirtualLinkMapping;
 
-	public ToscaNsRegistryHandler(final NsdRepository repo) {
+	public ToscaNsRegistryHandler(final NsdRepository repo, final NsVirtualLinkMapping nsVirtualLinkMapping, final PkgMapper mapper, final NsVnfIndicatorMapping nsVnfIndicatorMapping, final NsSapMapping nsSapMapping, final NsInformationsMapping nsInformationsMapping) {
 		this.repo = repo;
+		this.mapper = mapper;
+		this.nsInformationsMapping = nsInformationsMapping;
+		this.nsVnfIndicatorMapping = nsVnfIndicatorMapping;
+		this.nsSapMapping = nsSapMapping;
+		this.nsVirtualLinkMapping = nsVirtualLinkMapping;
 	}
 
 	@Override
@@ -59,7 +79,7 @@ public class ToscaNsRegistryHandler implements PackageDescriptor<NsPackageProvid
 
 	@Override
 	public NsPackageProvider getNewReaderInstance(final InputStream data, final UUID id) {
-		return new ToscaNsPackageProvider(data, repo, id);
+		return new ToscaNsPackageProvider(data, repo, id, mapper, nsInformationsMapping, nsVnfIndicatorMapping, nsSapMapping, nsVirtualLinkMapping);
 	}
 
 	@Override
