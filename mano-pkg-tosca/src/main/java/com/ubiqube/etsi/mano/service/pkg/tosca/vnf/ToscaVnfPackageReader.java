@@ -124,26 +124,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public @Nonnull Set<VnfCompute> getVnfComputeNodes(final Map<String, String> parameters) {
-		return this.getSetOf(Compute.class, x -> mapper.mapToVnfCompute(x), parameters);
-//		return r.stream().map(x -> {
-//			final VnfCompute o = mapper.mapToVnfCompute(x);
-//			Optional.ofNullable(x.getArtifacts()).ifPresent(y -> map(y, o));
-//			return o;
-//		}).collect(Collectors.toSet());
-	}
-
-	private void map(final Map<String, ?> y, final VnfCompute o) {
-		if (y.isEmpty()) {
-			return;
-		}
-		if (y.size() > 1) {
-			throw new ParseException("Multiple artifacts match on compute node: " + o.getToscaName());
-		}
-		final Entry<String, ?> it = y.entrySet().iterator().next();
-		final Object obj = it.getValue();
-		final SoftwareImage softwareImage = mapper.mapToSoftwareImage(obj);
-		softwareImage.setName(it.getKey());
-		o.setSoftwareImage(softwareImage);
+		return this.getSetOf(Compute.class, mapper::mapToVnfCompute, parameters);
 	}
 
 	@Override
@@ -230,22 +211,22 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 
 	@Override
 	public @Nonnull Set<OsContainer> getOsContainer(final Map<String, String> parameters) {
-		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainer.class, x -> mapper.mapToOsContainer(x), parameters);
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainer.class, mapper::mapToOsContainer, parameters);
 	}
 
 	@Override
 	public @Nonnull Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(final Map<String, String> parameters) {
-		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainerDeployableUnit.class, x -> mapper.mapToOsContainerDeployableUnit(x), parameters);
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainerDeployableUnit.class, mapper::mapToOsContainerDeployableUnit, parameters);
 	}
 
 	@Override
 	public @Nonnull Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
-		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp.class, x -> mapper.mapToVirtualCp(x), parameters);
+		return getSetOf(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp.class, mapper::mapToVirtualCp, parameters);
 	}
 
 	@Override
 	public Set<VnfIndicator> getVnfIndicator(final Map<String, String> parameters) {
-		final Set<VnfIndicator> vnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, x -> mapper.mapToVnfIndicator(x), parameters);
+		final Set<VnfIndicator> vnfIndicators = getSetOf(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, mapper::mapToVnfIndicator, parameters);
 		for (final VnfIndicator vnfIndicator : vnfIndicators) {
 			final Set<String> mPs = new LinkedHashSet<>();
 			final List<TriggerDefinition> triggerDefinitions = new ArrayList<>(vnfIndicator.getTriggers().values());
