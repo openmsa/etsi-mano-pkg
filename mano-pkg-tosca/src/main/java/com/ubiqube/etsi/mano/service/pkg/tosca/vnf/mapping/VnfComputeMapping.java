@@ -86,7 +86,7 @@ public interface VnfComputeMapping extends SoftwareImageMapping, VduProfileMappi
 		if (null == time) {
 			return null;
 		}
-		return time.getValue().longValue();
+		return time.getValue().longValue() / 1000000000;
 	}
 
 	default Set<MonitoringParams> map(final Map<String, VnfcMonitoringParameter> mp) {
@@ -94,7 +94,11 @@ public interface VnfComputeMapping extends SoftwareImageMapping, VduProfileMappi
 			return Set.of();
 		}
 		return mp.entrySet().stream()
-				.map(x -> map(x.getValue()))
+				.map(x -> {
+					final MonitoringParams res = map(x.getValue());
+					res.setName(x.getKey());
+					return res;
+				})
 				.collect(Collectors.toSet());
 	}
 }
