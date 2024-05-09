@@ -37,7 +37,6 @@ import com.ubiqube.etsi.mano.dao.mec.pkg.ServiceDescriptor;
 import com.ubiqube.etsi.mano.service.pkg.mec.AppPackageProvider;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
 
-import ma.glasnost.orika.MapperFactory;
 import tosca.capabilities.nfv.VirtualCompute;
 import tosca.nodes.mec.CP;
 import tosca.nodes.mec.MEA;

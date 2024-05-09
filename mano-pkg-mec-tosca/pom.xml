@@ -32,10 +32,6 @@
 			<version>2.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>ma.glasnost.orika</groupId>
-			<artifactId>ubi-orika-core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-pkg-tosca</artifactId>
 			<version>0.0.1</version>
