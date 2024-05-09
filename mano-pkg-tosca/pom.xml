@@ -85,17 +85,6 @@
 			<version>${version.tosca-api}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.ubiqube.mano</groupId>
-			<artifactId>tosca-mapping-orika</artifactId>
-			<version>${version.tosca-api}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ma.glasnost.orika</groupId>
-			<artifactId>ubi-orika-eclipse-tools</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

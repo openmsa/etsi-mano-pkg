@@ -43,9 +43,6 @@ import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
 import com.ubiqube.parser.test.ArtifactDownloader;
 
-import ma.glasnost.orika.OrikaSystemProperties;
-import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
-
 /**
  *
  * @author Olivier Vignaud
@@ -57,9 +54,6 @@ class ToscaNsRegistryHandlerTest {
 	private NsdRepository repo;
 
 	public ToscaNsRegistryHandlerTest() throws MalformedURLException {
-		System.setProperty(OrikaSystemProperties.COMPILER_STRATEGY, EclipseJdtCompilerStrategy.class.getName());
-		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES, "true");
-		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES_TO_PATH, "/tmp/orika-test");
 		ArtifactDownloader.prepareArtifact("421");
 	}
 
