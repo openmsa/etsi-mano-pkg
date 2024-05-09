@@ -23,8 +23,10 @@ import org.mapstruct.MappingConstants;
 import com.ubiqube.etsi.mano.dao.mano.VnfIndicator;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface VnfIndicatorMapping {
+public interface VnfIndicatorMapping extends TriggerDefinitionMapping {
 
+	@Mapping(target = "value", ignore = true)
+	@Mapping(target = "vnfInstanceId", ignore = true)
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "indicators", ignore = true)
@@ -32,4 +34,5 @@ public interface VnfIndicatorMapping {
 	@Mapping(target = "toscaId", ignore = true)
 	@Mapping(target = "toscaName", source = "internalName")
 	VnfIndicator map(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator vi);
+
 }

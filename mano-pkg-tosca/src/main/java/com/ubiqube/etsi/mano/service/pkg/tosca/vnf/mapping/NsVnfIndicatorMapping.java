@@ -24,7 +24,7 @@ import com.ubiqube.etsi.mano.dao.mano.NsVnfIndicator;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.NsAutoScale;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface NsVnfIndicatorMapping {
+public interface NsVnfIndicatorMapping extends TriggerDefinitionMapping {
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "monitoringParameters", ignore = true)
@@ -34,6 +34,4 @@ public interface NsVnfIndicatorMapping {
 	@Mapping(target = "toscaId", ignore = true)
 	@Mapping(target = "toscaName", source = "internalName")
 	NsVnfIndicator mapToNsVnfIndicator(NsAutoScale o);
-
-//	TriggerDefinition mapToTriggerDefinition(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.TriggerDefinition o);
 }
