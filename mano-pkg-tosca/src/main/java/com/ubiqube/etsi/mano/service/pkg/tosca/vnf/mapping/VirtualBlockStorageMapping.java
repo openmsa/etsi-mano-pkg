@@ -12,7 +12,7 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *     along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
@@ -37,7 +37,7 @@ public interface VirtualBlockStorageMapping {
 	@Mapping(target = "softwareImage", source = "artifacts")
 	@Mapping(target = "state", ignore = true)
 	@Mapping(target = "toscaId", ignore = true)
-	@Mapping(target = "toscaName", ignore = true)
+	@Mapping(target = "toscaName", source = "internalName")
 	@Mapping(target = "type", constant = "BLOCK")
 	@Mapping(target = "vnfPackage", ignore = true)
 	VnfStorage map(VirtualBlockStorage vs);

@@ -47,7 +47,6 @@ import com.ubiqube.parser.tosca.ToscaParser;
 import com.ubiqube.parser.tosca.api.ToscaApi;
 
 import jakarta.annotation.Nonnull;
-import ma.glasnost.orika.MapperFactory;
 
 /**
  *
@@ -90,8 +89,6 @@ public abstract class AbstractPackageReader extends ArtefactReader implements Cl
 			throw new ParseException(e);
 		}
 	}
-
-	protected abstract void additionalMapping(MapperFactory mapperFactory);
 
 	protected <T, U> Set<U> getSetOf(final Class<T> manoClass, final Function<T, U> mapper, final Map<String, String> parameters) {
 		final List<T> list = toscaApi.getObjects(root, parameters, manoClass);

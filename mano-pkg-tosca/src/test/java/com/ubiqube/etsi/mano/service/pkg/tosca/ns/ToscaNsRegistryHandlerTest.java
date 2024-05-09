@@ -59,6 +59,7 @@ class ToscaNsRegistryHandlerTest {
 	public ToscaNsRegistryHandlerTest() throws MalformedURLException {
 		System.setProperty(OrikaSystemProperties.COMPILER_STRATEGY, EclipseJdtCompilerStrategy.class.getName());
 		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES, "true");
+		System.setProperty(OrikaSystemProperties.WRITE_SOURCE_FILES_TO_PATH, "/tmp/orika-test");
 		ArtifactDownloader.prepareArtifact("421");
 	}
 

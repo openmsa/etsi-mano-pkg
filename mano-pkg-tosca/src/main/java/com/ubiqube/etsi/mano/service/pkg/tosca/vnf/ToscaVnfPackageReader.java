@@ -30,9 +30,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
@@ -50,10 +47,7 @@ import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
 import com.ubiqube.etsi.mano.dao.mano.repo.Repository;
 import com.ubiqube.etsi.mano.dao.mano.repo.ToscaRepository;
 import com.ubiqube.etsi.mano.dao.mano.vim.ContainerFormatType;
-import com.ubiqube.etsi.mano.dao.mano.vim.L3Data;
-import com.ubiqube.etsi.mano.dao.mano.vim.SecurityGroup;
 import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
-import com.ubiqube.etsi.mano.dao.mano.vim.VlProtocolData;
 import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
 import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.exception.GenericException;
@@ -66,21 +60,16 @@ import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
-import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.ParseException;
 import com.ubiqube.parser.tosca.RepositoryDefinition;
 import com.ubiqube.parser.tosca.RepositoryDefinition.Credential;
-import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
-import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.L3ProtocolData;
-import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VirtualLinkProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.Mciop;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VNF;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VduCp;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VnfVirtualLink;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.Compute;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.VirtualBlockStorage;
-import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.VirtualObjectStorage;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.AffinityRule;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.AntiAffinityRule;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels;
@@ -91,7 +80,6 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevel
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 import jakarta.annotation.Nonnull;
-import ma.glasnost.orika.MapperFactory;
 
 /**
  *
@@ -100,11 +88,6 @@ import ma.glasnost.orika.MapperFactory;
  */
 public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfPackageReader {
 
-	private static final String DESCRIPTOR_VERSION = "descriptorVersion";
-	private static final String DESCRIPTOR_ID = "descriptorId";
-	private static final String TOSCA_NAME = "toscaName";
-	private static final String INTERNAL_NAME = "internalName";
-	private static final Logger LOG = LoggerFactory.getLogger(ToscaVnfPackageReader.class);
 	@Nonnull
 	private final ConditionService conditionService;
 	private final PkgMapper mapper;
@@ -113,113 +96,6 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		super(data, repo, id);
 		this.conditionService = Objects.requireNonNull(conditionService);
 		this.mapper = mapper;
-	}
-
-	@Override
-	protected void additionalMapping(final MapperFactory mapperFactory) {
-		mapperFactory.classMap(ProviderData.class, VNF.class)
-				.field("vnfProvider", "provider")
-				.field("vnfProductName", "productName")
-				.field("vnfSoftwareVersion", "softwareVersion")
-				.field("vnfdVersion", DESCRIPTOR_VERSION)
-				.field(DESCRIPTOR_VERSION, DESCRIPTOR_VERSION)
-				.field(DESCRIPTOR_ID, DESCRIPTOR_ID)
-				.field("flavorId", "flavourId")
-				.field("monitoringParameters{}", "monitoringParameters{value}")
-				.field("monitoringParameters{name}", "monitoringParameters{key}")
-				.field("scaleStatus{}", "scaleStatus{value}")
-				.field("scaleStatus{name}", "scaleStatus{key}")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(ArtefactInformations.class, AdditionalArtifact.class)
-				.field("path", "artifactPath")
-				.field("checksum", "checksum.hash")
-				.field("algorithm", "checksum.algorithm")
-				.field("encrypted", "isEncrypted")
-				.field("classifier", "artifactClassification")
-				.byDefault()
-				.customize(new AdditionalArtefactMapper())
-				.register();
-		mapperFactory.classMap(VirtualBlockStorage.class, VnfStorage.class)
-				// .field("swImageData", "softwareImage")
-				.field("artifacts{value}", "softwareImage")
-				.field("artifacts{key}", "softwareImage.name")
-				.field("virtualBlockStorageData.sizeOfStorage", "size")
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.field("", "myField:{|setType('BLOCK')}")
-				.exclude("artifacts")
-				.customize(new ArtefactMapper())
-				.byDefault()
-				.register();
-		mapperFactory.classMap(VirtualObjectStorage.class, VnfStorage.class)
-				.field("virtualObjectStorageData.maxSizeOfStorage", "size")
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.field("", "myField:{|setType('OBJECT')}")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(Compute.class, VnfCompute.class)
-				.field("monitoringParameters{value}", "monitoringParameters{}")
-				.field("monitoringParameters{key}", "monitoringParameters{name}")
-				// .field("swImageData", "softwareImage")
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.field("virtualStorageReq", "storages")
-				.field("virtualCompute.virtualCpu", "virtualCpu")
-				.field("virtualCompute.virtualMemory", "virtualMemory")
-				.field("virtualCompute.virtualLocalStorage[0].sizeOfStorage", "diskSize")
-				.field("bootData.contentOrFileData.content", "cloudInit")
-				.field("bootData.contentOrFileData.sourcePath", "sourcePath")
-				.field("bootData.contentOrFileData.destinationPath", "destinationPath")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(VduCp.class, VnfLinkPort.class)
-				.field("virtualBindingReq", "virtualBinding")
-				.field("virtualLinkReq", "virtualLink")
-				.field("order", "interfaceOrder")
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
-		mapperFactory.classMap(VnfVirtualLink.class, VnfVl.class)
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.field("vlProfile", "vlProfileEntity")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(VirtualLinkProtocolData.class, VlProtocolData.class)
-				.field("l3ProtocolData.ipAllocationPools", "ipAllocationPools")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(L3ProtocolData.class, L3Data.class)
-				.field("name", "l3Name")
-				.byDefault()
-				.register();
-		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VnfExtCp.class, VnfExtCp.class)
-				.field("externalVirtualLinkReq", "externalVirtualLink")
-				.field("internalVirtualLinkReq", "internalVirtualLink")
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
-		mapperFactory.classMap(AffinityRule.class, com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule.class)
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
-		mapperFactory.classMap(AntiAffinityRule.class, com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule.class)
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
-		mapperFactory.classMap(SecurityGroupRule.class, SecurityGroup.class)
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
-		mapperFactory.classMap(SwImage.class, SoftwareImage.class)
-				.field("file", "imagePath")
-				.exclude("diskFormat")
-				.exclude("containerFormat")
-				.customize(new SwImageMapper())
-				.byDefault()
-				.register();
-		mapperFactory.classMap(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator.class, VnfIndicator.class)
-				.field(INTERNAL_NAME, TOSCA_NAME)
-				.byDefault()
-				.register();
 	}
 
 	@Override

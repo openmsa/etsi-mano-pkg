@@ -25,10 +25,6 @@
 			<artifactId>spring-context</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>ma.glasnost.orika</groupId>
-			<artifactId>ubi-orika-core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.ubiqube.mano.pkg</groupId>
 			<artifactId>mano-pkg-api</artifactId>
 			<version>${project.version}</version>
@@ -60,22 +56,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
-			<artifactId>tosca-mapping-orika</artifactId>
-			<version>${version.tosca-api}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-commons</artifactId>
 			<version>${version.mano-commons}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ma.glasnost.orika</groupId>
-			<artifactId>ubi-orika-eclipse-tools</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -97,6 +83,17 @@
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>tosca-test-utils</artifactId>
 			<version>${version.tosca-api}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ubiqube.mano</groupId>
+			<artifactId>tosca-mapping-orika</artifactId>
+			<version>${version.tosca-api}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ma.glasnost.orika</groupId>
+			<artifactId>ubi-orika-eclipse-tools</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

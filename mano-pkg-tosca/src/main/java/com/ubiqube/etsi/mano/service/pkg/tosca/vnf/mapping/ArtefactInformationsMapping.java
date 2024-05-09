@@ -12,22 +12,30 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *     along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
+import java.net.URI;
+
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ArtefactInformationsMapping {
+	/** Logger. */
+	Logger LOG = LoggerFactory.getLogger(ArtefactInformationsMapping.class);
 
 	@Mapping(target = "artifactClassification", source = "classifier")
-	@Mapping(target = "artifactPath", ignore = true)
+	@Mapping(target = "artifactPath", source = "path")
 	@Mapping(target = "artifactURI", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "isEncrypted", source = "encrypted")
@@ -36,5 +44,29 @@ public interface ArtefactInformationsMapping {
 	@Mapping(source = "checksum", target = "checksum.hash")
 	@Mapping(source = "algorithm", target = "checksum.algorithm")
 	AdditionalArtifact map(ArtefactInformations aa);
+
+	@AfterMapping
+	default void afterMapping(@MappingTarget final AdditionalArtifact o) {
+		final String p = o.getArtifactPath();
+		if (null != p) {
+			if (isRemote(p)) {
+				o.setArtifactURI(p);
+				o.setArtifactPath(null);
+			} else {
+				o.setArtifactPath(p);
+				o.setArtifactURI(null);
+			}
+		}
+	}
+
+	default boolean isRemote(final String p) {
+		try {
+			final URI uri = URI.create(p);
+			return !uri.getScheme().isEmpty();
+		} catch (final RuntimeException e) {
+			LOG.trace("", e);
+		}
+		return false;
+	}
 
 }

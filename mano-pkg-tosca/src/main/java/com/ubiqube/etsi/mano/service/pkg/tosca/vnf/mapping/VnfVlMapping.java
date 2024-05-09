@@ -12,7 +12,7 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *     along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
@@ -92,9 +92,9 @@ public interface VnfVlMapping {
 	@Mapping(target = "virtualLink", source = "virtualLinkReq")
 	VnfLinkPort mapToVnfLinkPort(final VduCp x);
 
+	@Mapping(target = "ipAllocationPools", ignore = true)
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "ipAllocationPools", ignore = true)
 	@Mapping(target = "l2ProtocolData", ignore = true)
 	@Mapping(target = "l3ProtocolData", ignore = true)
 	VlProtocolData mapToVlProtocolData(CpProtocolData o);

@@ -12,7 +12,7 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *     along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
@@ -50,7 +50,7 @@ public interface SoftwareImageMapping {
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "imagePath", ignore = true)
+	@Mapping(target = "imagePath", source = "file")
 	@Mapping(target = "imageUri", ignore = true)
 	@Mapping(target = "isEncrypted", ignore = true)
 	@Mapping(target = "nfvoPath", ignore = true)

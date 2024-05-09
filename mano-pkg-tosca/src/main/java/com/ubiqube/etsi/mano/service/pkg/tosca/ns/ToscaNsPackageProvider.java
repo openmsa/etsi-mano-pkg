@@ -83,8 +83,6 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VirtualLinkToLevelMap
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToInstantiationLevelMapping;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfToLevelMapping;
 
-import ma.glasnost.orika.MapperFactory;
-
 /**
  *
  * @author Olivier Vignaud {@literal <ovi@ubiqube.com>}
@@ -107,11 +105,6 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 		this.nsVnfIndicatorMapping = nsVnfIndicatorMapping;
 		this.nsSapMapping = nsSapMapping;
 		this.nsVirtualLinkMapping = nsVirtualLinkMapping;
-	}
-
-	@Override
-	protected void additionalMapping(final MapperFactory mapperFactory) {
-		//
 	}
 
 	@SuppressWarnings("null")

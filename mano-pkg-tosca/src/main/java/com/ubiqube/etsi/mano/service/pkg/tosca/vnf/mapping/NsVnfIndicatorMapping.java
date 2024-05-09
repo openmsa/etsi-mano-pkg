@@ -12,7 +12,7 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *     along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
@@ -35,4 +35,5 @@ public interface NsVnfIndicatorMapping {
 	@Mapping(target = "toscaName", source = "internalName")
 	NsVnfIndicator mapToNsVnfIndicator(NsAutoScale o);
 
+//	TriggerDefinition mapToTriggerDefinition(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.TriggerDefinition o);
 }
