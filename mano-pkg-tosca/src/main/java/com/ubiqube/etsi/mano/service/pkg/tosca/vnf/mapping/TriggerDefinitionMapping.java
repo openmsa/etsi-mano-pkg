@@ -28,13 +28,15 @@ import com.ubiqube.parser.tosca.ParseException;
 @Mapper
 public interface TriggerDefinitionMapping {
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "targets", ignore = true)
 	@Mapping(target = "action", qualifiedByName = "toJsonString")
 	@Mapping(target = "condition", qualifiedByName = "toJsonString")
-	TriggerDefinition mapToTriggerDefinition(com.ubiqube.parser.tosca.objects.tosca.policies.nfv.TriggerDefinition o);
+	TriggerDefinition mapToTriggerDefinition(com.ubiqube.parser.tosca.TriggerDefinition o);
 
 	@Named("toJsonString")
 	default String toJsonString(final Object o) {
+		if (o instanceof final String s) {
+			return s;
+		}
 		final ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(o);

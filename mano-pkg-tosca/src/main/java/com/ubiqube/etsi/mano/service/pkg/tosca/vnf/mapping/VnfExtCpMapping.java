@@ -20,7 +20,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
+import com.ubiqube.etsi.mano.dao.mano.VirtualNicReq;
 import com.ubiqube.etsi.mano.dao.mano.VnfExtCp;
+import com.ubiqube.etsi.mano.dao.mano.vim.VlProtocolData;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.CpProtocolData;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VirtualNetworkInterfaceRequirements;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface VnfExtCpMapping {
@@ -34,4 +38,14 @@ public interface VnfExtCpMapping {
 	@Mapping(target = "toscaId", ignore = true)
 	@Mapping(target = "toscaName", source = "internalName")
 	VnfExtCp map(com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VnfExtCp ext);
+
+	@Mapping(target = "id", ignore = true)
+	VirtualNicReq mapToVirtualNicReq(VirtualNetworkInterfaceRequirements o);
+
+	@Mapping(target = "audit", ignore = true)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "ipAllocationPools", ignore = true)
+	@Mapping(target = "l2ProtocolData", ignore = true)
+	@Mapping(target = "l3ProtocolData", ignore = true)
+	VlProtocolData mapToVlProtocolData(CpProtocolData o);
 }

@@ -24,9 +24,11 @@ import com.ubiqube.etsi.mano.dao.mano.NsVlConnectivityType;
 import com.ubiqube.etsi.mano.dao.mano.NsVlProfile;
 import com.ubiqube.etsi.mano.dao.mano.Qos;
 import com.ubiqube.etsi.mano.dao.mano.v2.nfvo.NsVirtualLink;
+import com.ubiqube.etsi.mano.dao.mano.vim.IpPool;
 import com.ubiqube.etsi.mano.dao.mano.vim.L3Data;
 import com.ubiqube.etsi.mano.dao.mano.vim.VlProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ConnectivityType;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsIpAllocationPool;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsL3ProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVirtualLinkProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVirtualLinkQos;
@@ -65,6 +67,9 @@ public interface NsVirtualLinkMapping {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "ipAllocationPools", source = "l3ProtocolData.ipAllocationPools")
 	VlProtocolData mapToVlProtocolData(NsVirtualLinkProtocolData o);
+
+	@Mapping(target = "id", ignore = true)
+	IpPool mapToIpPool(NsIpAllocationPool o);
 
 	@Mapping(target = "dhcpEnabled", ignore = true)
 	@Mapping(target = "gatewayIp", ignore = true)
