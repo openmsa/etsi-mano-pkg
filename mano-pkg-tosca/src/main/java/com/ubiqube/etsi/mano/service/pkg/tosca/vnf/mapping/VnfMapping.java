@@ -28,10 +28,9 @@ import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VnfMonitoringParameter;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VNF;
-import com.ubiqube.parser.tosca.scalar.Time;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface VnfMapping {
+public interface VnfMapping extends ScalarCommonMapping, ScaleCommonMapping {
 
 	@Mapping(target = "attributes", ignore = true)
 	@Mapping(target = "flavorId", source = "flavourId")
@@ -42,15 +41,12 @@ public interface VnfMapping {
 	@Mapping(target = "vnfdVersion", source = "descriptorVersion")
 	ProviderData map(VNF vnf);
 
-	@Mapping(target = "name", ignore = true)
-	com.ubiqube.etsi.mano.service.pkg.bean.ScaleInfo mapSi(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScaleInfo o);
-
 	default Set<com.ubiqube.etsi.mano.service.pkg.bean.ScaleInfo> mapSi(final Map<String, com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScaleInfo> o) {
 		if (null == o) {
 			return Set.of();
 		}
 		return o.entrySet().stream().map(x -> {
-			final com.ubiqube.etsi.mano.service.pkg.bean.ScaleInfo r = mapSi(x.getValue());
+			final com.ubiqube.etsi.mano.service.pkg.bean.ScaleInfo r = mapToScaleInfo(x.getValue());
 			r.setName(x.getKey());
 			return r;
 		}).collect(Collectors.toSet());
@@ -64,13 +60,6 @@ public interface VnfMapping {
 	@Mapping(target = "vnfComputeName", ignore = true)
 	@Mapping(target = "name", source = "toscaName")
 	MonitoringParams map(VnfMonitoringParameter mp, String toscaName);
-
-	default Long toLong(final Time time) {
-		if (null == time) {
-			return null;
-		}
-		return time.getValue().longValue();
-	}
 
 	default Set<MonitoringParams> map(final Map<String, VnfMonitoringParameter> vmp) {
 		if (null == vmp) {

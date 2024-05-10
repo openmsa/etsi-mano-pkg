@@ -27,15 +27,12 @@ import org.mapstruct.MappingConstants;
 import com.ubiqube.etsi.mano.dao.mano.EntryStringString;
 import com.ubiqube.etsi.mano.dao.mano.pkg.ExtendedResourceData;
 import com.ubiqube.etsi.mano.dao.mano.pkg.Hugepages;
-import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
-import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.RequestedAdditionalCapability;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainer;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainerDeployableUnit;
-import com.ubiqube.parser.tosca.scalar.Size;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface OsContainerMapping extends VduProfileMapping {
+public interface OsContainerMapping extends VduProfileMapping, ScalarCommonMapping {
 	@Mapping(target = "id", ignore = true)
 	com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer mapToOsContainer(final OsContainer x);
 
@@ -44,27 +41,6 @@ public interface OsContainerMapping extends VduProfileMapping {
 
 	@Mapping(target = "id", ignore = true)
 	Hugepages mapToHugepages(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.Hugepages o);
-
-	@Mapping(target = "architecture", ignore = true)
-	@Mapping(target = "audit", ignore = true)
-	@Mapping(target = "checksum", ignore = true)
-	@Mapping(target = "containerFormat", ignore = true)
-	@Mapping(target = "createdAt", ignore = true)
-	@Mapping(target = "diskFormat", ignore = true)
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "imagePath", ignore = true)
-	@Mapping(target = "imageUri", ignore = true)
-	@Mapping(target = "isEncrypted", ignore = true)
-	@Mapping(target = "minDisk", ignore = true)
-	@Mapping(target = "minRam", ignore = true)
-	@Mapping(target = "name", ignore = true)
-	@Mapping(target = "nfvoPath", ignore = true)
-	@Mapping(target = "provider", ignore = true)
-	@Mapping(target = "size", ignore = true)
-	@Mapping(target = "userMetadata", ignore = true)
-	@Mapping(target = "version", ignore = true)
-	@Mapping(target = "vimId", ignore = true)
-	SoftwareImage map(Artifact o);
 
 	default Set<EntryStringString> mapToEntryStringString(final Map<String, String> value) {
 		if (null == value) {
@@ -77,13 +53,6 @@ public interface OsContainerMapping extends VduProfileMapping {
 					e.setWalue(x.getValue());
 					return e;
 				}).collect(Collectors.toSet());
-	}
-
-	default long toLong(final Size size) {
-		if (null == size) {
-			return 0;
-		}
-		return size.getValue().longValue();
 	}
 
 	@Mapping(target = "id", ignore = true)

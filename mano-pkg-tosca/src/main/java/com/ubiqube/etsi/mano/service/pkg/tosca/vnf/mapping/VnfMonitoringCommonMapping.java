@@ -12,29 +12,26 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see https://www.gnu.org/licenses/.
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 
-import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
-import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.VirtualObjectStorage;
+import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VnfMonitoringParameter;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface VirtualObjectStorageMapping extends ScalarCommonMapping {
+@Mapper
+public interface VnfMonitoringCommonMapping extends ScalarCommonMapping {
 
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "size", source = "virtualObjectStorageData.maxSizeOfStorage")
-	@Mapping(target = "softwareImage", ignore = true)
-	@Mapping(target = "state", ignore = true)
-	@Mapping(target = "toscaId", ignore = true)
-	@Mapping(target = "toscaName", ignore = true)
-	@Mapping(target = "type", constant = "OBJECT")
-	@Mapping(target = "vnfPackage", ignore = true)
-	VnfStorage map(VirtualObjectStorage vos);
+	@Mapping(target = "objectType", constant = "VNF")
+	@Mapping(target = "timestamp", ignore = true)
+	@Mapping(target = "value", ignore = true)
+	@Mapping(target = "vnfComputeName", ignore = true)
+	@Mapping(target = "name", source = "toscaName")
+	MonitoringParams mapToMonitoringParams(VnfMonitoringParameter mp, String toscaName);
 
 }

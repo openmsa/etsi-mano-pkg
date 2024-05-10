@@ -28,7 +28,6 @@ import com.ubiqube.etsi.mano.dao.mano.VnfVl;
 import com.ubiqube.etsi.mano.dao.mano.vim.IpPool;
 import com.ubiqube.etsi.mano.dao.mano.vim.L3Data;
 import com.ubiqube.etsi.mano.dao.mano.vim.VlProtocolData;
-import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.CpProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.IpAllocationPool;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.L3ProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VirtualLinkProtocolData;
@@ -37,10 +36,9 @@ import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VlProfile;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VduCp;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VnfExtCp;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VnfVirtualLink;
-import com.ubiqube.parser.tosca.scalar.Time;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface VnfVlMapping {
+public interface VnfVlMapping extends ScalarCommonMapping, ConnectivityCommonMapper {
 	@Mapping(target = "affinityRules", ignore = true)
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
@@ -75,13 +73,6 @@ public interface VnfVlMapping {
 	@Mapping(target = "l3Name", source = "name")
 	L3Data map(L3ProtocolData l3);
 
-	default Long toLong(final Time time) {
-		if (null == time) {
-			return null;
-		}
-		return time.getValue().longValue();
-	}
-
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "interfaceOrder", source = "order")
@@ -91,13 +82,6 @@ public interface VnfVlMapping {
 	@Mapping(target = "virtualBinding", source = "virtualBindingReq")
 	@Mapping(target = "virtualLink", source = "virtualLinkReq")
 	VnfLinkPort mapToVnfLinkPort(final VduCp x);
-
-	@Mapping(target = "ipAllocationPools", ignore = true)
-	@Mapping(target = "audit", ignore = true)
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "l2ProtocolData", ignore = true)
-	@Mapping(target = "l3ProtocolData", ignore = true)
-	VlProtocolData mapToVlProtocolData(CpProtocolData o);
 
 	@Mapping(target = "computeNode", ignore = true)
 	@Mapping(target = "externalVirtualLink", ignore = true)

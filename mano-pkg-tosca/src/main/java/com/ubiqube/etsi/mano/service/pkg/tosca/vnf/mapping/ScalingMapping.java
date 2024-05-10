@@ -21,14 +21,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
-import com.ubiqube.etsi.mano.service.pkg.bean.ScaleInfo;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface ScalingMapping {
+public interface ScalingMapping extends ScaleCommonMapping {
 
 	@Mapping(target = "id", ignore = true)
 	ScalingAspect map(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScalingAspect o);
@@ -41,6 +40,4 @@ public interface ScalingMapping {
 
 	com.ubiqube.etsi.mano.service.pkg.bean.InstantiationLevels mapToInstantiationLevels(final InstantiationLevels x);
 
-	@Mapping(target = "name", source = "internalName")
-	ScaleInfo mapToScaleInfo(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScaleInfo o);
 }

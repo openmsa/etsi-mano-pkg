@@ -32,10 +32,9 @@ import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsIpAllocationPool;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsL3ProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVirtualLinkProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NsVirtualLinkQos;
-import com.ubiqube.parser.tosca.scalar.Time;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface NsVirtualLinkMapping {
+public interface NsVirtualLinkMapping extends ScalarCommonMapping {
 
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
@@ -81,10 +80,4 @@ public interface NsVirtualLinkMapping {
 	@Mapping(target = "id", ignore = true)
 	NsVlConnectivityType mapToNsVlConnectivityType(ConnectivityType o);
 
-	default Long map(final Time value) {
-		if (null == value) {
-			return null;
-		}
-		return value.getValue().longValue();
-	}
 }

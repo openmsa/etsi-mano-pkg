@@ -20,9 +20,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
-import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
 import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
-import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.VirtualBlockStorage;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -39,24 +37,4 @@ public interface StorageMapping extends SoftwareImageMapping {
 	@Mapping(target = "vnfPackage", ignore = true)
 	VnfStorage map(VirtualBlockStorage o);
 
-	@Mapping(target = "architecture", ignore = true)
-	@Mapping(target = "audit", ignore = true)
-	@Mapping(target = "checksum", ignore = true)
-	@Mapping(target = "containerFormat", ignore = true)
-	@Mapping(target = "createdAt", ignore = true)
-	@Mapping(target = "diskFormat", ignore = true)
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "imagePath", ignore = true)
-	@Mapping(target = "imageUri", ignore = true)
-	@Mapping(target = "isEncrypted", ignore = true)
-	@Mapping(target = "minDisk", ignore = true)
-	@Mapping(target = "minRam", ignore = true)
-	@Mapping(target = "name", ignore = true)
-	@Mapping(target = "nfvoPath", ignore = true)
-	@Mapping(target = "provider", ignore = true)
-	@Mapping(target = "size", ignore = true)
-	@Mapping(target = "userMetadata", ignore = true)
-	@Mapping(target = "version", ignore = true)
-	@Mapping(target = "vimId", ignore = true)
-	SoftwareImage mapToSoftwareImage(Artifact o);
 }

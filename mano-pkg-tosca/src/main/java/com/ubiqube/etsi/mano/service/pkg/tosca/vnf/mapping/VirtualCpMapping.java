@@ -22,24 +22,15 @@ import org.mapstruct.MappingConstants;
 
 import com.ubiqube.etsi.mano.dao.mano.pkg.AdditionalServiceData;
 import com.ubiqube.etsi.mano.dao.mano.pkg.ServicePortData;
-import com.ubiqube.etsi.mano.dao.mano.vim.VlProtocolData;
-import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.CpProtocolData;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ServiceData;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface VirtualCpMapping {
+public interface VirtualCpMapping extends ConnectivityCommonMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "targetRef", ignore = true)
 	@Mapping(target = "virtualLinkRef", ignore = true)
 	com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp mapToVirtualCp(final VirtualCp x);
-
-	@Mapping(target = "audit", ignore = true)
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "ipAllocationPools", ignore = true)
-	@Mapping(target = "l2ProtocolData", ignore = true)
-	@Mapping(target = "l3ProtocolData", ignore = true)
-	VlProtocolData mapToVlProtocolData(CpProtocolData o);
 
 	@Mapping(target = "id", ignore = true)
 	AdditionalServiceData mapToAdditionalServiceData(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.AdditionalServiceData o);

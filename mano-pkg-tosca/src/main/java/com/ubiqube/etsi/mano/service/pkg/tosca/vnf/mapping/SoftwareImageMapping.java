@@ -29,10 +29,9 @@ import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.HelmChart;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ChecksumData;
-import com.ubiqube.parser.tosca.scalar.Size;
 
 @Mapper
-public interface SoftwareImageMapping {
+public interface SoftwareImageMapping extends ScalarCommonMapping {
 
 	@Named("softwareImage")
 	default SoftwareImage mapTosoftwareImage(final Map<String, Artifact> o) {
@@ -57,13 +56,6 @@ public interface SoftwareImageMapping {
 	@Mapping(target = "userMetadata", ignore = true)
 	@Mapping(target = "vimId", ignore = true)
 	SoftwareImage map(SwImage swi);
-
-	default long map(final Size value) {
-		if (null == value) {
-			return 0;
-		}
-		return value.getValue().longValue();
-	}
 
 	@Mapping(target = "md5", ignore = true)
 	@Mapping(target = "sha256", ignore = true)
