@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 
 import com.ubiqube.etsi.mano.dao.mano.vim.Checksum;
@@ -32,7 +31,7 @@ import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ChecksumData;
 import com.ubiqube.parser.tosca.scalar.Size;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper
 public interface SoftwareImageMapping {
 
 	@Named("softwareImage")

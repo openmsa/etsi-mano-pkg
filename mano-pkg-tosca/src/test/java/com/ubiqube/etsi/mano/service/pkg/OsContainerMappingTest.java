@@ -27,17 +27,22 @@ import org.mapstruct.factory.Mappers;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.OsContainerMapping;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainer;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainerDeployableUnit;
+import com.ubiqube.parser.tosca.scalar.Size;
 
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 class OsContainerMappingTest {
 
-	@Test
 	void testName() throws Exception {
 		final PodamFactoryImpl podam = new PodamFactoryImpl();
 		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
 		final OsContainer obj = podam.manufacturePojo(OsContainer.class);
 		final OsContainerMapping mapper = Mappers.getMapper(OsContainerMapping.class);
+		final Size s = new Size(5000L);
+		obj.setMemoryResourceLimit(s);
+		obj.setRequestedMemoryResources(s);
+		obj.setEphemeralStorageResourceLimit(s);
+		obj.setRequestedEphemeralStorageResources(s);
 		final com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer r = mapper.mapToOsContainer(obj);
 		assertNotNull(r);
 	}
