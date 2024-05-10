@@ -56,9 +56,10 @@ public class PkgMapper {
 	private final OsContainerMapping osContainerMapping;
 	private final VnfIndicatorMapping vnfIndicatorMapping;
 	private final VirtualCpMapping virtualCpMapping;
-	private final SoftwareImageMapping softwareImageMapping;
 
-	public PkgMapper(final VnfMapping vnfMapping, final VnfComputeMapping vnfComputeMapping, final ScalingMapping scalingMapping, final SecurityGroupRuleMapping securityGroupRuleMapping, final AffinityRuleToscaMapping affinityRuleToscaMapping, final StorageMapping storageMapping, final VnfVlMapping vnfVlMapping, final OsContainerMapping osContainerMapping, final VnfIndicatorMapping vnfIndicatorMapping, final VirtualCpMapping virtualCpMapping, final SoftwareImageMapping softwareImageMapping) {
+	public PkgMapper(final VnfMapping vnfMapping, final VnfComputeMapping vnfComputeMapping, final ScalingMapping scalingMapping, final SecurityGroupRuleMapping securityGroupRuleMapping,
+			final AffinityRuleToscaMapping affinityRuleToscaMapping, final StorageMapping storageMapping, final VnfVlMapping vnfVlMapping, final OsContainerMapping osContainerMapping,
+			final VnfIndicatorMapping vnfIndicatorMapping, final VirtualCpMapping virtualCpMapping) {
 		this.vnfMapping = vnfMapping;
 		this.vnfComputeMapping = vnfComputeMapping;
 		this.scalingMapping = scalingMapping;
@@ -69,7 +70,6 @@ public class PkgMapper {
 		this.osContainerMapping = osContainerMapping;
 		this.vnfIndicatorMapping = vnfIndicatorMapping;
 		this.virtualCpMapping = virtualCpMapping;
-		this.softwareImageMapping = softwareImageMapping;
 	}
 
 	public VnfCompute mapToVnfCompute(final Compute x) {
@@ -78,10 +78,10 @@ public class PkgMapper {
 
 	public SoftwareImage mapToSoftwareImage(final Artifact obj) {
 		if (obj instanceof final SwImage swi) {
-			return softwareImageMapping.map(swi);
+			return storageMapping.map(swi);
 		}
 		if (obj instanceof final HelmChart hc) {
-			return softwareImageMapping.map(hc);
+			return storageMapping.map(hc);
 		}
 		throw new GenericException("Unknown Artifact class " + obj.getClass().getName());
 	}

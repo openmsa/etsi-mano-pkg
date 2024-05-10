@@ -23,7 +23,6 @@ import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.OsContainerMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ScalingMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.SecurityGroupRuleMapping;
-import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.SoftwareImageMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.StorageMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.VirtualCpMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.VnfComputeMapping;
@@ -48,8 +47,7 @@ public class TestFactory {
 		final OsContainerMapping osContainerMapping = Mappers.getMapper(OsContainerMapping.class);
 		final VnfIndicatorMapping vnfIndicatorMapping = Mappers.getMapper(VnfIndicatorMapping.class);
 		final VirtualCpMapping virtualCpMapping = Mappers.getMapper(VirtualCpMapping.class);
-		final SoftwareImageMapping softwareImageMapping = Mappers.getMapper(SoftwareImageMapping.class);
 		return new PkgMapper(vnfMapping, vnfComputeMapping, scalingMapping, securityGroupRuleMapping, affinityRuleToscaMapping, storageMapping,
-				vnfVlMapping, osContainerMapping, vnfIndicatorMapping, virtualCpMapping, softwareImageMapping);
+				vnfVlMapping, osContainerMapping, vnfIndicatorMapping, virtualCpMapping);
 	}
 }
