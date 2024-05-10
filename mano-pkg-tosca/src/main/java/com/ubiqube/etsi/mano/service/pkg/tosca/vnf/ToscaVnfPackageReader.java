@@ -267,10 +267,10 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 		}
 		final Entry<String, Artifact> arte = m.getArtifacts().entrySet().iterator().next();
 		final Object obj = arte.getValue();
-		if (!(obj instanceof Artifact)) {
+		if (!(obj instanceof final Artifact a)) {
 			throw new GenericException("Only Artifact can be defined for " + m.getInternalName() + ", not " + obj.getClass().getSimpleName());
 		}
-		final SoftwareImage img = mapper.mapToSoftwareImage(obj);
+		final SoftwareImage img = mapper.mapToSoftwareImage(a);
 		img.setName(arte.getKey());
 		img.setContainerFormat(ContainerFormatType.HELM);
 		ret.setArtifacts(Map.of(arte.getKey(), img));
