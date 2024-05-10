@@ -85,6 +85,11 @@
 			<version>${version.tosca-api}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>uk.co.jemos.podam</groupId>
+			<artifactId>podam</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

@@ -41,12 +41,17 @@ import com.ubiqube.etsi.mano.dao.mano.VnfExtCp;
 import com.ubiqube.etsi.mano.dao.mano.VnfIndicator;
 import com.ubiqube.etsi.mano.dao.mano.VnfLinkPort;
 import com.ubiqube.etsi.mano.dao.mano.VnfVl;
+import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer;
+import com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit;
+import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp;
+import com.ubiqube.etsi.mano.dao.mano.repo.Repository;
 import com.ubiqube.etsi.mano.dao.mano.vim.Checksum;
 import com.ubiqube.etsi.mano.dao.mano.vim.ContainerFormatType;
 import com.ubiqube.etsi.mano.dao.mano.vim.DiskFormatType;
 import com.ubiqube.etsi.mano.dao.mano.vim.IpPool;
 import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
 import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
+import com.ubiqube.etsi.mano.dao.mano.vnfm.McIops;
 import com.ubiqube.etsi.mano.service.cond.ConditionService;
 import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
@@ -57,6 +62,9 @@ import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
 import com.ubiqube.parser.test.ArtifactDownloader;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 class ToscaPackageProviderTest {
@@ -210,5 +218,53 @@ class ToscaPackageProviderTest {
 		final Set<VnfIndicator> res = tpp.getVnfIndicator(Map.of());
 		assertNotNull(res);
 		assertEquals(2, res.size());
+	}
+
+	@Test
+	void testgetInstatiationLevels() {
+		final List<InstantiationLevels> files = tpp.getInstatiationLevels(Map.of());
+		assertEquals(1, files.size());
+	}
+
+	@Test
+	void testVduInstantiationLevels() {
+		final List<VduInstantiationLevels> files = tpp.getVduInstantiationLevels(Map.of());
+		assertEquals(1, files.size());
+	}
+
+	@Test
+	void testgetVduInitialDelta() {
+		final List<VduInitialDelta> files = tpp.getVduInitialDelta(Map.of());
+		assertEquals(2, files.size());
+	}
+
+	@Test
+	void testgetOsContainer() {
+		final Set<OsContainer> files = tpp.getOsContainer(Map.of());
+		assertEquals(1, files.size());
+	}
+
+	@Test
+	void testgetOsContainerDeployableUnit() {
+		final Set<OsContainerDeployableUnit> files = tpp.getOsContainerDeployableUnit(Map.of());
+		assertEquals(1, files.size());
+	}
+
+	@Test
+	void testgetVirtualCp() {
+		final Set<VirtualCp> files = tpp.getVirtualCp(Map.of());
+		assertEquals(1, files.size());
+	}
+
+	@Test
+	void testgetMciops() {
+		final Set<McIops> files = tpp.getMciops(Map.of());
+		assertEquals(1, files.size());
+	}
+
+	@Test
+	void testgetRepositories() {
+		final Set<Repository> files = tpp.getRepositories();
+		assertEquals(2, files.size());
 	}
 }
