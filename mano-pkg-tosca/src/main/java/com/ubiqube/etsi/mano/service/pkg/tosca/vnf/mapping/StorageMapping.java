@@ -18,14 +18,13 @@ package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 
 import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
 import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
 import com.ubiqube.parser.tosca.Artifact;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.VirtualBlockStorage;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper
 public interface StorageMapping extends SoftwareImageMapping {
 
 	@Mapping(target = "audit", ignore = true)
