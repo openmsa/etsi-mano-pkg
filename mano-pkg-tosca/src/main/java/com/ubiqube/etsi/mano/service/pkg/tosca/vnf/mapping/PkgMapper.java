@@ -16,6 +16,8 @@
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
+import org.springframework.stereotype.Service;
+
 import com.ubiqube.etsi.mano.dao.mano.ScalingAspect;
 import com.ubiqube.etsi.mano.dao.mano.VnfCompute;
 import com.ubiqube.etsi.mano.dao.mano.VnfLinkPort;
@@ -38,6 +40,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.AntiAffinityRule;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.SecurityGroupRule;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VnfIndicator;
 
+@Service
 public class PkgMapper {
 	private final VnfMapping vnfMapping;
 	private final VnfComputeMapping vnfComputeMapping;
