@@ -34,6 +34,7 @@ import com.ubiqube.etsi.mano.repository.ByteArrayResource;
 import com.ubiqube.etsi.mano.repository.ManoResource;
 import com.ubiqube.etsi.mano.repository.NsdRepository;
 import com.ubiqube.etsi.mano.service.pkg.TestFactory;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsSapMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVirtualLinkMapping;
@@ -71,7 +72,8 @@ class ToscaNsRegistryHandlerTest {
 		final NsVnfIndicatorMapping nsVnfIndicatorMapping = Mappers.getMapper(NsVnfIndicatorMapping.class);
 		final NsSapMapping nsSapMapping = Mappers.getMapper(NsSapMapping.class);
 		final NsVirtualLinkMapping nsVirtualLinkMapping = Mappers.getMapper(NsVirtualLinkMapping.class);
-		return new ToscaNsRegistryHandler(repo, nsVirtualLinkMapping, mapper, nsVnfIndicatorMapping, nsSapMapping, nsInformationsMapping);
+		final ArtefactInformationsMapping artefactInformationsMapping = Mappers.getMapper(ArtefactInformationsMapping.class);
+		return new ToscaNsRegistryHandler(repo, nsVirtualLinkMapping, mapper, nsVnfIndicatorMapping, nsSapMapping, nsInformationsMapping, artefactInformationsMapping);
 	}
 
 	@Test

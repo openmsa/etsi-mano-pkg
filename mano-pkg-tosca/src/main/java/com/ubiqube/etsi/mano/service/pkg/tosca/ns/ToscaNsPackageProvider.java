@@ -61,6 +61,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlLevelMapping;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.VlStepMapping;
 import com.ubiqube.etsi.mano.service.pkg.ns.NsPackageProvider;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsSapMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVirtualLinkMapping;
@@ -98,8 +99,9 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 
 	public ToscaNsPackageProvider(final InputStream data, final BinaryRepository repo, final UUID id,
 			final PkgMapper mapper, final NsInformationsMapping nsInformationsMapping,
-			final NsVnfIndicatorMapping nsVnfIndicatorMapping, final NsSapMapping nsSapMapping, final NsVirtualLinkMapping nsVirtualLinkMapping) {
-		super(data, repo, id);
+			final NsVnfIndicatorMapping nsVnfIndicatorMapping, final NsSapMapping nsSapMapping, final NsVirtualLinkMapping nsVirtualLinkMapping,
+			final ArtefactInformationsMapping artefactInformationsMapping) {
+		super(data, repo, id, artefactInformationsMapping);
 		this.mapper = mapper;
 		this.nsInformationsMapping = nsInformationsMapping;
 		this.nsVnfIndicatorMapping = nsVnfIndicatorMapping;

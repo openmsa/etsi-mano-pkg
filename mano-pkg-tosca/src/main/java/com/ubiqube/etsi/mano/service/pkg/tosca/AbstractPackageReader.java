@@ -37,6 +37,7 @@ import com.ubiqube.etsi.mano.Constants;
 import com.ubiqube.etsi.mano.repository.BinaryRepository;
 import com.ubiqube.etsi.mano.service.pkg.PkgUtils;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.ArtefactReader;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
 import com.ubiqube.parser.tosca.Import;
 import com.ubiqube.parser.tosca.Imports;
@@ -69,8 +70,8 @@ public abstract class AbstractPackageReader extends ArtefactReader implements Cl
 
 	private final ToscaApi toscaApi;
 
-	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, final UUID id) {
-		super(data, repo, id);
+	protected AbstractPackageReader(final InputStream data, final BinaryRepository repo, final UUID id, final ArtefactInformationsMapping artefactInformationsMapping) {
+		super(data, repo, id, artefactInformationsMapping);
 		this.repo = repo;
 		tempFile = PkgUtils.fetchData(data);
 		toscaParser = getToscaParser();

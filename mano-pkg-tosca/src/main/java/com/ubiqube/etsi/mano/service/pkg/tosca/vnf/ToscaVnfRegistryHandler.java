@@ -26,6 +26,7 @@ import com.ubiqube.etsi.mano.repository.VirtualFileSystem;
 import com.ubiqube.etsi.mano.repository.VnfPackageRepository;
 import com.ubiqube.etsi.mano.service.cond.ConditionService;
 import com.ubiqube.etsi.mano.service.pkg.PackageDescriptor;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
@@ -47,10 +48,13 @@ public class ToscaVnfRegistryHandler implements PackageDescriptor<VnfPackageRead
 
 	private final PkgMapper mapper;
 
-	public ToscaVnfRegistryHandler(final VnfPackageRepository repo, final ConditionService conditionService, final PkgMapper mapper) {
+	private final ArtefactInformationsMapping artefactInformationsMapping;
+
+	public ToscaVnfRegistryHandler(final VnfPackageRepository repo, final ConditionService conditionService, final PkgMapper mapper, final ArtefactInformationsMapping artefactInformationsMapping) {
 		this.repo = repo;
 		this.conditionService = conditionService;
 		this.mapper = mapper;
+		this.artefactInformationsMapping = artefactInformationsMapping;
 	}
 
 	@Override
@@ -66,7 +70,7 @@ public class ToscaVnfRegistryHandler implements PackageDescriptor<VnfPackageRead
 
 	@Override
 	public VnfPackageReader getNewReaderInstance(final InputStream data, final @Nonnull UUID id) {
-		return new ToscaVnfPackageReader(data, repo, id, conditionService, mapper);
+		return new ToscaVnfPackageReader(data, repo, id, conditionService, mapper, artefactInformationsMapping);
 	}
 
 	@Override

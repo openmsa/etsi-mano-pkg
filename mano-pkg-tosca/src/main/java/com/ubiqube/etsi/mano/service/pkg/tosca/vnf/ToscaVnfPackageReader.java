@@ -58,6 +58,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.AbstractPackageReader;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.parser.tosca.Artifact;
@@ -92,8 +93,8 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 	private final ConditionService conditionService;
 	private final PkgMapper mapper;
 
-	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final UUID id, final ConditionService conditionService, final PkgMapper mapper) {
-		super(data, repo, id);
+	public ToscaVnfPackageReader(final InputStream data, final BinaryRepository repo, final UUID id, final ConditionService conditionService, final PkgMapper mapper, final ArtefactInformationsMapping artefactInformationsMapping) {
+		super(data, repo, id, artefactInformationsMapping);
 		this.conditionService = Objects.requireNonNull(conditionService);
 		this.mapper = mapper;
 	}

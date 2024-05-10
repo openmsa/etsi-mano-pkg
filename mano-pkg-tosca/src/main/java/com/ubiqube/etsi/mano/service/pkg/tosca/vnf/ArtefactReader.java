@@ -41,11 +41,12 @@ import jakarta.annotation.Nullable;
 public class ArtefactReader extends Sol004Loader {
 	@Nonnull
 	private final ToscaParser toscaParser;
-	private ArtefactInformationsMapping artefactInformationsMapping;
+	private final ArtefactInformationsMapping artefactInformationsMapping;
 
-	public ArtefactReader(final InputStream data, final BinaryRepository repo, final UUID id) {
+	public ArtefactReader(final InputStream data, final BinaryRepository repo, final UUID id, final ArtefactInformationsMapping artefactInformationsMapping) {
 		super(data, repo, id);
 		this.toscaParser = getToscaParser();
+		this.artefactInformationsMapping = artefactInformationsMapping;
 	}
 
 	protected List<ArtefactInformations> getCsarFiles() {

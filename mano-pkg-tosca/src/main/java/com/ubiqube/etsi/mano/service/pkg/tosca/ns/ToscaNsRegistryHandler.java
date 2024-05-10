@@ -27,6 +27,7 @@ import com.ubiqube.etsi.mano.repository.VirtualFileSystem;
 import com.ubiqube.etsi.mano.service.pkg.PackageDescriptor;
 import com.ubiqube.etsi.mano.service.pkg.ns.NsPackageProvider;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.Sol004PreOnboarding;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsSapMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVirtualLinkMapping;
@@ -57,13 +58,16 @@ public class ToscaNsRegistryHandler implements PackageDescriptor<NsPackageProvid
 	@Nonnull
 	private final NsVirtualLinkMapping nsVirtualLinkMapping;
 
-	public ToscaNsRegistryHandler(final NsdRepository repo, final NsVirtualLinkMapping nsVirtualLinkMapping, final PkgMapper mapper, final NsVnfIndicatorMapping nsVnfIndicatorMapping, final NsSapMapping nsSapMapping, final NsInformationsMapping nsInformationsMapping) {
+	private final ArtefactInformationsMapping artefactInformationsMapping;
+
+	public ToscaNsRegistryHandler(final NsdRepository repo, final NsVirtualLinkMapping nsVirtualLinkMapping, final PkgMapper mapper, final NsVnfIndicatorMapping nsVnfIndicatorMapping, final NsSapMapping nsSapMapping, final NsInformationsMapping nsInformationsMapping, final ArtefactInformationsMapping artefactInformationsMapping) {
 		this.repo = repo;
 		this.mapper = mapper;
 		this.nsInformationsMapping = nsInformationsMapping;
 		this.nsVnfIndicatorMapping = nsVnfIndicatorMapping;
 		this.nsSapMapping = nsSapMapping;
 		this.nsVirtualLinkMapping = nsVirtualLinkMapping;
+		this.artefactInformationsMapping = artefactInformationsMapping;
 	}
 
 	@Override
@@ -79,7 +83,7 @@ public class ToscaNsRegistryHandler implements PackageDescriptor<NsPackageProvid
 
 	@Override
 	public NsPackageProvider getNewReaderInstance(final InputStream data, final UUID id) {
-		return new ToscaNsPackageProvider(data, repo, id, mapper, nsInformationsMapping, nsVnfIndicatorMapping, nsSapMapping, nsVirtualLinkMapping);
+		return new ToscaNsPackageProvider(data, repo, id, mapper, nsInformationsMapping, nsVnfIndicatorMapping, nsSapMapping, nsVirtualLinkMapping, artefactInformationsMapping);
 	}
 
 	@Override

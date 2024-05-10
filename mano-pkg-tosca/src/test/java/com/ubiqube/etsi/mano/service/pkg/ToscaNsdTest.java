@@ -41,6 +41,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.NsInformations;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.bean.nsscaling.NsScaling;
 import com.ubiqube.etsi.mano.service.pkg.tosca.ns.ToscaNsPackageProvider;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsSapMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.NsVirtualLinkMapping;
@@ -68,7 +69,8 @@ class ToscaNsdTest {
 		final NsSapMapping nsSapMapping = Mappers.getMapper(NsSapMapping.class);
 		final NsVirtualLinkMapping nsVirtualLinkMapping = Mappers.getMapper(NsVirtualLinkMapping.class);
 		final UUID id = UUID.randomUUID();
-		tpp = new ToscaNsPackageProvider(data, null, id, mapper, nsInformationsMapping, nsVnfIndicatorMapping, nsSapMapping, nsVirtualLinkMapping);
+		final ArtefactInformationsMapping artefactInformationsMapping = Mappers.getMapper(ArtefactInformationsMapping.class);
+		tpp = new ToscaNsPackageProvider(data, null, id, mapper, nsInformationsMapping, nsVnfIndicatorMapping, nsSapMapping, nsVirtualLinkMapping, artefactInformationsMapping);
 	}
 
 	@Test

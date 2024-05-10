@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
 import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
@@ -51,6 +52,7 @@ import com.ubiqube.etsi.mano.service.pkg.bean.AffinityRuleAdapater;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.etsi.mano.service.pkg.bean.SecurityGroupAdapter;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.ToscaVnfPackageReader;
+import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.test.ZipUtil;
 import com.ubiqube.etsi.mano.test.ZipUtil.Entry;
@@ -68,9 +70,10 @@ class ToscaPackageProviderTest {
 				Entry.of("ubi-tosca/Definitions/etsi_nfv_sol001_common_types.yaml", "Definitions/etsi_nfv_sol001_common_types.yaml"),
 				Entry.of("ubi-tosca/TOSCA-Metadata/TOSCA.meta", "TOSCA-Metadata/TOSCA.meta"));
 		this.cs = new ConditionService();
+		final ArtefactInformationsMapping artefactInformationsMapping = Mappers.getMapper(ArtefactInformationsMapping.class);
 		final PkgMapper pm = TestFactory.createPkgMapper();
 		try (final InputStream data = Files.newInputStream(Path.of("/tmp/ubi-tosca.csar"))) {
-			tpp = new ToscaVnfPackageReader(data, null, UUID.randomUUID(), cs, pm);
+			tpp = new ToscaVnfPackageReader(data, null, UUID.randomUUID(), cs, pm, artefactInformationsMapping);
 		}
 	}
 
