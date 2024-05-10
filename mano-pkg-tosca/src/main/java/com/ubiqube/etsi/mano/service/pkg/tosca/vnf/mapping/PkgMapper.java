@@ -29,6 +29,7 @@ import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
 import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
 import com.ubiqube.parser.tosca.Artifact;
+import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.HelmChart;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VNF;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VduCp;
@@ -78,6 +79,9 @@ public class PkgMapper {
 	public SoftwareImage mapToSoftwareImage(final Artifact obj) {
 		if (obj instanceof final SwImage swi) {
 			return softwareImageMapping.map(swi);
+		}
+		if (obj instanceof final HelmChart hc) {
+			return softwareImageMapping.map(hc);
 		}
 		throw new GenericException("Unknown Artifact class " + obj.getClass().getName());
 	}

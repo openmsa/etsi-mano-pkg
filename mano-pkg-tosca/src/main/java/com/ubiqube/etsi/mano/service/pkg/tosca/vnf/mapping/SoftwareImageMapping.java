@@ -27,6 +27,7 @@ import com.ubiqube.etsi.mano.dao.mano.vim.Checksum;
 import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
 import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.parser.tosca.Artifact;
+import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.HelmChart;
 import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ChecksumData;
 import com.ubiqube.parser.tosca.scalar.Size;
@@ -69,4 +70,25 @@ public interface SoftwareImageMapping {
 	@Mapping(target = "sha256", ignore = true)
 	@Mapping(target = "sha512", ignore = true)
 	Checksum mapToChecksum(ChecksumData o);
+
+	@Mapping(target = "architecture", ignore = true)
+	@Mapping(target = "audit", ignore = true)
+	@Mapping(target = "checksum", ignore = true)
+	@Mapping(target = "containerFormat", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "diskFormat", ignore = true)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "imagePath", ignore = true)
+	@Mapping(target = "imageUri", ignore = true)
+	@Mapping(target = "isEncrypted", ignore = true)
+	@Mapping(target = "minDisk", ignore = true)
+	@Mapping(target = "minRam", ignore = true)
+	@Mapping(target = "name", ignore = true)
+	@Mapping(target = "nfvoPath", ignore = true)
+	@Mapping(target = "provider", ignore = true)
+	@Mapping(target = "size", ignore = true)
+	@Mapping(target = "userMetadata", ignore = true)
+	@Mapping(target = "version", ignore = true)
+	@Mapping(target = "vimId", ignore = true)
+	SoftwareImage map(HelmChart hc);
 }
