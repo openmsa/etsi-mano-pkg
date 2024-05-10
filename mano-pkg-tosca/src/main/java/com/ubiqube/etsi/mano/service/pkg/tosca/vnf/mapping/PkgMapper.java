@@ -26,7 +26,10 @@ import com.ubiqube.etsi.mano.dao.mano.vim.AffinityRule;
 import com.ubiqube.etsi.mano.dao.mano.vim.SecurityGroup;
 import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
 import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
+import com.ubiqube.etsi.mano.exception.GenericException;
 import com.ubiqube.etsi.mano.service.pkg.bean.ProviderData;
+import com.ubiqube.parser.tosca.Artifact;
+import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VNF;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VduCp;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp;
@@ -52,8 +55,9 @@ public class PkgMapper {
 	private final OsContainerMapping osContainerMapping;
 	private final VnfIndicatorMapping vnfIndicatorMapping;
 	private final VirtualCpMapping virtualCpMapping;
+	private final SoftwareImageMapping softwareImageMapping;
 
-	public PkgMapper(final VnfMapping vnfMapping, final VnfComputeMapping vnfComputeMapping, final ScalingMapping scalingMapping, final SecurityGroupRuleMapping securityGroupRuleMapping, final AffinityRuleToscaMapping affinityRuleToscaMapping, final StorageMapping storageMapping, final VnfVlMapping vnfVlMapping, final OsContainerMapping osContainerMapping, final VnfIndicatorMapping vnfIndicatorMapping, final VirtualCpMapping virtualCpMapping) {
+	public PkgMapper(final VnfMapping vnfMapping, final VnfComputeMapping vnfComputeMapping, final ScalingMapping scalingMapping, final SecurityGroupRuleMapping securityGroupRuleMapping, final AffinityRuleToscaMapping affinityRuleToscaMapping, final StorageMapping storageMapping, final VnfVlMapping vnfVlMapping, final OsContainerMapping osContainerMapping, final VnfIndicatorMapping vnfIndicatorMapping, final VirtualCpMapping virtualCpMapping, final SoftwareImageMapping softwareImageMapping) {
 		this.vnfMapping = vnfMapping;
 		this.vnfComputeMapping = vnfComputeMapping;
 		this.scalingMapping = scalingMapping;
@@ -64,15 +68,18 @@ public class PkgMapper {
 		this.osContainerMapping = osContainerMapping;
 		this.vnfIndicatorMapping = vnfIndicatorMapping;
 		this.virtualCpMapping = virtualCpMapping;
+		this.softwareImageMapping = softwareImageMapping;
 	}
 
 	public VnfCompute mapToVnfCompute(final Compute x) {
 		return vnfComputeMapping.map(x);
 	}
 
-	public SoftwareImage mapToSoftwareImage(final Object obj) {
-		// TODO Auto-generated method stub
-		return null;
+	public SoftwareImage mapToSoftwareImage(final Artifact obj) {
+		if (obj instanceof final SwImage swi) {
+			return softwareImageMapping.map(swi);
+		}
+		throw new GenericException("Unknown Artifact class " + obj.getClass().getName());
 	}
 
 	public ScalingAspect mapToScalingAspect(final com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScalingAspect value) {
