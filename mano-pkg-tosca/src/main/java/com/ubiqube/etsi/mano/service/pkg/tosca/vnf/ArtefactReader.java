@@ -17,10 +17,8 @@
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,8 +29,6 @@ import com.ubiqube.etsi.mano.repository.BinaryRepository;
 import com.ubiqube.etsi.mano.service.pkg.tosca.Sol004Loader;
 import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsMapping;
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
-import com.ubiqube.parser.tosca.Import;
-import com.ubiqube.parser.tosca.Imports;
 import com.ubiqube.parser.tosca.ToscaParser;
 
 import jakarta.annotation.Nonnull;
@@ -87,19 +83,4 @@ public class ArtefactReader extends Sol004Loader {
 		}
 		return ret.stream().toList();
 	}
-
-	protected final List<String> getImports(@Nullable final Imports imps) {
-		if (null == imps) {
-			return List.of();
-		}
-		final String entry = this.toscaParser.getEntryFileName();
-		final List<String> imports = imps.entrySet().stream()
-				.map(Entry::getValue)
-				.map(Import::getResolved)
-				.toList();
-		final ArrayList<String> ret = new ArrayList<>(imports);
-		ret.add(entry);
-		return ret;
-	}
-
 }

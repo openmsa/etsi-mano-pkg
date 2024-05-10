@@ -84,7 +84,7 @@ public interface VnfVlMapping {
 
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "interfaceOrder", ignore = true)
+	@Mapping(target = "interfaceOrder", source = "order")
 	@Mapping(target = "state", ignore = true)
 	@Mapping(target = "toscaId", ignore = true)
 	@Mapping(target = "toscaName", source = "internalName")

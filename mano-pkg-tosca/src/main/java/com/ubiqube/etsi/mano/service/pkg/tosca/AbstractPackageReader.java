@@ -105,12 +105,6 @@ public abstract class AbstractPackageReader extends ArtefactReader implements Cl
 		return obj.stream().map(mapper::apply).toList();
 	}
 
-	protected <T, U> List<U> getObjects(final Class<T> manoClass, final Function<T, U> mapper, final Map<String, String> parameters) {
-		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
-		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());
-		return obj.stream().map(mapper::apply).toList();
-	}
-
 	protected <T> List<T> getListOf(final Class<T> manoClass, final Map<String, String> parameters) {
 		final List<T> obj = toscaApi.getObjects(root, parameters, manoClass);
 		LOG.debug(FOUND_NODE_IN_TOSCA_MODEL, obj.size(), manoClass.getSimpleName());

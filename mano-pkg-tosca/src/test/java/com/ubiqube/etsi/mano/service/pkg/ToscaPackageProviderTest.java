@@ -18,6 +18,7 @@ package com.ubiqube.etsi.mano.service.pkg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -266,5 +267,23 @@ class ToscaPackageProviderTest {
 	void testgetRepositories() {
 		final Set<Repository> files = tpp.getRepositories();
 		assertEquals(2, files.size());
+	}
+
+	@Test
+	void testManifestContent() {
+		final String files = tpp.getManifestContent();
+		assertNull(files);
+	}
+
+	@Test
+	void testFileContent() {
+		final byte[] files = tpp.getFileContent("TOSCA-Metadata/TOSCA.meta");
+		assertNotNull(files);
+	}
+
+	@Test
+	void testgetFileInputStream() {
+		final InputStream files = tpp.getFileInputStream("TOSCA-Metadata/TOSCA.meta");
+		assertNotNull(files);
 	}
 }
