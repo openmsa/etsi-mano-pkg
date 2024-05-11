@@ -30,6 +30,7 @@ import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCpu;
 import com.ubiqube.etsi.mano.dao.mano.pkg.VirtualMemory;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VnfcMonitoringParameter;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.Compute;
+import com.ubiqube.parser.tosca.scalar.Time;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface VnfComputeMapping extends SoftwareImageMapping, VduProfileMapping, ScalarCommonMapping {
@@ -72,6 +73,14 @@ public interface VnfComputeMapping extends SoftwareImageMapping, VduProfileMappi
 	@Mapping(target = "value", ignore = true)
 	@Mapping(target = "vnfComputeName", ignore = true)
 	MonitoringParams map(VnfcMonitoringParameter vmp);
+
+	@Override
+	default Long toLong(final Time time) {
+		if (null == time) {
+			return null;
+		}
+		return time.getValue().longValue() / 1000000000;
+	}
 
 	default Set<MonitoringParams> map(final Map<String, VnfcMonitoringParameter> mp) {
 		if (null == mp) {
