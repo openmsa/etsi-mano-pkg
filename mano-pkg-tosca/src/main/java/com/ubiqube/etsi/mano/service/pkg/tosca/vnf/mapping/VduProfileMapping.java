@@ -16,11 +16,21 @@
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
+import java.time.ZonedDateTime;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 import com.ubiqube.etsi.mano.dao.mano.VduProfile;
+import com.ubiqube.etsi.mano.dao.mano.pkg.MaxNumberOfImpactedInstance;
+import com.ubiqube.etsi.mano.dao.mano.pkg.MinNumberOfPreservedInstance;
+import com.ubiqube.etsi.mano.dao.mano.pkg.NfviMaintenanceInfo;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.MaxNumberOfImpactedInstances;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.MinNumberOfPreservedInstances;
+import com.ubiqube.parser.tosca.scalar.Time;
+
+import jakarta.annotation.Nullable;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface VduProfileMapping {
@@ -28,4 +38,18 @@ public interface VduProfileMapping {
 	@Mapping(target = "localAffinityOrAntiAffinityRule", ignore = true)
 	VduProfile mapToVduProfile(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VduProfile o);
 
+	default ZonedDateTime toZonedDateTime(final @Nullable Time time) {
+		return null;
+	}
+
+	@Mapping(target = "id", ignore = true)
+	MaxNumberOfImpactedInstance mapToMaxNumberOfImpactedInstance(MaxNumberOfImpactedInstances o);
+
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "impactMitigationRequested", source = "isImpactMitigationRequested")
+	NfviMaintenanceInfo mapToNfviMaintenanceInfo(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.NfviMaintenanceInfo o);
+
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "minNumberOfImpactedInstances", source = "minNumberOfPreservedInstances")
+	MinNumberOfPreservedInstance mapToMinNumberOfPreservedInstance(MinNumberOfPreservedInstances o);
 }

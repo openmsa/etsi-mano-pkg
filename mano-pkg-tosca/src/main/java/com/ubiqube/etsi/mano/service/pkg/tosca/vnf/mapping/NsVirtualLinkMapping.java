@@ -73,7 +73,7 @@ public interface NsVirtualLinkMapping extends ScalarCommonMapping {
 	@Mapping(target = "dhcpEnabled", ignore = true)
 	@Mapping(target = "gatewayIp", ignore = true)
 	@Mapping(target = "ipv6AddressMode", ignore = true)
-	@Mapping(target = "l3Name", ignore = true)
+	@Mapping(target = "l3Name", source = "name")
 	L3Data mapToL3Data(NsL3ProtocolData o);
 
 	@Mapping(target = "audit", ignore = true)

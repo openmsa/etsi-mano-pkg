@@ -28,7 +28,7 @@ import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VirtualCp;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface VirtualCpMapping extends ConnectivityCommonMapper {
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "targetRef", ignore = true)
+	@Mapping(target = "targetRef", source = "targetReq")
 	@Mapping(target = "virtualLinkRef", ignore = true)
 	com.ubiqube.etsi.mano.dao.mano.pkg.VirtualCp mapToVirtualCp(final VirtualCp x);
 

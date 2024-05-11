@@ -31,9 +31,9 @@ import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.Sap;
 public interface NsSapMapping {
 
 	@Mapping(target = "audit", ignore = true)
-	@Mapping(target = "externalVirtualLink", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "internalVirtualLink", ignore = true)
+	@Mapping(target = "externalVirtualLink", source = "externalVirtualLinkReq")
+	@Mapping(target = "internalVirtualLink", source = "internalVirtualLinkReq")
 	@Mapping(target = "nsdPackage", ignore = true)
 	@Mapping(target = "securityGroups", ignore = true)
 	@Mapping(target = "state", ignore = true)

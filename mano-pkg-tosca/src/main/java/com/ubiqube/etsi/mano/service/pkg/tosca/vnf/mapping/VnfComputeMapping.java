@@ -33,7 +33,7 @@ import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.Compute;
 import com.ubiqube.parser.tosca.scalar.Time;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface VnfComputeMapping extends SoftwareImageMapping, VduProfileMapping, ScalarCommonMapping {
+public interface VnfComputeMapping extends SoftwareImageMapping, VduProfileMapping {
 
 	@Mapping(target = "affinityRule", ignore = true)
 	@Mapping(target = "audit", ignore = true)
@@ -59,8 +59,8 @@ public interface VnfComputeMapping extends SoftwareImageMapping, VduProfileMappi
 	VnfCompute map(Compute c);
 
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "virtualCpuPinningPolicy", ignore = true)
-	@Mapping(target = "virtualCpuPinningRule", ignore = true)
+	@Mapping(target = "virtualCpuPinningPolicy", source = "virtualCpuPinning.virtualCpuPinningPolicy")
+	@Mapping(target = "virtualCpuPinningRule", source = "virtualCpuPinning.virtualCpuPinningRule")
 	VirtualCpu mapToVirtualCpu(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VirtualCpu o);
 
 	@Mapping(target = "id", ignore = true)
