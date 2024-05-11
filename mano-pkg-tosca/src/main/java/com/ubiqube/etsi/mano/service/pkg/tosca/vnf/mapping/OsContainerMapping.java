@@ -27,14 +27,36 @@ import org.mapstruct.MappingConstants;
 import com.ubiqube.etsi.mano.dao.mano.EntryStringString;
 import com.ubiqube.etsi.mano.dao.mano.pkg.ExtendedResourceData;
 import com.ubiqube.etsi.mano.dao.mano.pkg.Hugepages;
+import com.ubiqube.etsi.mano.dao.mano.vim.ContainerFormatType;
+import com.ubiqube.etsi.mano.dao.mano.vim.SoftwareImage;
+import com.ubiqube.etsi.mano.exception.GenericException;
+import com.ubiqube.parser.tosca.Artifact;
+import com.ubiqube.parser.tosca.objects.tosca.artifacts.nfv.SwImage;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.RequestedAdditionalCapability;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainer;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.OsContainerDeployableUnit;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface OsContainerMapping extends VduProfileMapping, ScalarCommonMapping {
+public interface OsContainerMapping extends VduProfileMapping, SoftwareImageMapping {
 	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "artifacts", source = "artifacts")
 	com.ubiqube.etsi.mano.dao.mano.pkg.OsContainer mapToOsContainer(final OsContainer x);
+
+	default ContainerFormatType mapToContainerFormatType(final String str) {
+		if (null == str) {
+			return null;
+		}
+		return ContainerFormatType.fromValue(str);
+	}
+
+	default Map<String, SoftwareImage> mapArtifacts(final Map<String, Artifact> artifacts) {
+		return artifacts.entrySet().stream().map(x -> {
+			if (x.getValue() instanceof final SwImage swi) {
+				return map(swi);
+			}
+			throw new GenericException("Unknown instance type of artifact: " + x.getValue().getClass().getName());
+		}).collect(Collectors.toMap(x -> x.getName(), x -> x));
+	}
 
 	@Mapping(target = "id", ignore = true)
 	ExtendedResourceData mapToExtendedResourceData(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ExtendedResourceData o);

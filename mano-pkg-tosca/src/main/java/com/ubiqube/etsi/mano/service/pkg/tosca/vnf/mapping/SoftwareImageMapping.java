@@ -69,7 +69,7 @@ public interface SoftwareImageMapping extends ScalarCommonMapping {
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "diskFormat", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "imagePath", ignore = true)
+	@Mapping(target = "imagePath", source = "file")
 	@Mapping(target = "imageUri", ignore = true)
 	@Mapping(target = "isEncrypted", ignore = true)
 	@Mapping(target = "minDisk", ignore = true)
