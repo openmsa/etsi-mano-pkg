@@ -84,13 +84,13 @@ public interface VnfVlMapping extends ScalarCommonMapping, ConnectivityCommonMap
 	VnfLinkPort mapToVnfLinkPort(final VduCp x);
 
 	@Mapping(target = "computeNode", ignore = true)
-	@Mapping(target = "externalVirtualLink", ignore = true)
+	@Mapping(target = "externalVirtualLink", source = "externalVirtualLinkReq")
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "internalVirtualLink", ignore = true)
+	@Mapping(target = "internalVirtualLink", source = "internalVirtualLinkReq")
 	@Mapping(target = "securityGroup", ignore = true)
 	@Mapping(target = "state", ignore = true)
 	@Mapping(target = "toscaId", ignore = true)
-	@Mapping(target = "toscaName", ignore = true)
+	@Mapping(target = "toscaName", source = "internalName")
 	com.ubiqube.etsi.mano.dao.mano.VnfExtCp mapToVnfExtCp(final VnfExtCp x);
 
 	@Mapping(target = "id", ignore = true)

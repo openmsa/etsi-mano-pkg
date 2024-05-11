@@ -32,7 +32,7 @@ public interface VirtualObjectStorageMapping extends ScalarCommonMapping {
 	@Mapping(target = "softwareImage", ignore = true)
 	@Mapping(target = "state", ignore = true)
 	@Mapping(target = "toscaId", ignore = true)
-	@Mapping(target = "toscaName", ignore = true)
+	@Mapping(target = "toscaName", source = "internalName")
 	@Mapping(target = "type", constant = "OBJECT")
 	@Mapping(target = "vnfPackage", ignore = true)
 	VnfStorage map(VirtualObjectStorage vos);
