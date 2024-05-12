@@ -55,6 +55,7 @@ class OsContainerMappingTest {
 		final OsContainerMapping mapper = Mappers.getMapper(OsContainerMapping.class);
 		obj.setNfviConstraints(Map.of("NODE_POOL", "NODE_POOL"));
 		obj.setMcioConstraintParams(List.of("NODE_POOL"));
+		obj.getVduProfile().getNfviMaintenanceInfo().setSupportedMigrationType(List.of());
 		final com.ubiqube.etsi.mano.dao.mano.pkg.OsContainerDeployableUnit r = mapper.mapToOsContainerDeployableUnit(obj);
 		assertNotNull(r);
 	}
