@@ -42,8 +42,6 @@ public interface VnfVlMapping extends ScalarCommonMapping, ConnectivityCommonMap
 	@Mapping(target = "affinityRules", ignore = true)
 	@Mapping(target = "audit", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "initialBrLeaf", ignore = true)
-	@Mapping(target = "initialBrRoot", ignore = true)
 	@Mapping(target = "placementGroup", ignore = true)
 	@Mapping(target = "state", ignore = true)
 	@Mapping(target = "toscaId", ignore = true)
