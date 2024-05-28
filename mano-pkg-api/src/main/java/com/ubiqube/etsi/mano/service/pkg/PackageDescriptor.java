@@ -22,8 +22,6 @@ import java.util.UUID;
 import com.ubiqube.etsi.mano.repository.ManoResource;
 import com.ubiqube.etsi.mano.repository.VirtualFileSystem;
 
-import jakarta.annotation.Nonnull;
-
 /**
  *
  * @author Olivier Vignaud {@literal <ovi@ubiqube.com>}
@@ -35,7 +33,7 @@ public interface PackageDescriptor<U> {
 
 	boolean isProcessable(ManoResource mr);
 
-	U getNewReaderInstance(InputStream mr, @Nonnull UUID id);
+	U getNewReaderInstance(InputStream mr, UUID id);
 
 	VirtualFileSystem getFileSystem(ManoResource res);
 }
