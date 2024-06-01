@@ -17,6 +17,7 @@
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -38,9 +39,14 @@ public interface SoftwareImageMapping extends ScalarCommonMapping {
 		if ((null == o) || o.isEmpty()) {
 			return null;
 		}
-		final Artifact obj = o.entrySet().iterator().next().getValue();
+		final Entry<String, Artifact> kv = o.entrySet().iterator().next();
+		final Artifact obj = kv.getValue();
 		if (obj instanceof final SwImage swi) {
-			return map(swi);
+			final SoftwareImage res = map(swi);
+			if (null == res.getName()) {
+				res.setName(kv.getKey());
+			}
+			return res;
 		}
 		throw new GenericException("Unknown instance type of artifact: " + o.getClass().getName());
 	}
