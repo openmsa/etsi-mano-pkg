@@ -70,7 +70,7 @@ public interface SoftwareImageMapping extends ScalarCommonMapping {
 
 	@Mapping(target = "architecture", ignore = true)
 	@Mapping(target = "audit", ignore = true)
-	@Mapping(target = "checksum", ignore = true)
+	@Mapping(target = "checksum.algorithm", source = "checksumAlgorithm")
 	@Mapping(target = "containerFormat", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "diskFormat", ignore = true)
@@ -85,7 +85,7 @@ public interface SoftwareImageMapping extends ScalarCommonMapping {
 	@Mapping(target = "provider", ignore = true)
 	@Mapping(target = "size", ignore = true)
 	@Mapping(target = "userMetadata", ignore = true)
-	@Mapping(target = "version", ignore = true)
+	@Mapping(target = "version", source = "artifactVersion")
 	@Mapping(target = "vimId", ignore = true)
 	SoftwareImage map(HelmChart hc);
 }
