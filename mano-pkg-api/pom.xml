@@ -24,17 +24,14 @@
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-model</artifactId>
-			<version>${version.mano-model}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano.repository</groupId>
 			<artifactId>mano-repo-api</artifactId>
-			<version>${version.mano-repo-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano.sol001</groupId>
 			<artifactId>sol001-objects</artifactId>
-			<version>${version.tosca-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

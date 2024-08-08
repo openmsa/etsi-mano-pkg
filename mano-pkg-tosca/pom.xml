@@ -32,32 +32,26 @@
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-model</artifactId>
-			<version>${version.mano-model}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-condition</artifactId>
-			<version>${version.mano-condition}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>orchestration-api</artifactId>
-			<version>${version.orchestration-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano.sol001</groupId>
 			<artifactId>sol001-objects</artifactId>
-			<version>${version.tosca-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>tosca-api</artifactId>
-			<version>${version.tosca-api}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-commons</artifactId>
-			<version>${version.mano-commons}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
