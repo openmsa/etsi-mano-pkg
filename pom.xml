@@ -23,7 +23,7 @@
 	</modules>
 
   <scm>
-	  <developerConnection>scm:git:https://github.com/openmsa/etsi-mano-pkg.git</developerConnection>
+	  <developerConnection>scm:git:ssh://git@github.com/openmsa/etsi-mano-pkg.git</developerConnection>
     <tag>mano-pkg-aggregator-3.2.0</tag>
   </scm>
 </project>
