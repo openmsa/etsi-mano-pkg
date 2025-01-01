@@ -32,7 +32,7 @@ import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
 import com.ubiqube.etsi.mano.sol004.Sol004Onboarding;
 
-import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 /**
  *
@@ -41,9 +41,9 @@ import jakarta.annotation.Nonnull;
  */
 @Service
 public class ToscaVnfRegistryHandler implements PackageDescriptor<VnfPackageReader> {
-	@Nonnull
+	@NonNull
 	private final VnfPackageRepository repo;
-	@Nonnull
+	@NonNull
 	private final ConditionService conditionService;
 
 	private final PkgMapper mapper;
@@ -69,7 +69,7 @@ public class ToscaVnfRegistryHandler implements PackageDescriptor<VnfPackageRead
 	}
 
 	@Override
-	public VnfPackageReader getNewReaderInstance(final InputStream data, final @Nonnull UUID id) {
+	public VnfPackageReader getNewReaderInstance(final InputStream data, final @NonNull UUID id) {
 		return new ToscaVnfPackageReader(data, repo, id, conditionService, mapper, artefactInformationsMapping);
 	}
 

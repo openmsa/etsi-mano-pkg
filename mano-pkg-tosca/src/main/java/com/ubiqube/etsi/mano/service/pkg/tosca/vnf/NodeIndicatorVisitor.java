@@ -26,10 +26,10 @@ import com.ubiqube.etsi.mano.service.cond.ast.GenericCondition;
 import com.ubiqube.etsi.mano.service.cond.ast.LabelExpression;
 import com.ubiqube.etsi.mano.service.cond.ast.PatternValueExpr;
 
-import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public class NodeIndicatorVisitor extends SimpleNodeReturn<Node> {
-	@Nonnull
+	@NonNull
 	private final List<String> results = new ArrayList<>();
 
 	@Override

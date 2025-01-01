@@ -47,7 +47,7 @@ import com.ubiqube.parser.tosca.ToscaContext;
 import com.ubiqube.parser.tosca.ToscaParser;
 import com.ubiqube.parser.tosca.api.ToscaApi;
 
-import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 /**
  *
@@ -59,13 +59,13 @@ public abstract class AbstractPackageReader extends ArtefactReader implements Cl
 	private static final String FOUND_NODE_IN_TOSCA_MODEL = "Found {} {} node in TOSCA model";
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPackageReader.class);
-	@Nonnull
+	@NonNull
 	private final ToscaContext root;
-	@Nonnull
+	@NonNull
 	private final ToscaParser toscaParser;
-	@Nonnull
+	@NonNull
 	private final File tempFile;
-	@Nonnull
+	@NonNull
 	private final BinaryRepository repo;
 
 	private final ToscaApi toscaApi;

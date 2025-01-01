@@ -31,11 +31,11 @@ import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.ArtefactInformationsM
 import com.ubiqube.etsi.mano.tosca.ArtefactInformations;
 import com.ubiqube.parser.tosca.ToscaParser;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class ArtefactReader extends Sol004Loader {
-	@Nonnull
+	@NonNull
 	private final ToscaParser toscaParser;
 	private final ArtefactInformationsMapping artefactInformationsMapping;
 

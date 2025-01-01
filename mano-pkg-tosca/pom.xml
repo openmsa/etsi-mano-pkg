@@ -27,7 +27,6 @@
 		<dependency>
 			<groupId>com.ubiqube.mano.pkg</groupId>
 			<artifactId>mano-pkg-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
@@ -52,6 +51,10 @@
 		<dependency>
 			<groupId>com.ubiqube.mano</groupId>
 			<artifactId>mano-commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jspecify</groupId>
+			<artifactId>jspecify</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>

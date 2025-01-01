@@ -64,7 +64,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevel
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 import io.kubernetes.client.openapi.models.V1Pod;
-import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 /**
  *
@@ -85,7 +85,7 @@ public class K8sPodReader implements VnfPackageReader {
 	}
 
 	@Override
-	public @Nonnull ProviderData getProviderPadata() {
+	public @NonNull ProviderData getProviderPadata() {
 		final ProviderData pd = new ProviderData();
 		pd.setVnfProvider("K8S-POD");
 		pd.setVnfProductName(obj.getKind());
@@ -93,59 +93,59 @@ public class K8sPodReader implements VnfPackageReader {
 	}
 
 	@Override
-	public @Nonnull Set<AdditionalArtifact> getAdditionalArtefacts(final Map<String, String> parameters) {
+	public @NonNull Set<AdditionalArtifact> getAdditionalArtefacts(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public @Nonnull Set<VnfCompute> getVnfComputeNodes(final Map<String, String> parameters) {
+	public @NonNull Set<VnfCompute> getVnfComputeNodes(final Map<String, String> parameters) {
 		final VnfCompute vc = new VnfCompute();
 		vc.setToscaName(obj.getKind());
 		return Set.of(vc);
 	}
 
 	@Override
-	public @Nonnull Set<VnfStorage> getVnfStorages(final Map<String, String> parameters) {
+	public @NonNull Set<VnfStorage> getVnfStorages(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public @Nonnull Set<VnfVl> getVnfVirtualLinks(final Map<String, String> parameters) {
+	public @NonNull Set<VnfVl> getVnfVirtualLinks(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public @Nonnull Set<VnfLinkPort> getVnfVduCp(final Map<String, String> parameters) {
+	public @NonNull Set<VnfLinkPort> getVnfVduCp(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public @Nonnull Set<VnfExtCp> getVnfExtCp(final Map<String, String> parameters) {
+	public @NonNull Set<VnfExtCp> getVnfExtCp(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public @Nonnull Set<ScalingAspect> getScalingAspects(final Map<String, String> parameters) {
+	public @NonNull Set<ScalingAspect> getScalingAspects(final Map<String, String> parameters) {
 		return new HashSet<>();
 	}
 
 	@Override
-	public @Nonnull List<InstantiationLevels> getInstatiationLevels(final Map<String, String> parameters) {
+	public @NonNull List<InstantiationLevels> getInstatiationLevels(final Map<String, String> parameters) {
 		return new ArrayList<>();
 	}
 
 	@Override
-	public @Nonnull List<VduInstantiationLevels> getVduInstantiationLevels(final Map<String, String> parameters) {
+	public @NonNull List<VduInstantiationLevels> getVduInstantiationLevels(final Map<String, String> parameters) {
 		return new ArrayList<>();
 	}
 
 	@Override
-	public @Nonnull List<VduInitialDelta> getVduInitialDelta(final Map<String, String> parameters) {
+	public @NonNull List<VduInitialDelta> getVduInitialDelta(final Map<String, String> parameters) {
 		return new ArrayList<>();
 	}
 
 	@Override
-	public @Nonnull List<VduScalingAspectDeltas> getVduScalingAspectDeltas(final Map<String, String> parameters) {
+	public @NonNull List<VduScalingAspectDeltas> getVduScalingAspectDeltas(final Map<String, String> parameters) {
 		return new ArrayList<>();
 	}
 
@@ -155,17 +155,17 @@ public class K8sPodReader implements VnfPackageReader {
 	}
 
 	@Override
-	public @Nonnull Set<AffinityRuleAdapater> getAffinityRules(final Map<String, String> userDefinedData) {
+	public @NonNull Set<AffinityRuleAdapater> getAffinityRules(final Map<String, String> userDefinedData) {
 		return Set.of();
 	}
 
 	@Override
-	public @Nonnull Set<SecurityGroupAdapter> getSecurityGroups(final Map<String, String> userData) {
+	public @NonNull Set<SecurityGroupAdapter> getSecurityGroups(final Map<String, String> userData) {
 		return Set.of();
 	}
 
 	@Override
-	public @Nonnull List<String> getImports() {
+	public @NonNull List<String> getImports() {
 		return List.of();
 	}
 
@@ -180,22 +180,22 @@ public class K8sPodReader implements VnfPackageReader {
 	}
 
 	@Override
-	public @Nonnull Set<OsContainer> getOsContainer(final Map<String, String> parameters) {
+	public @NonNull Set<OsContainer> getOsContainer(final Map<String, String> parameters) {
 		return Set.of();
 	}
 
 	@Override
-	public @Nonnull Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(final Map<String, String> parameters) {
+	public @NonNull Set<OsContainerDeployableUnit> getOsContainerDeployableUnit(final Map<String, String> parameters) {
 		return Set.of();
 	}
 
 	@Override
-	public @Nonnull Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
+	public @NonNull Set<VirtualCp> getVirtualCp(final Map<String, String> parameters) {
 		return Set.of();
 	}
 
 	@Override
-	public @Nonnull Set<McIops> getMciops(final Map<String, String> userDefinedData) {
+	public @NonNull Set<McIops> getMciops(final Map<String, String> userDefinedData) {
 		return Set.of();
 	}
 

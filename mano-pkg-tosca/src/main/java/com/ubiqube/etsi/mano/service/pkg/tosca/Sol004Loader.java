@@ -42,7 +42,7 @@ import com.ubiqube.parser.tosca.ToscaParser;
 import com.ubiqube.parser.tosca.api.ToscaApi;
 import com.ubiqube.parser.tosca.api.ToscaMapper;
 
-import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public class Sol004Loader {
 
@@ -51,13 +51,13 @@ public class Sol004Loader {
 	private static final String JAR_PATH = "/tosca-class-%s-2.0.0-SNAPSHOT.jar";
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPackageReader.class);
-	@Nonnull
+	@NonNull
 	private final ToscaContext root;
-	@Nonnull
+	@NonNull
 	private final ToscaParser toscaParser;
-	@Nonnull
+	@NonNull
 	private final File tempFile;
-	@Nonnull
+	@NonNull
 	private final BinaryRepository repo;
 
 	private ToscaApi toscaApi;

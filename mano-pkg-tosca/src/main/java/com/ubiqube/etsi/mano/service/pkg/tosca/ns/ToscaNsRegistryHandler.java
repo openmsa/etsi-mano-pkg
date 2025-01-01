@@ -36,7 +36,7 @@ import com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping.PkgMapper;
 import com.ubiqube.etsi.mano.sol004.CsarModeEnum;
 import com.ubiqube.etsi.mano.sol004.Sol004Onboarding;
 
-import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 /**
  *
@@ -45,17 +45,17 @@ import jakarta.annotation.Nonnull;
  */
 @Service
 public class ToscaNsRegistryHandler implements PackageDescriptor<NsPackageProvider> {
-	@Nonnull
+	@NonNull
 	private final NsdRepository repo;
-	@Nonnull
+	@NonNull
 	private final PkgMapper mapper;
-	@Nonnull
+	@NonNull
 	private final NsInformationsMapping nsInformationsMapping;
-	@Nonnull
+	@NonNull
 	private final NsVnfIndicatorMapping nsVnfIndicatorMapping;
-	@Nonnull
+	@NonNull
 	private final NsSapMapping nsSapMapping;
-	@Nonnull
+	@NonNull
 	private final NsVirtualLinkMapping nsVirtualLinkMapping;
 
 	private final ArtefactInformationsMapping artefactInformationsMapping;

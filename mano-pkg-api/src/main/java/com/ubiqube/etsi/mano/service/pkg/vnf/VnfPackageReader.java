@@ -43,7 +43,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

@@ -30,7 +30,7 @@ import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.MaxNumberOfImpactedI
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.MinNumberOfPreservedInstances;
 import com.ubiqube.parser.tosca.scalar.Time;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface VduProfileMapping {
