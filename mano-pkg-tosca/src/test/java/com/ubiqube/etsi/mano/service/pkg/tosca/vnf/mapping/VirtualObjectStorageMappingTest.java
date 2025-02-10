@@ -7,6 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 import com.ubiqube.etsi.mano.dao.mano.vim.VnfStorage;
 import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.vdu.VirtualObjectStorage;
+import com.ubiqube.parser.tosca.scalar.Size;
 
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -18,6 +19,7 @@ class VirtualObjectStorageMappingTest {
 		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
 		final VirtualObjectStorage obj = podam.manufacturePojo(VirtualObjectStorage.class);
 		final VirtualObjectStorageMapping mapper = Mappers.getMapper(VirtualObjectStorageMapping.class);
+		obj.getVirtualObjectStorageData().setMaxSizeOfStorage(new Size("1gib"));
 		final VnfStorage r = mapper.map(obj);
 		assertNotNull(r);
 	}
