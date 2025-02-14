@@ -17,25 +17,29 @@
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
-import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VnfMonitoringParameter;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScaleInfo;
 
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-class VnfMonitoringCommonMappingTest {
+class ScaleCommonMappingTest {
+	private final ScaleCommonMapping mapper = Mappers.getMapper(ScaleCommonMapping.class);
+	private final PodamFactoryImpl podam;
+
+	public ScaleCommonMappingTest() {
+		podam = new PodamFactoryImpl();
+		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
+	}
 
 	@Test
 	void test() {
-		final PodamFactoryImpl podam = new PodamFactoryImpl();
-		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
-		final VnfMonitoringParameter obj = podam.manufacturePojo(VnfMonitoringParameter.class);
-		final VnfMonitoringCommonMapping mapper = Mappers.getMapper(VnfMonitoringCommonMapping.class);
-		final MonitoringParams r = mapper.mapToMonitoringParams(obj, "toscaName");
-		assertNotNull(r);
+		assertNull(mapper.mapToScaleInfo(null));
+		ScaleInfo o = podam.manufacturePojo(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScaleInfo.class);
+		assertNotNull(mapper.mapToScaleInfo(o));
 	}
 
 }

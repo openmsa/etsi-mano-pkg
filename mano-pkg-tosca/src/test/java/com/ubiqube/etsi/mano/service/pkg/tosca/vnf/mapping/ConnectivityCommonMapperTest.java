@@ -17,25 +17,29 @@
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import com.ubiqube.etsi.mano.dao.mano.MonitoringParams;
-import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.VnfMonitoringParameter;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.CpProtocolData;
 
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-class VnfMonitoringCommonMappingTest {
+class ConnectivityCommonMapperTest {
+	private final ConnectivityCommonMapper mapper = Mappers.getMapper(ConnectivityCommonMapper.class);
+	private final PodamFactoryImpl podam;
+
+	public ConnectivityCommonMapperTest() {
+		podam = new PodamFactoryImpl();
+		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
+	}
 
 	@Test
 	void test() {
-		final PodamFactoryImpl podam = new PodamFactoryImpl();
-		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
-		final VnfMonitoringParameter obj = podam.manufacturePojo(VnfMonitoringParameter.class);
-		final VnfMonitoringCommonMapping mapper = Mappers.getMapper(VnfMonitoringCommonMapping.class);
-		final MonitoringParams r = mapper.mapToMonitoringParams(obj, "toscaName");
-		assertNotNull(r);
+		assertNull(mapper.mapToVlProtocolData(null));
+		CpProtocolData o = podam.manufacturePojo(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.CpProtocolData.class);
+		assertNotNull(mapper.mapToVlProtocolData(o));
 	}
 
 }

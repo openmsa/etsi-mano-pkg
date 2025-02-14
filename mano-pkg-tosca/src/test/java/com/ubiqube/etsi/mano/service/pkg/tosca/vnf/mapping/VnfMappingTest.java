@@ -19,27 +19,49 @@ package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import com.ubiqube.parser.tosca.TriggerDefinition;
+import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScaleInfo;
+import com.ubiqube.parser.tosca.objects.tosca.nodes.nfv.VNF;
 
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-class TriggerDefinitionMappingTest {
+class VnfMappingTest {
+	private final VnfMapping mapper = Mappers.getMapper(VnfMapping.class);
+	private final PodamFactoryImpl podam;
+
+	VnfMappingTest() {
+		podam = new PodamFactoryImpl();
+	}
 
 	@Test
 	void test() {
-		final PodamFactoryImpl podam = new PodamFactoryImpl();
-		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
-		final TriggerDefinition obj = podam.manufacturePojo(TriggerDefinition.class);
-		final TriggerDefinitionMapping mapper = Mappers.getMapper(TriggerDefinitionMapping.class);
-		assertNull(mapper.mapToTriggerDefinition(null));
-		com.ubiqube.etsi.mano.dao.mano.TriggerDefinition r = mapper.mapToTriggerDefinition(obj);
-		assertNotNull(r);
-		obj.setTargets(null);
-		r = mapper.mapToTriggerDefinition(obj);
-		assertNotNull(r);
+		assertNotNull(mapper.mapSi(null));
+		ScaleInfo o = podam.manufacturePojo(com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScaleInfo.class);
+		assertNotNull(mapper.mapSi(Map.of("key", o)));
 	}
 
+	@Test
+	void testMap() {
+		assertNotNull(mapper.map((Map) null));
+	}
+
+	@Test
+	void testVNF() {
+		assertNull(mapper.map((VNF) null));
+		VNF o = podam.manufacturePojo(VNF.class);
+		o.setLocalizationLanguages(null);
+		o.setOverloadedAttributes(null);
+		o.setOverloadedInterfaces(null);
+		o.setVnfmInfo(null);
+		assertNotNull(mapper.map(o));
+	}
+
+	@Test
+	void testVnfMonitoringParameter() {
+		assertNull(mapper.map(null, null));
+	}
 }

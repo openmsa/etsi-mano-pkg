@@ -17,6 +17,7 @@
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -24,38 +25,37 @@ import org.mapstruct.factory.Mappers;
 import com.ubiqube.parser.tosca.objects.tosca.datatypes.nfv.ScaleInfo;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.InstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
+import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 class ScalingMappingTest {
+	private final PodamFactoryImpl podam;
+	private final ScalingMapping mapper = Mappers.getMapper(ScalingMapping.class);
+
+	ScalingMappingTest() {
+		podam = new PodamFactoryImpl();
+		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
+	}
 
 	@Test
 	void testVduInitialDelta() {
-		final PodamFactoryImpl podam = new PodamFactoryImpl();
-		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
 		final VduInitialDelta obj = podam.manufacturePojo(VduInitialDelta.class);
-		final ScalingMapping mapper = Mappers.getMapper(ScalingMapping.class);
 		final com.ubiqube.etsi.mano.service.pkg.bean.VduInitialDelta r = mapper.mapToVduInitialDelta(obj);
 		assertNotNull(r);
 	}
 
 	@Test
 	void testVduScalingAspectDeltas() {
-		final PodamFactoryImpl podam = new PodamFactoryImpl();
-		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
 		final VduScalingAspectDeltas obj = podam.manufacturePojo(VduScalingAspectDeltas.class);
-		final ScalingMapping mapper = Mappers.getMapper(ScalingMapping.class);
 		final com.ubiqube.etsi.mano.service.pkg.bean.VduScalingAspectDeltas r = mapper.mapToVduScalingAspectDeltas(obj);
 		assertNotNull(r);
 	}
 
 	@Test
 	void testScaleInfo() {
-		final PodamFactoryImpl podam = new PodamFactoryImpl();
-		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
 		final ScaleInfo obj = podam.manufacturePojo(ScaleInfo.class);
-		final ScalingMapping mapper = Mappers.getMapper(ScalingMapping.class);
 		final com.ubiqube.etsi.mano.service.pkg.bean.ScaleInfo r = mapper.mapToScaleInfo(obj);
 		assertNotNull(r);
 	}
@@ -63,11 +63,15 @@ class ScalingMappingTest {
 	//
 	@Test
 	void testInstantiationLevels() {
-		final PodamFactoryImpl podam = new PodamFactoryImpl();
-		podam.getStrategy().setDefaultNumberOfCollectionElements(1);
 		final InstantiationLevels obj = podam.manufacturePojo(InstantiationLevels.class);
-		final ScalingMapping mapper = Mappers.getMapper(ScalingMapping.class);
 		final com.ubiqube.etsi.mano.service.pkg.bean.InstantiationLevels r = mapper.mapToInstantiationLevels(obj);
 		assertNotNull(r);
+	}
+
+	@Test
+	void testmapToVduInstantiationLevels() {
+		assertNull(mapper.mapToVduInstantiationLevels(null));
+		VduInstantiationLevels o = podam.manufacturePojo(VduInstantiationLevels.class);
+		assertNotNull(mapper.mapToVduInstantiationLevels(o));
 	}
 }
