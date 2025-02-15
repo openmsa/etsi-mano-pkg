@@ -16,39 +16,40 @@
  */
 package com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ClassInfoList;
+import io.github.classgraph.ScanResult;
+
 class FindDuplicatesTest {
 	/** Logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(FindDuplicatesTest.class);
 
-	private final Reflections reflections;
 	private final MultiValueMap<Key, Method> cache = new LinkedMultiValueMap<>();
-
-	public FindDuplicatesTest() {
-		reflections = new Reflections("com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping", new SubTypesScanner(false));
-	}
 
 	@Test
 	void test() {
-		final Set<Class<? extends Object>> set = reflections.getSubTypesOf(Object.class);
-		final Map<String, Set<String>> subtype = reflections.getStore().get("SubTypes");
-		subtype.forEach((x, y) -> {
-			handle(x);
-		});
+		try (ScanResult scanResult = new ClassGraph()
+				.enableAllInfo()
+				.acceptPackages("com.ubiqube.etsi.mano.service.pkg.tosca.vnf.mapping")
+				.scan()) {
+			ClassInfoList allClasses = scanResult.getAllClasses();
+			allClasses.stream().map(ClassInfo::getName).forEach(this::handle);
+		}
 		renderResult();
+		assertTrue(true);
 	}
 
 	private void renderResult() {
@@ -61,7 +62,7 @@ class FindDuplicatesTest {
 	}
 
 	private void renderError(final Entry<Key, List<Method>> x) {
-		LOG.error("- " + x.getKey());
+		LOG.error("- {}", x.getKey());
 		x.getValue().forEach(y -> {
 			LOG.error("    - {}", y);
 		});

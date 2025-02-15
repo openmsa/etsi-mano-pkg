@@ -88,8 +88,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
+			<groupId>io.github.classgraph</groupId>
+			<artifactId>classgraph</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
