@@ -85,6 +85,9 @@ class FindDuplicatesTest {
 		final Class<?> clazz = Class.forName(x);
 		final Method[] meths = clazz.getDeclaredMethods();
 		for (final Method method : meths) {
+			if (method.getParameterCount() == 0) {
+				continue;
+			}
 			final Key k = new Key(method.getReturnType().getCanonicalName(), method.getParameters()[0].getType().getCanonicalName());
 			cache.add(k, method);
 		}
