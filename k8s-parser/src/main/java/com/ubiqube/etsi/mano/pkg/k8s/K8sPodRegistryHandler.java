@@ -46,7 +46,7 @@ import com.ubiqube.etsi.mano.service.pkg.PackageDescriptor;
 import com.ubiqube.etsi.mano.service.pkg.vnf.VnfPackageReader;
 import com.ubiqube.etsi.mano.service.pkg.wfe.ExecutionGraph;
 
-import io.kubernetes.client.openapi.models.V1Pod;
+import io.fabric8.kubernetes.api.model.Pod;
 
 /**
  *
@@ -70,7 +70,7 @@ public class K8sPodRegistryHandler implements PackageDescriptor<VnfPackageReader
 	public boolean isProcessable(final byte[] data) {
 		final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 		try {
-			mapper.readValue(data, V1Pod.class);
+			mapper.readValue(data, Pod.class);
 			return true;
 		} catch (final IOException e) {
 			LOG.trace("", e);

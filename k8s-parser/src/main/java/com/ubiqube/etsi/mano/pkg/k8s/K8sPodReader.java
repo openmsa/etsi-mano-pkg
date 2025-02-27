@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jspecify.annotations.NonNull;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
@@ -63,8 +65,7 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
 
-import io.kubernetes.client.openapi.models.V1Pod;
-import org.jspecify.annotations.NonNull;
+import io.fabric8.kubernetes.api.model.Pod;
 
 /**
  *
@@ -73,12 +74,12 @@ import org.jspecify.annotations.NonNull;
  */
 public class K8sPodReader implements VnfPackageReader {
 
-	private V1Pod obj;
+	private Pod obj;
 
 	public K8sPodReader(final byte[] data) {
 		final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 		try {
-			obj = mapper.readValue(data, V1Pod.class);
+			obj = mapper.readValue(data, Pod.class);
 		} catch (final IOException e) {
 			throw new ToscaException(e);
 		}
