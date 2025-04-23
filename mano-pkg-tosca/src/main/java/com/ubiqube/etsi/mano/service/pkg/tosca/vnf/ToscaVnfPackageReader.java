@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.NonNull;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ubiqube.etsi.mano.dao.mano.AdditionalArtifact;
@@ -79,8 +81,6 @@ import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.SecurityGroupRule;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInitialDelta;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduInstantiationLevels;
 import com.ubiqube.parser.tosca.objects.tosca.policies.nfv.VduScalingAspectDeltas;
-
-import org.jspecify.annotations.NonNull;
 
 /**
  *
@@ -243,7 +243,7 @@ public class ToscaVnfPackageReader extends AbstractPackageReader implements VnfP
 				}
 			}
 			vnfIndicator.setIndicators(mPs);
-			vnfIndicator.setName(vnfIndicator.getToscaName());
+			vnfIndicator.setToscaName(vnfIndicator.getToscaName());
 		}
 		return vnfIndicators;
 	}

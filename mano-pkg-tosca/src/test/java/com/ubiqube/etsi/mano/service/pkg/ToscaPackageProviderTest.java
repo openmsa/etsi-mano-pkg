@@ -87,14 +87,14 @@ class ToscaPackageProviderTest {
 	}
 
 	@Test
-	void testSoftwareImage01() throws Exception {
+	void testSoftwareImage01() {
 		final Set<AdditionalArtifact> aa = tpp.getAdditionalArtefacts(new HashMap<>());
 		System.out.println("" + aa);
 		assertNotNull(aa);
 	}
 
 	@Test
-	void testComputeNode01() throws Exception {
+	void testComputeNode01() {
 		final Set<VnfCompute> vnfCn = tpp.getVnfComputeNodes(new HashMap<>());
 		System.out.println("" + vnfCn);
 		assertEquals(2, vnfCn.size());
@@ -115,11 +115,11 @@ class ToscaPackageProviderTest {
 			return;
 		}
 		assertEquals(60L, mp.getCollectionPeriod());
-		assertEquals("metric name", mp.getName());
+		assertEquals("metric name", mp.getToscaName());
 	}
 
 	@Test
-	void testStorage01() throws Exception {
+	void testStorage01() {
 		final Set<VnfStorage> storages = tpp.getVnfStorages(new HashMap<>());
 		System.out.println("" + storages);
 		assertEquals(1, storages.size());
@@ -145,7 +145,7 @@ class ToscaPackageProviderTest {
 	}
 
 	@Test
-	void testVirtualLink01() throws Exception {
+	void testVirtualLink01() {
 		final Set<VnfVl> vnfVl = tpp.getVnfVirtualLinks(new HashMap<>());
 		assertEquals(3, vnfVl.size());
 		final VnfVl vl = vnfVl.iterator().next();
@@ -155,7 +155,7 @@ class ToscaPackageProviderTest {
 	}
 
 	@Test
-	void testVirtualCp01() throws Exception {
+	void testVirtualCp01() {
 		final Set<VnfLinkPort> vnfCp = tpp.getVnfVduCp(new HashMap<>());
 		assertEquals(4, vnfCp.size());
 		final VnfLinkPort cp = vnfCp.iterator().next();
@@ -164,45 +164,45 @@ class ToscaPackageProviderTest {
 	}
 
 	@Test
-	void testVnfExtCp() throws Exception {
+	void testVnfExtCp() {
 		final Set<VnfExtCp> extCp = tpp.getVnfExtCp(new HashMap<>());
 		assertEquals(1, extCp.size());
 	}
 
 	@Test
-	void testScalingAspect() throws Exception {
+	void testScalingAspect() {
 		final Set<ScalingAspect> list = tpp.getScalingAspects(new HashMap<>());
 		System.out.println("" + list);
 		assertNotNull(list);
 	}
 
 	@Test
-	void testVduScalingAspectDeltas() throws Exception {
+	void testVduScalingAspectDeltas() {
 		final List<VduScalingAspectDeltas> list = tpp.getVduScalingAspectDeltas(new HashMap<>());
 		System.out.println("" + list);
 		assertNotNull(list);
 	}
 
 	@Test
-	void testGetProviderPadata() throws Exception {
+	void testGetProviderPadata() {
 		final ProviderData res = tpp.getProviderPadata();
 		assertNotNull(res);
 		final Set<MonitoringParams> monParams = res.getMonitoringParameters();
 		assertNotNull(monParams);
 		assertEquals(1, monParams.size());
 		final MonitoringParams data = monParams.iterator().next();
-		assertEquals("mon01", data.getName());
+		assertEquals("mon01", data.getToscaName());
 	}
 
 	@Test
-	void testAffinityRule() throws Exception {
+	void testAffinityRule() {
 		final Set<AffinityRuleAdapater> res = tpp.getAffinityRules(Map.of());
 		assertNotNull(res);
 		assertEquals(2, res.size());
 	}
 
 	@Test
-	void testSecurityGroup() throws Exception {
+	void testSecurityGroup() {
 		final Set<SecurityGroupAdapter> res = tpp.getSecurityGroups(Map.of());
 		assertNotNull(res);
 		assertEquals(1, res.size());

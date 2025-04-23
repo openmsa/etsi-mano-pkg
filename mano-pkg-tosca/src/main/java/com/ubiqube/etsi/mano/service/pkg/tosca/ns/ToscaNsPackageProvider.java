@@ -337,7 +337,7 @@ public class ToscaNsPackageProvider extends AbstractPackageReader implements NsP
 						for (final String keyInd : conditions.keySet()) {
 							final MonitoringParams monitoringParams = new MonitoringParams();
 							monitoringParams.setCollectionPeriod(600L);
-							monitoringParams.setName(keyInd);
+							monitoringParams.setToscaName(keyInd);
 							monitoringParams.setPerformanceMetric(keyInd);
 							monitoringParams.setObjectType(PmType.NS);
 							mPs.put(keyInd, monitoringParams);

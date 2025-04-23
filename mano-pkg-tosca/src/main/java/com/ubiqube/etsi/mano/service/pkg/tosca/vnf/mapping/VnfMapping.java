@@ -58,7 +58,6 @@ public interface VnfMapping extends ScalarCommonMapping, ScaleCommonMapping {
 	@Mapping(target = "timestamp", ignore = true)
 	@Mapping(target = "value", ignore = true)
 	@Mapping(target = "vnfComputeName", ignore = true)
-	@Mapping(target = "name", source = "toscaName")
 	MonitoringParams map(VnfMonitoringParameter mp, String toscaName);
 
 	default Set<MonitoringParams> map(final Map<String, VnfMonitoringParameter> vmp) {

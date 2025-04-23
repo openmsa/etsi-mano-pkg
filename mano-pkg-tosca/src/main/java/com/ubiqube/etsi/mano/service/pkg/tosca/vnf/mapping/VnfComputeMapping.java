@@ -89,7 +89,7 @@ public interface VnfComputeMapping extends SoftwareImageMapping, VduProfileMappi
 		return mp.entrySet().stream()
 				.map(x -> {
 					final MonitoringParams res = map(x.getValue());
-					res.setName(x.getKey());
+					res.setToscaName(x.getKey());
 					return res;
 				})
 				.collect(Collectors.toSet());
